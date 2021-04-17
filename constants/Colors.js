@@ -1,4 +1,4 @@
 export default {
-    primary: '#cab',
-    secondary: '#b33'
+    primary: '#77f',
+    background: '#225'
 }
