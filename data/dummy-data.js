@@ -120,3 +120,18 @@ export const gridData = [
             habit: false
         }
     ]
+
+export const habitData = [
+    {
+        id: '1',
+        currStreak: 1,
+        highStreak: 5,
+        title: "Pizza"
+    },
+    {
+        id: '2',
+        currStreak: 2,
+        highStreak: 4,
+        title: "Soft Drink"
+    },
+]

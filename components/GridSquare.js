@@ -26,9 +26,10 @@ const GridSquare = (props) => {
 
 const styles = StyleSheet.create({
     box: {
+        flex: 1,
         margin: 5,
-        width: 30,
-        height: 30,
+        width: 40,
+        height: 40,
         borderWidth: 3,
         borderRadius: 5
     }

@@ -18,7 +18,7 @@ const OverviewScreen = (props) => {
                     data={gridData}
                     renderItem={(box) => {
                         return(
-                        <GridSquare boxData={box.item}/>
+                            <GridSquare boxData={box.item}/>
                         )
                     }}
                 />
@@ -33,7 +33,7 @@ const OverviewScreen = (props) => {
 
 OverviewScreen.navigationOptions = navData => {
     return {
-        headerLeft: (
+        headerLeft: () => (
             <CustomHeaderButton name="menu" onPress={()=> {
                 navData.navigation.toggleDrawer()
             }}/>
