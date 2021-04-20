@@ -3,12 +3,16 @@ import {StyleSheet, View, Text, FlatList} from 'react-native'
 import CustomHeaderButton from "../components/CustomHeaderButton";
 import GridSquare from "../components/GridSquare";
 import Colors from "../constants/Colors";
+// import * as RNlocalize from 'react-native-localize'
 
 import { gridData } from '../data/dummy-data'
+// import { currDate } from "../utils";
 
 const OverviewScreen = (props) => {
-
+    //TODO when click on square, load activites in infoCont
     // console.log(gridData);
+    // const now = currDate()
+    // const timezone = RNlocalize.getTimeZone()
     
     return (
         <View style={styles.screen}>

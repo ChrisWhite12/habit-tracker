@@ -126,12 +126,14 @@ export const habitData = [
         id: '1',
         currStreak: 1,
         highStreak: 5,
-        title: "Pizza"
+        title: "Pizza",
+        prevData: new Date(2021,2,5)
     },
     {
         id: '2',
         currStreak: 2,
         highStreak: 4,
-        title: "Soft Drink"
+        title: "Soft Drink",
+        prevDate: new Date(2021,2,3)
     },
 ]

@@ -28,7 +28,7 @@ const ExerciseScreen = (props) => {
 
 ExerciseScreen.navigationOptions = navData => {
     return {
-        headerLeft: (
+        headerLeft: () => (
             <CustomHeaderButton name="menu" onPress={()=> {
                 navData.navigation.toggleDrawer()
             }}/>

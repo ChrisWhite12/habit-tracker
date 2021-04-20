@@ -5,7 +5,7 @@ import Colors from '../constants/Colors';
 const TextDefault = (props) => {
     
     return (
-        <Text style={styles.text}>{props.children}</Text>
+        <Text style={{ ...styles.text, ...props.style}}>{props.children}</Text>
     );
 };
 

@@ -1,0 +1,1 @@
+export const UPDATE_ACTIVITY = 'UPDATE_ACTIVITY'
