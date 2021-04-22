@@ -34,24 +34,11 @@ export const fetchWeight = () => {
         const response = await fetch(`https://habit-tracker-b02ec-default-rtdb.firebaseio.com/weight.json`)
         const resData = await response.json()
         let resOut = []
-    
-        const currMonth = new Date().getMonth() + 1
 
         for (const key in resData) {
-            resOut.push({weight: resData[key].weight, date: resData[key].date})
+            resOut.push({weight: resData[key].weight, dateSet: resData[key].date})
         }
 
-        // console.log('currMonth', currMonth)
-        // console.log('resOut',resOut);
-
-        const filtRes = resOut.filter(el => {
-            const stringParts = el.date.split('/')
-            console.log('stringParts',stringParts);
-            if(stringParts[1] === currMonth.toString()){
-                return el
-            }
-
-        })
-        console.log('filRes', filtRes)
+        dispatch({type: FETCH_WEIGHT, weights: resOut})
     }
 }

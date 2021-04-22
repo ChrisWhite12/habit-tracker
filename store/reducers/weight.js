@@ -16,7 +16,9 @@ export default (state = initState, action) => {
         };
 
         case FETCH_WEIGHT:
-            return state
+            return {
+                weightList: action.weights
+            }
 
         default:
         return state;

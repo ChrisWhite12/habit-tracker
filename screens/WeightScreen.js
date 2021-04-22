@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import {StyleSheet, View, Text, TextInput, Button, Dimensions, ActivityIndicator} from 'react-native'
+import {StyleSheet, View, TextInput, Button, Dimensions, ActivityIndicator} from 'react-native'
 
 import { LineChart } from 'react-native-chart-kit'
 
@@ -12,14 +12,23 @@ import * as weightActions from '../store/actions/weight'
 
 const WeightScreen = (props) => {
     //useReducer(formReducer)
+    const weightData = useSelector((state) => state.weight.weightList);
     const dispatch = useDispatch();
     const [newWeight, setNewWeight] = useState('')
     const [isSubmit, setIsSubmit] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
+    const [error,setError] = useState('')
+    const [weightGraph, setWeightGraph] = useState([0])
+
     const now = new Date()
 
     const day = now.getDate()
     const month = now.getMonth() + 1
     const year = now.getFullYear()
+    const currMonth = month.toString()
+
+    //TODO - filter the weight results by month , separate by date
+    //TODO - if missing data, interpolate points
 
     const handleChange = (text) => {
         setNewWeight(text)
@@ -37,11 +46,56 @@ const WeightScreen = (props) => {
         dispatch(
             weightActions.fetchWeight()
         )
+        .catch(err => {
+            console.log(err)
+            setError(err.message)
+        })
     },[dispatch])
 
+    const processData = () => {
+        const filtWeight = weightData.filter(el => {
+            const stringParts = el.dateSet.split('/')
+            if(stringParts[1] === currMonth){
+                return el
+            }
+        })
+
+        let firstDay = true
+
+        let weightOut = []
+        let dateOut = []
+
+        if (filtWeight.length >= 1){            
+            for (let i = 1; i <= day; i++) {
+                let dateTrack = filtWeight.find(el => el.dateSet.split('/')[0] === i.toString())
+                if(dateTrack !== undefined && firstDay === true){
+                    firstDay = false
+                    weightOut.push(dateTrack.weight)
+                    dateOut.push(i.toString())
+                }
+                else if(dateTrack === undefined && firstDay === false){
+                    weightOut.push(weightOut[weightOut.length-1])
+                    dateOut.push(i.toString())
+                }
+                else if(dateTrack !== undefined && firstDay === false){
+                    weightOut.push(dateTrack.weight)
+                    dateOut.push(i.toString())
+                }
+            }
+            console.log('weightOut',weightOut);
+            console.log('dateOut',dateOut);
+            setWeightGraph(weightOut)
+        }
+    }
+
     useEffect(() => {
+        setIsLoading(true)
         loadWeight()
-    }, [loadWeight])
+        .then(() => {
+            processData()
+            setIsLoading(false)
+        })
+    }, [dispatch, loadWeight])
 
 
     return (
@@ -52,17 +106,13 @@ const WeightScreen = (props) => {
                 {isSubmit ? <ActivityIndicator size='small' color={Colors.primary} /> : <Button title="Enter Weight" onPress={handleSubmit} />}
             </View>
             <View style={styles.graphCont}>
+                {isLoading ?
+                <ActivityIndicator size='large' color={Colors.primary} /> :
                 <LineChart 
                     data={{
-                        labels: ['1','2','3','4'],
                         datasets: [
                             {
-                                data: [
-                                    82.2,
-                                    82.3,
-                                    82,
-                                    81.8
-                                ]
+                                data: weightGraph
                             }
                         ]
                     }}
@@ -90,7 +140,7 @@ const WeightScreen = (props) => {
                       marginVertical: 8,
                       borderRadius: 16
                     }}
-                />
+                />}
             </View>
         </View>
     );
