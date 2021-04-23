@@ -1,23 +1,49 @@
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 import {StyleSheet, View, Text, TextInput, Button} from 'react-native'
+import { useDispatch } from 'react-redux';
 import CustomHeaderButton from '../components/CustomHeaderButton';
 import TextDefault from '../components/TextDefault';
 import Colors from "../constants/Colors";
 
+import * as exerciseActions from '../store/actions/exercise'
+
 const ExerciseScreen = (props) => {
+    const [textAct, setTextAct] = useState('')
+    const [textCal, setTextCal] = useState('')
     
+    const now = new Date()
+
+    const day = now.getDate()
+    const month = now.getMonth() + 1
+    const year = now.getFullYear()
+
+    const dispatch = useDispatch()
+
+    const handleChangeAct = (text) => {
+        setTextAct(text)
+    }
+
+    const handleChangeCal = (text) => {
+        setTextCal(text)
+    }
+
+    const handleSubmit = useCallback(async() => {
+        await dispatch(exerciseActions.createExercise(textAct,textCal, new Date()))
+    })
+
     return (
         <View style={styles.screen}>
             <View style={styles.formCont}>
+                <TextDefault style={styles.date}>Date: {day}/{month}/{year}</TextDefault>
                 <View style={styles.actCont}>
-                    <TextDefault>Activity</TextDefault>                
-                    <TextInput style={styles.input}/>
+                    <TextDefault>Activity: </TextDefault>                
+                    <TextInput style={styles.input} onChangeText={handleChangeAct} />
                 </View>
                 <View style={styles.calCont}>
-                    <TextDefault>Calories</TextDefault>          
-                    <TextInput style={styles.input}/>
+                    <TextDefault>Calories: </TextDefault>          
+                    <TextInput style={styles.input} keyboardType='decimal-pad' onChangeText={handleChangeCal} />
                 </View>
-                <Button title="submit" />
+                <Button title="submit" onPress={handleSubmit} />
             </View>
             <View style={styles.listCont}>
                 <TextDefault>List of activities</TextDefault>
@@ -47,16 +73,12 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.background
     },
     formCont: {
-        borderColor: 'grey',
-        borderWidth: 1,
         height: '40%',
         width: '90%',
         justifyContent: 'space-around',
         alignItems: 'center'
     },
     listCont: {
-        borderColor: 'grey',
-        borderWidth: 1,
         height: '40%',
         width: '90%',
         justifyContent: 'space-around',

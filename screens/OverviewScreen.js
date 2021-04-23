@@ -59,14 +59,10 @@ const styles = StyleSheet.create({
     gridCont: {
         height: '40%',
         width: '100%',
-        borderWidth: 1,
-        borderColor: 'red'
     },
     infoCont: {
         height: '40%',
         width: '100%',
-        borderWidth: 1,
-        borderColor: 'grey'
     }
 });
 

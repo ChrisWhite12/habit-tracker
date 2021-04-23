@@ -10,7 +10,10 @@ import { habitData } from '../data/dummy-data'
 //TODO update habit when break streak
 //TODO calculate days since
 const HabitScreen = (props) => {
-    
+    const handleAdd = () => {
+        props.navigation.navigate('create')
+    }
+
     return (
         <View style={styles.screen}>
             <View>
@@ -24,7 +27,7 @@ const HabitScreen = (props) => {
                         />
                         )
                     }}/>
-                <Button title='Add Habit' />
+                <Button title='Add Habit' onPress={handleAdd} />
             </View>
         </View>
     );

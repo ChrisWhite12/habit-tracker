@@ -6,6 +6,7 @@ import { createDrawerNavigator, DrawerNavigatorItems } from 'react-navigation-dr
 import { createStackNavigator } from 'react-navigation-stack';
 
 import Colors from '../constants/Colors'
+import CreateHabitScreen from '../screens/CreateHabitScreen';
 import ExerciseScreen from '../screens/ExerciseScreen'
 import HabitScreen from '../screens/HabitScreen'
 import OverviewScreen from '../screens/OverviewScreen'
@@ -31,7 +32,8 @@ const WeightStack = createStackNavigator({
 })
 
 const HabitStack = createStackNavigator({
-    screen: HabitScreen,
+    index: HabitScreen,
+    create: CreateHabitScreen
 },{
     defaultNavigationOptions: defaultNavOptions
 })
@@ -47,6 +49,7 @@ const DrawerNavigator = createDrawerNavigator({
     Weight: WeightStack,
     Habits: HabitStack,
     Exercise: ExerciseStack
+
 },{
     contentComponent: props => {
         return <View style={{flex: 1, paddingTop: 50, backgroundColor: Colors.secondary}}>

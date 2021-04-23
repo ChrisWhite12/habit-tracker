@@ -16,7 +16,7 @@ const WeightScreen = (props) => {
     const dispatch = useDispatch();
     const [newWeight, setNewWeight] = useState('')
     const [isSubmit, setIsSubmit] = useState(false)
-    const [isLoading, setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(false)
     const [error,setError] = useState('')
     const [weightGraph, setWeightGraph] = useState([0])
 
@@ -28,7 +28,6 @@ const WeightScreen = (props) => {
     const currMonth = month.toString()
 
     //TODO - filter the weight results by month , separate by date
-    //TODO - if missing data, interpolate points
 
     const handleChange = (text) => {
         setNewWeight(text)
@@ -176,16 +175,12 @@ const styles = StyleSheet.create({
     },
     formCont:{
         height: '40%',
-        borderColor: 'grey',
-        borderWidth: 1,
         width: '90%',
         justifyContent: 'space-around',
         alignItems: 'center'
     },
     graphCont: {
         height: '40%',
-        borderColor: 'grey',
-        borderWidth: 1,
         width: '90%',
         justifyContent: 'space-around'
     },
