@@ -11,7 +11,7 @@ const HabitItem = (props) => {
                 <TextDefault>Current streak: {props.currStreak}</TextDefault>
                 <TextDefault>Highest streak: {props.highStreak}</TextDefault>
             </View>
-            <Button title="Break Streak" />
+            <Button title="Break Streak" onPress={props.handleBreakStreak}/>
         </View>
     );
 };

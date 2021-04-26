@@ -9,11 +9,13 @@ import ReduxThunk from 'redux-thunk'
 import ActivityReducer from './store/reducers/activity'
 import ExerciseReducer from './store/reducers/exercise'
 import WeightReducer from './store/reducers/weight'
+import HabitReducer from './store/reducers/habit'
 
 const rootReducer = combineReducers({
   activity: ActivityReducer,
   exercise: ExerciseReducer,
-  weight: WeightReducer
+  weight: WeightReducer,
+  habit: HabitReducer
 })
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk))

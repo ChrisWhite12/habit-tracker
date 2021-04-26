@@ -1,4 +1,4 @@
-import { CREATE_HABIT } from "../actions/habit";
+import { CREATE_HABIT,FETCH_HABIT, UPDATE_HABIT } from "../actions/habit";
 
 let initState = {
     habitList : []
@@ -22,6 +22,13 @@ export default (state = initState, action) => {
                 habitList: action.habits
             }
 
+        case UPDATE_HABIT:
+            //TODO find the habit using id
+
+            
+            return {
+
+            }
         default:
         return state;
     }
