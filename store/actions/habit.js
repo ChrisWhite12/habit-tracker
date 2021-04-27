@@ -12,7 +12,7 @@ export const createHabit = (habitName) => {
             body: JSON.stringify({
                 habitName: habitName, 
                 dateStart: new Date().toISOString(), 
-                highStreak: 0
+                highStreak: '0'
             })
         })
         const resData = await response.json()
@@ -29,7 +29,7 @@ export const createHabit = (habitName) => {
                 id: resData.name,
                 habitName,
                 dateStart: new Date().toISOString(), 
-                highStreak: 0
+                highStreak: '0'
             }
         })
     }
@@ -40,46 +40,62 @@ export const fetchHabit = () => {
         const response = await fetch(`https://habit-tracker-b02ec-default-rtdb.firebaseio.com/habit.json`)
         const resData = await response.json()
         let resOut = []
+        // console.log('fetchHabit ', resData)
 
         for (const key in resData) {
-            resOut.push({dateStart: resData[key].dateStart, habitName: resData[key].habitName, highStreak: resData[key].highStreak})
+            resOut.push({dateStart: resData[key].dateStart, habitName: resData[key].habitName, highStreak: resData[key].highStreak, id: key})
         }
 
         dispatch({type: FETCH_HABIT, habits: resOut})
     }
 }
 
-export const updateHabit = (id, dateNew) => {
+export const updateHabit = (id, dateStart, highStreak) => {
     return async (dispatch, getState) => {
         //get current state
 
         //if dateNew( current date ) - dateStart is greater than highStreak
-        //update highStreak
-        //update dateStart
-        //else
-        //update dateStart
-        //use old highStreak
+        // console.log('id, dS, hS', id, dateStart, highStreak)
+        // console.log((new Date() - new Date(dateStart))/ (1000* 60 * 60 * 24))
+        let dataOut = {}
+        const timeDiff = Math.floor((new Date() - new Date(dateStart))/ (1000* 60 * 60 * 24))
+        if(timeDiff > parseInt(highStreak)){
+            //update highStreak
+            //update dateStart
+            dataOut = {
+                highStreak: timeDiff.toString(),
+                dateStart: new Date().toISOString()
+            }
+        }
+        else{
+            //update dateStart
+            //use old highStreak
+            dataOut = {
+                highStreak,
+                dateStart: new Date().toISOString()
+            }
 
-        const response = await fetch(`https://shop-app-default-rtdb.firebaseio.com/products/${id}.json`, {
+        }
+        
+
+        const response = await fetch(`https://habit-tracker-b02ec-default-rtdb.firebaseio.com/habit/${id}.json`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({title, description, imageUrl})
+            body: JSON.stringify(dataOut)
             //send new values in body
         })
 
         if(!response.ok){
+            console.log(response)
             throw new Error('Response not OK')
         }
 
         dispatch({ 
-            type: UPDATE_PRODUCT,
+            type: UPDATE_HABIT,
             id: id,
-            habitData: {
-                dateNew
-                //send new values 
-            }
+            habitData: dataOut
         })
     }
 }

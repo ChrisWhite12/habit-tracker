@@ -15,7 +15,7 @@ import { habitData } from '../data/dummy-data'
 const HabitScreen = (props) => {
 
     const habits = useSelector( state => {
-        console.log(state.habit.habitList)
+        console.log('habitList',state.habit.habitList)
         return state.habit.habitList
         }
     )
@@ -34,17 +34,14 @@ const HabitScreen = (props) => {
             <View>
                 <FlatList style={styles.flat} data={habits} renderItem={(habit) => {
                     const currStreak = Math.floor(((new Date()) - (new Date(habit.item.dateStart))) / (1000 * 60 * 60 * 24))
-                    console.log(currStreak)
-
                     return (
                         <HabitItem 
-                        name={habit.item.name} 
                         currStreak={currStreak}
                         highStreak={habit.item.highStreak}
                         name={habit.item.habitName}
                         handleBreakStreak={() => {
                             //should update the currStreak and highStreak
-
+                            dispatch(habitActions.updateHabit(habit.item.id, habit.item.dateStart, habit.item.highStreak))
                             
                         }}
                         />
