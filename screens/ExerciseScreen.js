@@ -1,7 +1,8 @@
-import React, { useCallback, useState } from 'react'
-import {StyleSheet, View, Text, TextInput, Button} from 'react-native'
-import { useDispatch } from 'react-redux';
+import React, { useCallback, useEffect, useState } from 'react'
+import {StyleSheet, View, Text, TextInput, Button, FlatList} from 'react-native'
+import { useDispatch, useSelector } from 'react-redux';
 import CustomHeaderButton from '../components/CustomHeaderButton';
+import ExerciseItem from '../components/ExerciseItem';
 import TextDefault from '../components/TextDefault';
 import Colors from "../constants/Colors";
 
@@ -10,6 +11,10 @@ import * as exerciseActions from '../store/actions/exercise'
 const ExerciseScreen = (props) => {
     const [textAct, setTextAct] = useState('')
     const [textCal, setTextCal] = useState('')
+    const exercisesSel = useSelector(state => {
+        console.log('state.exercise.exerciseList',state.exercise.exerciseList);
+        return state.exercise.exerciseList
+    })
     
     const now = new Date()
 
@@ -31,6 +36,10 @@ const ExerciseScreen = (props) => {
         await dispatch(exerciseActions.createExercise(textAct,textCal, new Date()))
     })
 
+    useEffect(() => {
+        dispatch(exerciseActions.fetchExercise())
+    },[dispatch])
+
     return (
         <View style={styles.screen}>
             <View style={styles.formCont}>
@@ -47,6 +56,15 @@ const ExerciseScreen = (props) => {
             </View>
             <View style={styles.listCont}>
                 <TextDefault>List of activities</TextDefault>
+                <FlatList 
+                    data={exercisesSel}
+                    renderItem={(exercise) => {
+                        return <ExerciseItem 
+                            name={exercise.item.exerciseName}
+                            cal={exercise.item.cal}
+                        />
+                    }}
+                />
             </View>
         </View>
     );
@@ -87,7 +105,8 @@ const styles = StyleSheet.create({
     input: {
         borderBottomColor: Colors.primary,
         borderBottomWidth: 1,
-        width: '50%'
+        width: '50%',
+        color: Colors.primary
     },
     actCont:{
         flexDirection: 'row',
@@ -98,6 +117,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: '80%'
+    },
+    date: {
+        fontSize: 20
     }
 });
 export default ExerciseScreen

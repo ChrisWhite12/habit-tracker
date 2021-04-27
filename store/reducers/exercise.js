@@ -1,4 +1,5 @@
 import { CREATE_EXERCISE, FETCH_EXERCISE } from "../actions/exercise";
+import Exercise from '../../models/exrecise'
 
 initState = {
     exerciseList: []
@@ -9,11 +10,12 @@ export default (state = initState, action) => {
     switch (action.type) {
 
         case CREATE_EXERCISE:
-            const newExercise = {
-                exerciseName: action.exerciseData.exerciseName,
-                cal: action.exerciseData.cal,
-                date: action.exerciseData.date,
-            };
+            const newExercise = new Exercise(
+                action.id,
+                action.exerciseData.exerciseName,
+                action.exerciseData.cal,
+                action.exerciseData.date,
+            )
         return {
             ...state,
             exerciseList: state.exerciseList.concat(newExercise)
@@ -21,10 +23,11 @@ export default (state = initState, action) => {
 
         case FETCH_EXERCISE:
             return {
-                exerciseList: action.exercises
+                exerciseList: action.exerciseData
             }
 
         default:
         return state;
     }
 };
+

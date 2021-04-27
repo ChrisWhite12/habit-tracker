@@ -1,5 +1,5 @@
-export const CREATE_HABIT = 'CREATE_EXERICSE'
-export const FETCH_HABIT = 'FETCH_EXERICSE'
+export const CREATE_EXERCISE = 'CREATE_EXERCISE'
+export const FETCH_EXERCISE = 'FETCH_EXERCISE'
 
 export const createExercise = (exerciseName, cal, date) => {
     return async (dispatch) => {
@@ -19,7 +19,8 @@ export const createExercise = (exerciseName, cal, date) => {
         console.log(resData)
 
         dispatch({
-            type: CREATE_HABIT,
+            type: CREATE_EXERCISE,
+            id: resData.name,
             exerciseData: {
                 id: resData.name,
                 exerciseName,
@@ -27,5 +28,19 @@ export const createExercise = (exerciseName, cal, date) => {
                 date
             }
         })
+    }
+}
+
+export const fetchExercise = () => {
+    return async (dispatch) => {
+        const response = await fetch(`https://habit-tracker-b02ec-default-rtdb.firebaseio.com/exercise.json`)
+        const resData = await response.json()
+        let resOut = []
+
+        for (const key in resData) {
+            resOut.push({id: key, cal: resData[key].cal, date: resData[key].date, exerciseName: resData[key].exerciseName})
+        }
+
+        dispatch({type: FETCH_EXERCISE, exerciseData: resOut})
     }
 }

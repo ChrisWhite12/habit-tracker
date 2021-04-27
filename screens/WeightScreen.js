@@ -11,8 +11,9 @@ import { useDispatch, useSelector } from "react-redux";
 import * as weightActions from '../store/actions/weight'
 
 const WeightScreen = (props) => {
-    //useReducer(formReducer)
+
     const weightData = useSelector((state) => state.weight.weightList);
+
     const dispatch = useDispatch();
     const [newWeight, setNewWeight] = useState('')
     const [isSubmit, setIsSubmit] = useState(false)
@@ -26,8 +27,6 @@ const WeightScreen = (props) => {
     const month = now.getMonth() + 1
     const year = now.getFullYear()
     const currMonth = month.toString()
-
-    //TODO - filter the weight results by month , separate by date
 
     const handleChange = (text) => {
         setNewWeight(text)
@@ -49,9 +48,12 @@ const WeightScreen = (props) => {
             console.log(err)
             setError(err.message)
         })
-    },[dispatch])
+    },[dispatch, setError, setIsLoading])
 
     const processData = () => {
+        console.log('in processData')
+        console.log('weightData',weightData);
+
         const filtWeight = weightData.filter(el => {
             const stringParts = el.dateSet.split('/')
             if(stringParts[1] === currMonth){
@@ -82,8 +84,12 @@ const WeightScreen = (props) => {
                 }
             }
             console.log('weightOut',weightOut);
-            console.log('dateOut',dateOut);
-            setWeightGraph(weightOut)
+            // console.log('dateOut',dateOut);
+            // setWeightGraph(weightOut)
+            return weightOut
+        }
+        else{
+            return [0]
         }
     }
 
@@ -92,9 +98,10 @@ const WeightScreen = (props) => {
         loadWeight()
         .then(() => {
             processData()
+            console.log('done processData')
             setIsLoading(false)
         })
-    }, [dispatch, loadWeight])
+    }, [dispatch])
 
 
     return (
@@ -111,7 +118,7 @@ const WeightScreen = (props) => {
                     data={{
                         datasets: [
                             {
-                                data: weightGraph
+                                data: processData()
                             }
                         ]
                     }}
@@ -131,7 +138,7 @@ const WeightScreen = (props) => {
                       propsForDots: {
                         r: "4",
                         strokeWidth: "2",
-                        stroke: "red"
+                        stroke: Colors.primary
                       }
                     }}
                     bezier
@@ -185,7 +192,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around'
     },
     date: {
-        fontSize: 25
+        fontSize: 20
     }
 });
 export default WeightScreen

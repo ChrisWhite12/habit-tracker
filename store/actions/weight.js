@@ -16,12 +16,10 @@ export const createWeight = (weight, date) => {
             throw new Error('Response not OK')
         }
 
-        console.log(resData)
-
         dispatch({
             type: CREATE_WEIGHT,
+            id: resData.name,
             weightData: {
-                id: resData.name,
                 weight,
                 date
             }
