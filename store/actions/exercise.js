@@ -1,5 +1,6 @@
 export const CREATE_EXERCISE = 'CREATE_EXERCISE'
 export const FETCH_EXERCISE = 'FETCH_EXERCISE'
+export const DELETE_EXERCISE = 'DELETE_EXECISE'
 
 export const createExercise = (exerciseName, cal, date) => {
     return async (dispatch) => {
@@ -42,5 +43,19 @@ export const fetchExercise = () => {
         }
 
         dispatch({type: FETCH_EXERCISE, exerciseData: resOut})
+    }
+}
+
+export const deleteExercise = (exerId) => {
+    return async (dispatch) => {
+        const response = await fetch(`https://habit-tracker-b02ec-default-rtdb.firebaseio.com/exercise/${exerId}.json`, {
+            method: 'DELETE'
+        })
+
+        if(!response.ok){
+            throw new Error('Response not OK')
+        }
+
+        dispatch({ type: DELETE_EXERCISE, id: exerId })
     }
 }

@@ -1,6 +1,7 @@
 export const CREATE_HABIT = 'CREATE_HABIT'
 export const FETCH_HABIT = 'FETCH_HABIT'
 export const UPDATE_HABIT = 'UPDATE_HABIT'
+export const DELETE_HABIT = 'DELETE_HABIT'
 
 export const createHabit = (habitName) => {
     return async (dispatch) => {
@@ -98,4 +99,18 @@ export const updateHabit = (id, dateStart, highStreak) => {
             habitData: dataOut
         })
     }
+}
+
+export const deleteHabit = habitId => {
+    return async (dispatch) => {
+        const response = await fetch(`https://habit-tracker-b02ec-default-rtdb.firebaseio.com/habit/${habitId}.json`, {
+            method: 'DELETE'
+        })
+
+        if(!response.ok){
+            throw new Error('Response not OK')
+        }
+
+        dispatch({ type: DELETE_HABIT, id: habitId })
+    } 
 }

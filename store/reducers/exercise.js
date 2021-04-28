@@ -1,4 +1,4 @@
-import { CREATE_EXERCISE, FETCH_EXERCISE } from "../actions/exercise";
+import { CREATE_EXERCISE, DELETE_EXERCISE, FETCH_EXERCISE } from "../actions/exercise";
 import Exercise from '../../models/exrecise'
 
 initState = {
@@ -26,6 +26,12 @@ export default (state = initState, action) => {
                 exerciseList: action.exerciseData
             }
 
+        case DELETE_EXERCISE:
+            const exerFilter = state.exerciseList.filter(el => el.id !== action.id)
+            return {
+                ...state,
+                exerciseList: exerFilter
+            }
         default:
         return state;
     }

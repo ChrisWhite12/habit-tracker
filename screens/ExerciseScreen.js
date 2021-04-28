@@ -8,11 +8,15 @@ import Colors from "../constants/Colors";
 
 import * as exerciseActions from '../store/actions/exercise'
 
+//TODO only show exercises for current day
+//TODO remove activity
+//go back to previous days?
+
 const ExerciseScreen = (props) => {
     const [textAct, setTextAct] = useState('')
     const [textCal, setTextCal] = useState('')
     const exercisesSel = useSelector(state => {
-        console.log('state.exercise.exerciseList',state.exercise.exerciseList);
+        // console.log('state.exercise.exerciseList',state.exercise.exerciseList);
         return state.exercise.exerciseList
     })
     
@@ -62,6 +66,9 @@ const ExerciseScreen = (props) => {
                         return <ExerciseItem 
                             name={exercise.item.exerciseName}
                             cal={exercise.item.cal}
+                            onRemove={() => {
+                                dispatch(exerciseActions.deleteExercise(exercise.item.id))
+                            }}
                         />
                     }}
                 />

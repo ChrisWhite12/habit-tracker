@@ -8,10 +8,12 @@ import Colors from "../constants/Colors";
 import * as habitActions from '../store/actions/habit'
 
 import { habitData } from '../data/dummy-data'
+import { withDecay } from 'react-native-reanimated';
 
-//TODO add habit
-//TODO update habit when break streak
-//TODO calculate days since
+//TODO wider flatlist
+//TODO add remove button and function
+
+
 const HabitScreen = (props) => {
 
     const habits = useSelector( state => {
@@ -42,7 +44,9 @@ const HabitScreen = (props) => {
                         handleBreakStreak={() => {
                             //should update the currStreak and highStreak
                             dispatch(habitActions.updateHabit(habit.item.id, habit.item.dateStart, habit.item.highStreak))
-                            
+                        }}
+                        onRemove={() => {
+                            dispatch(habitActions.deleteHabit(habit.item.id))
                         }}
                         />
                         )

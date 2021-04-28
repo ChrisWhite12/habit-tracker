@@ -1,5 +1,6 @@
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react'
-import { Text, View, StyleSheet } from 'react-native'
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
 import Colors from '../constants/Colors';
 import TextDefault from './TextDefault';
 
@@ -9,7 +10,9 @@ const ExerciseItem = (props) => {
         <View style={styles.itemCon}>
             <TextDefault>{props.name}</TextDefault>
             <TextDefault>{props.cal}</TextDefault>
-
+            <TouchableOpacity onPress={props.onRemove} style={styles.delBtn}>
+                <Ionicons name='md-trash' size={20} color="#a55"/>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -25,6 +28,12 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         alignItems: 'center',
         marginVertical: 10
+    },
+    delBtn: {
+        width: 50,
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 });
 export default ExerciseItem

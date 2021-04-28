@@ -1,5 +1,5 @@
 import Habit from "../../models/habit";
-import { CREATE_HABIT,FETCH_HABIT, UPDATE_HABIT } from "../actions/habit";
+import { CREATE_HABIT,FETCH_HABIT, UPDATE_HABIT, DELETE_HABIT } from "../actions/habit";
 
 let initState = {
     habitList : []
@@ -44,6 +44,12 @@ export default (state = initState, action) => {
                 ...state,
                 habitList: updatedHabits
             }
+            case DELETE_HABIT:
+                const habitFilter = state.habitList.filter(( el => el.id !== action.id))
+                return {
+                    ...state,
+                    habitList: habitFilter
+                }
         default:
         return state;
     }

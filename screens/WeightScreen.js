@@ -10,6 +10,9 @@ import { useDispatch, useSelector } from "react-redux";
 
 import * as weightActions from '../store/actions/weight'
 
+//TODO update weight if date already has data
+
+
 const WeightScreen = (props) => {
 
     const weightData = useSelector((state) => state.weight.weightList);
@@ -19,7 +22,7 @@ const WeightScreen = (props) => {
     const [isSubmit, setIsSubmit] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [error,setError] = useState('')
-    const [weightGraph, setWeightGraph] = useState([0])
+    const [weightGraph, setWeightGraph] = useState()
 
     const now = new Date()
 
@@ -27,7 +30,7 @@ const WeightScreen = (props) => {
     const month = now.getMonth() + 1
     const year = now.getFullYear()
     const currMonth = month.toString()
-
+    // console.log('weightGraph',weightGraph);
     const handleChange = (text) => {
         setNewWeight(text)
     }
@@ -54,39 +57,41 @@ const WeightScreen = (props) => {
         console.log('in processData')
         console.log('weightData',weightData);
 
-        const filtWeight = weightData.filter(el => {
+        const filtWeight = weightData ? 
+        weightData.filter(el => {
             const stringParts = el.dateSet.split('/')
             if(stringParts[1] === currMonth){
                 return el
             }
         })
+        :[]
 
         let firstDay = true
-
-        let weightOut = []
-        let dateOut = []
+        const tableData = {
+            weightOut: [],
+            dateOut: []
+        }
 
         if (filtWeight.length >= 1){            
             for (let i = 1; i <= day; i++) {
                 let dateTrack = filtWeight.find(el => el.dateSet.split('/')[0] === i.toString())
                 if(dateTrack !== undefined && firstDay === true){
                     firstDay = false
-                    weightOut.push(dateTrack.weight)
-                    dateOut.push(i.toString())
+                    tableData.weightOut.push(dateTrack.weight)
+                    tableData.dateOut.push(i.toString())
                 }
-                else if(dateTrack === undefined && firstDay === false){
-                    weightOut.push(weightOut[weightOut.length-1])
-                    dateOut.push(i.toString())
+                else if(dateTrack === undefined && firstDay === false && i !== day){
+                    tableData.weightOut.push(tableData.weightOut[tableData.weightOut.length-1])
+                    tableData.dateOut.push(i.toString())
                 }
                 else if(dateTrack !== undefined && firstDay === false){
-                    weightOut.push(dateTrack.weight)
-                    dateOut.push(i.toString())
+                    tableData.weightOut.push(dateTrack.weight)
+                    tableData.dateOut.push(i.toString())
                 }
             }
-            console.log('weightOut',weightOut);
-            // console.log('dateOut',dateOut);
-            // setWeightGraph(weightOut)
-            return weightOut
+            console.log('tableData',tableData);
+            setWeightGraph(tableData)
+            // return tableData
         }
         else{
             return [0]
@@ -116,9 +121,11 @@ const WeightScreen = (props) => {
                 <ActivityIndicator size='large' color={Colors.primary} /> :
                 <LineChart 
                     data={{
+                        labels: weightGraph ? weightGraph.dateOut : undefined,
                         datasets: [
                             {
-                                data: processData()
+                                // data: processData().weightOut
+                                data: weightGraph ? weightGraph.weightOut : [0]
                             }
                         ]
                     }}
