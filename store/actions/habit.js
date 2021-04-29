@@ -3,9 +3,11 @@ export const FETCH_HABIT = 'FETCH_HABIT'
 export const UPDATE_HABIT = 'UPDATE_HABIT'
 export const DELETE_HABIT = 'DELETE_HABIT'
 
+const firebaseUrl = 'https://habit-tracker-3b0e4-default-rtdb.firebaseio.com'
+
 export const createHabit = (habitName) => {
     return async (dispatch) => {
-        const response = await fetch(`https://habit-tracker-b02ec-default-rtdb.firebaseio.com/habit.json`, {
+        const response = await fetch(`${firebaseUrl}/habit.json`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -38,7 +40,7 @@ export const createHabit = (habitName) => {
 
 export const fetchHabit = () => {
     return async (dispatch) => {
-        const response = await fetch(`https://habit-tracker-b02ec-default-rtdb.firebaseio.com/habit.json`)
+        const response = await fetch(`${firebaseUrl}/habit.json`)
         const resData = await response.json()
         let resOut = []
         // console.log('fetchHabit ', resData)
@@ -79,7 +81,7 @@ export const updateHabit = (id, dateStart, highStreak) => {
         }
         
 
-        const response = await fetch(`https://habit-tracker-b02ec-default-rtdb.firebaseio.com/habit/${id}.json`, {
+        const response = await fetch(`${firebaseUrl}/habit/${id}.json`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -103,7 +105,7 @@ export const updateHabit = (id, dateStart, highStreak) => {
 
 export const deleteHabit = habitId => {
     return async (dispatch) => {
-        const response = await fetch(`https://habit-tracker-b02ec-default-rtdb.firebaseio.com/habit/${habitId}.json`, {
+        const response = await fetch(`${firebaseUrl}/habit/${habitId}.json`, {
             method: 'DELETE'
         })
 

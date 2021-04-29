@@ -1,4 +1,4 @@
-import { CREATE_WEIGHT, FETCH_WEIGHT } from "../actions/weight";
+import { CREATE_WEIGHT, FETCH_WEIGHT, UPDATE_WEIGHT } from "../actions/weight";
 import Weight from '../../models/weight'
 
 initState = {
@@ -22,6 +22,23 @@ export default (state = initState, action) => {
         return {
             ...state,
             weightList: action.weights
+        }
+
+        case UPDATE_WEIGHT:
+
+        const weightIndex = state.weightList.findIndex(el => el.id === action.id)
+        const updatedWeight = new Weight(
+            action.id,
+            state.weightList[weightIndex].dateSet,
+            action.weightData.weight
+        )
+
+        const updatedWeights = [...state.weightList]
+        updatedWeights[weightIndex] = updatedWeight
+
+        return {
+            ...state,
+            weightList: updatedWeights
         }
 
         default:

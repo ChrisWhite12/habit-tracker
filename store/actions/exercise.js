@@ -2,9 +2,11 @@ export const CREATE_EXERCISE = 'CREATE_EXERCISE'
 export const FETCH_EXERCISE = 'FETCH_EXERCISE'
 export const DELETE_EXERCISE = 'DELETE_EXECISE'
 
+const firebaseUrl = 'https://habit-tracker-3b0e4-default-rtdb.firebaseio.com'
+
 export const createExercise = (exerciseName, cal, date) => {
     return async (dispatch) => {
-        const response = await fetch(`https://habit-tracker-b02ec-default-rtdb.firebaseio.com/exercise.json`, {
+        const response = await fetch(`${firebaseUrl}/exercise.json`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -34,7 +36,7 @@ export const createExercise = (exerciseName, cal, date) => {
 
 export const fetchExercise = () => {
     return async (dispatch) => {
-        const response = await fetch(`https://habit-tracker-b02ec-default-rtdb.firebaseio.com/exercise.json`)
+        const response = await fetch(`${firebaseUrl}/exercise.json`)
         const resData = await response.json()
         let resOut = []
 
@@ -48,7 +50,7 @@ export const fetchExercise = () => {
 
 export const deleteExercise = (exerId) => {
     return async (dispatch) => {
-        const response = await fetch(`https://habit-tracker-b02ec-default-rtdb.firebaseio.com/exercise/${exerId}.json`, {
+        const response = await fetch(`${firebaseUrl}/exercise/${exerId}.json`, {
             method: 'DELETE'
         })
 

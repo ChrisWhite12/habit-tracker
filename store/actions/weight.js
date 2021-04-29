@@ -1,9 +1,12 @@
 export const CREATE_WEIGHT = 'CREATE_WEIGHT'
 export const FETCH_WEIGHT = 'FETCH_WEIGHT'
+export const UPDATE_WEIGHT = 'UPDATE_WEIGHT'
+
+const firebaseUrl = 'https://habit-tracker-3b0e4-default-rtdb.firebaseio.com'
 
 export const createWeight = (weight, date) => {
     return async (dispatch) => {
-        const response = await fetch(`https://habit-tracker-b02ec-default-rtdb.firebaseio.com/weight.json`, {
+        const response = await fetch(`${firebaseUrl}/weight.json`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -29,14 +32,40 @@ export const createWeight = (weight, date) => {
 
 export const fetchWeight = () => {
     return async (dispatch) => {
-        const response = await fetch(`https://habit-tracker-b02ec-default-rtdb.firebaseio.com/weight.json`)
+        const response = await fetch(`${firebaseUrl}/weight.json`)
         const resData = await response.json()
         let resOut = []
+        console.log('resData', resData)
 
         for (const key in resData) {
-            resOut.push({weight: resData[key].weight, dateSet: resData[key].date})
+            resOut.push({weight: resData[key].weight, dateSet: resData[key].date, id: key})
         }
 
         dispatch({type: FETCH_WEIGHT, weights: resOut})
+    }
+}
+
+export const updateWeight = (id, weight, date) => {
+    return async (dispatch) => {
+
+        const response = await fetch(`${firebaseUrl}/weight/${id}.json`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({weight: weight, date: date})
+            //send new values in body
+        })
+
+        if(!response.ok){
+            console.log(response)
+            throw new Error('Response not OK')
+        }
+
+        dispatch({ 
+            type: UPDATE_WEIGHT,
+            id: id,
+            weightData: {weight: weight, date: date}
+        })
     }
 }
