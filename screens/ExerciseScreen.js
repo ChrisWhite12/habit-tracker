@@ -15,16 +15,18 @@ import * as exerciseActions from '../store/actions/exercise'
 const ExerciseScreen = (props) => {
     const [textAct, setTextAct] = useState('')
     const [textCal, setTextCal] = useState('')
-    const exercisesSel = useSelector(state => {
-        // console.log('state.exercise.exerciseList',state.exercise.exerciseList);
-        return state.exercise.exerciseList
-    })
     
     const now = new Date()
-
+    
     const day = now.getDate()
     const month = now.getMonth() + 1
     const year = now.getFullYear()
+    
+    const exercisesSel = useSelector(state => {
+        // console.log('state.exercise.exerciseList',state.exercise.exerciseList);
+        const exerFiltered = state.exercise?.exerciseList?.filter(exer => new Date(exer.date).toDateString() === new Date().toDateString())
+        return exerFiltered
+    })
 
     const dispatch = useDispatch()
 

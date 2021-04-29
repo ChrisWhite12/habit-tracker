@@ -118,6 +118,96 @@ export const gridData = [
             date: '20/1/21',
             exercise: false,
             habit: false
+        },
+        {
+            id: '21',
+            date: '11/1/21',
+            exercise: false,
+            habit: false
+        },
+        {
+            id: '22',
+            date: '12/1/21',
+            exercise: false,
+            habit: false
+        },
+        {
+            id: '23',
+            date: '13/1/21',
+            exercise: false,
+            habit: false
+        },
+        {
+            id: '24',
+            date: '14/1/21',
+            exercise: false,
+            habit: false
+        },
+        {
+            id: '25',
+            date: '15/1/21',
+            exercise: false,
+            habit: false
+        },
+        {
+            id: '26',
+            date: '16/1/21',
+            exercise: false,
+            habit: false
+        },
+        {
+            id: '27',
+            date: '17/1/21',
+            exercise: false,
+            habit: false
+        },
+        {
+            id: '28',
+            date: '18/1/21',
+            exercise: false,
+            habit: false
+        },
+        {
+            id: '29',
+            date: '19/1/21',
+            exercise: false,
+            habit: false
+        },
+        {
+            id: '30',
+            date: '20/1/21',
+            exercise: false,
+            habit: false
+        },
+        {
+            id: '31',
+            date: '16/1/21',
+            exercise: false,
+            habit: false
+        },
+        {
+            id: '32',
+            date: '17/1/21',
+            exercise: false,
+            habit: false
+        },
+        {
+            id: '33',
+            date: '18/1/21',
+            exercise: false,
+            habit: false
+        },
+        {
+            id: '34',
+            date: '19/1/21',
+            exercise: false,
+            habit: false
+        },
+        {
+            id: '35',
+            date: '20/1/21',
+            exercise: false,
+            habit: false
         }
     ]
 

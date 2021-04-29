@@ -2,6 +2,7 @@ import React from "react";
 import {StyleSheet, View, Text, FlatList} from 'react-native'
 import CustomHeaderButton from "../components/CustomHeaderButton";
 import GridSquare from "../components/GridSquare";
+import TextDefault from "../components/TextDefault";
 import Colors from "../constants/Colors";
 // import * as RNlocalize from 'react-native-localize'
 
@@ -17,8 +18,17 @@ const OverviewScreen = (props) => {
     return (
         <View style={styles.screen}>
             <View style={styles.gridCont}>
+                <View style={styles.dayText}>
+                    <TextDefault>Mon</TextDefault>
+                    <TextDefault>Tue</TextDefault>
+                    <TextDefault>Wed</TextDefault>
+                    <TextDefault>Thur</TextDefault>
+                    <TextDefault>Fri</TextDefault>
+                    <TextDefault>Sat</TextDefault>
+                    <TextDefault>Sun</TextDefault>
+                </View>
                 <FlatList
-                    numColumns={4}
+                    numColumns={5}
                     data={gridData}
                     renderItem={(box) => {
                         return(
@@ -57,12 +67,19 @@ const styles = StyleSheet.create({
         padding: 10
     },
     gridCont: {
-        height: '40%',
+        flexDirection: 'row',
+        height: '50%',
         width: '100%',
+        alignItems: 'center'
     },
     infoCont: {
-        height: '40%',
+        height: '30%',
         width: '100%',
+    },
+    dayText:{
+        height: '95%',
+        width: '20%',
+        justifyContent: 'space-around',
     }
 });
 

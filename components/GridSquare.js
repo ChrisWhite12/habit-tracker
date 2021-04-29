@@ -18,8 +18,7 @@ const GridSquare = (props) => {
     }
 
     return (
-        <View style={{...styles.box,...{backgroundColor: boxColor}}}>
-        
+        <View style={{...styles.box,...{backgroundColor: boxColor, borderColor: boxColor}}}>
         </View>
     );
 };
@@ -28,7 +27,6 @@ const styles = StyleSheet.create({
     box: {
         flex: 1,
         margin: 5,
-        width: 40,
         height: 40,
         borderWidth: 3,
         borderRadius: 5
