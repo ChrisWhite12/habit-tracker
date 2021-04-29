@@ -22,7 +22,8 @@ const WeightScreen = (props) => {
     const [isSubmit, setIsSubmit] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [error,setError] = useState('')
-    const [weightGraph, setWeightGraph] = useState()
+    const [weightGraph, setWeightGraph] = useState([])
+    const [labelGraph, setLabelGraph] = useState([])
 
     const now = new Date()
 
@@ -36,28 +37,38 @@ const WeightScreen = (props) => {
     }
 
     const handleSubmit = useCallback( async () => {
+        
         setIsSubmit(true)
+        //check if the data already exists
+        console.log('weightData',weightData);
+        const existWeight = weightData.find(weightItem => {
+            console.log('weightItem.dateSet',weightItem.dateSet);
+            const date1 = weightItem.dateSet
+            // .toDateString()
+            const date2 = new Date().toDateString()
+
+            console.log('date1, date2',date1, date2);
+
+            return date1 === date2
+        })
+        console.log('existWeight',existWeight);
+
         await dispatch(
             weightActions.createWeight(newWeight, `${day}/${month}/${year}`)
         )
         setIsSubmit(false)
-    },[dispatch, newWeight])
+    },[dispatch, newWeight]) 
 
-    const loadWeight = useCallback( async () => {
-        dispatch(
-            weightActions.fetchWeight()
-        )
-        .catch(err => {
-            console.log(err)
-            setError(err.message)
-        })
-    },[dispatch, setError, setIsLoading])
+    // const loadWeight = (( ) => {
+        
+    // })
+    // ,[dispatch, setError, setIsLoading]
 
+    //processData - sets the weightGraph state
     const processData = () => {
         console.log('in processData')
-        console.log('weightData',weightData);
 
-        const filtWeight = weightData ? 
+        const filtWeight = (weightData?.length >= 1) ? 
         weightData.filter(el => {
             const stringParts = el.dateSet.split('/')
             if(stringParts[1] === currMonth){
@@ -72,7 +83,7 @@ const WeightScreen = (props) => {
             dateOut: []
         }
 
-        if (filtWeight.length >= 1){            
+        if (filtWeight?.length >= 1){            
             for (let i = 1; i <= day; i++) {
                 let dateTrack = filtWeight.find(el => el.dateSet.split('/')[0] === i.toString())
                 if(dateTrack !== undefined && firstDay === true){
@@ -90,24 +101,32 @@ const WeightScreen = (props) => {
                 }
             }
             console.log('tableData',tableData);
-            setWeightGraph(tableData)
+            setWeightGraph(tableData.weightOut)
+            setLabelGraph(tableData.dateOut)
             // return tableData
-        }
-        else{
-            return [0]
         }
     }
 
     useEffect(() => {
-        setIsLoading(true)
-        loadWeight()
-        .then(() => {
-            processData()
-            console.log('done processData')
-            setIsLoading(false)
-        })
+        // setIsLoading(true)
+        dispatch(weightActions.fetchWeight()) 
+
+        // console.log('data', weightData)
+        
+        // console.log('data2', weightData)
+        // console.log('done processData')
+        // setIsLoading(false)
+        // .catch(err => {
+        //     console.log(err)
+        //     setError(err.message)
+        // })
+        
+
     }, [dispatch])
 
+    useEffect(() => {
+        processData()
+    },[weightData])
 
     return (
         <View style={styles.screen}>
@@ -121,11 +140,11 @@ const WeightScreen = (props) => {
                 <ActivityIndicator size='large' color={Colors.primary} /> :
                 <LineChart 
                     data={{
-                        labels: weightGraph ? weightGraph.dateOut : undefined,
+                        labels: labelGraph.length >= 1 ? labelGraph : undefined,
                         datasets: [
                             {
                                 // data: processData().weightOut
-                                data: weightGraph ? weightGraph.weightOut : [0]
+                                data: weightGraph.length >= 1 ? weightGraph : [0]
                             }
                         ]
                     }}
