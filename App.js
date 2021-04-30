@@ -11,6 +11,11 @@ import ExerciseReducer from './store/reducers/exercise'
 import WeightReducer from './store/reducers/weight'
 import HabitReducer from './store/reducers/habit'
 
+import * as firebase from 'firebase'
+
+// import { firebaseConfig } from './config/firebaseConfig'
+// firebase.initializeApp(firebaseConfig)
+
 const rootReducer = combineReducers({
   activity: ActivityReducer,
   exercise: ExerciseReducer,

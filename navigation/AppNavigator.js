@@ -6,10 +6,12 @@ import { createDrawerNavigator, DrawerNavigatorItems } from 'react-navigation-dr
 import { createStackNavigator } from 'react-navigation-stack';
 
 import Colors from '../constants/Colors'
+import AuthScreen from '../screens/AuthScreen';
 import CreateHabitScreen from '../screens/CreateHabitScreen';
 import ExerciseScreen from '../screens/ExerciseScreen'
 import HabitScreen from '../screens/HabitScreen'
 import OverviewScreen from '../screens/OverviewScreen'
+import StartupScreen from '../screens/StartupScreen';
 import WeightScreen from '../screens/WeightScreen'
 
 
@@ -58,6 +60,12 @@ const DrawerNavigator = createDrawerNavigator({
                     </SafeAreaView>
                 </View>
     }
+})
+
+const MainNavigator = createStackNavigator({
+    // Startup: StartupScreen,
+    // Auth: AuthScreen,
+    App: DrawerNavigator
 })
 
 export default createAppContainer(DrawerNavigator)

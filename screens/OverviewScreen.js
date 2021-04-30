@@ -9,6 +9,11 @@ import Colors from "../constants/Colors";
 import { gridData } from '../data/dummy-data'
 // import { currDate } from "../utils";
 
+import {DATABASE_URL, FIREBASE_API_KEY} from '@env'
+
+// console.log('DATABASE_URL, FIREBASE_API_KEY',DATABASE_URL, FIREBASE_API_KEY);
+
+
 const OverviewScreen = (props) => {
     //TODO when click on square, load activites in infoCont
     // console.log(gridData);
@@ -38,7 +43,7 @@ const OverviewScreen = (props) => {
                 />
             </View>
             <View style={styles.infoCont}>
-
+                
             </View>
             
         </View>

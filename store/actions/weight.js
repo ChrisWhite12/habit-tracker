@@ -2,11 +2,15 @@ export const CREATE_WEIGHT = 'CREATE_WEIGHT'
 export const FETCH_WEIGHT = 'FETCH_WEIGHT'
 export const UPDATE_WEIGHT = 'UPDATE_WEIGHT'
 
-const firebaseUrl = 'https://habit-tracker-3b0e4-default-rtdb.firebaseio.com'
+import {
+    DATABASE_URL
+} from '@env'
+
+// const firebaseUrl = DATABASE_URL
 
 export const createWeight = (weight, date) => {
     return async (dispatch) => {
-        const response = await fetch(`${firebaseUrl}/weight.json`, {
+        const response = await fetch(`${DATABASE_URL}/weight.json`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -32,7 +36,7 @@ export const createWeight = (weight, date) => {
 
 export const fetchWeight = () => {
     return async (dispatch) => {
-        const response = await fetch(`${firebaseUrl}/weight.json`)
+        const response = await fetch(`${DATABASE_URL}/weight.json`)
         const resData = await response.json()
         let resOut = []
         console.log('resData', resData)
@@ -48,7 +52,7 @@ export const fetchWeight = () => {
 export const updateWeight = (id, weight, date) => {
     return async (dispatch) => {
 
-        const response = await fetch(`${firebaseUrl}/weight/${id}.json`, {
+        const response = await fetch(`${DATABASE_URL}/weight/${id}.json`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
