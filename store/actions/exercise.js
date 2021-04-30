@@ -6,7 +6,6 @@ import {
 } from '@env'
 
 const firebaseUrl = DATABASE_URL
-// const firebaseUrl = "https://habit-tracker-3b0e4-default-rtdb.firebaseio.com"
 
 export const createExercise = (exerciseName, cal, date) => {
     console.log('DATABASE_URL',DATABASE_URL);

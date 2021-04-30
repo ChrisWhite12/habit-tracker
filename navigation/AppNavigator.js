@@ -63,9 +63,9 @@ const DrawerNavigator = createDrawerNavigator({
 })
 
 const MainNavigator = createStackNavigator({
-    // Startup: StartupScreen,
-    // Auth: AuthScreen,
+    Startup: StartupScreen,
+    Auth: AuthScreen,
     App: DrawerNavigator
 })
 
-export default createAppContainer(DrawerNavigator)
+export default createAppContainer(MainNavigator)

@@ -1,5 +1,5 @@
-import React from "react";
-import {StyleSheet, View, Text, FlatList} from 'react-native'
+import React, { useEffect, useState } from "react";
+import {StyleSheet, View, Text, FlatList, Button} from 'react-native'
 import CustomHeaderButton from "../components/CustomHeaderButton";
 import GridSquare from "../components/GridSquare";
 import TextDefault from "../components/TextDefault";
@@ -10,15 +10,22 @@ import { gridData } from '../data/dummy-data'
 // import { currDate } from "../utils";
 
 import {DATABASE_URL, FIREBASE_API_KEY} from '@env'
+import * as firebase from 'firebase'
 
 // console.log('DATABASE_URL, FIREBASE_API_KEY',DATABASE_URL, FIREBASE_API_KEY);
 
 
 const OverviewScreen = (props) => {
     //TODO when click on square, load activites in infoCont
-    // console.log(gridData);
-    // const now = currDate()
-    // const timezone = RNlocalize.getTimeZone()
+    const [user, setUser] = useState({})
+
+    useEffect(() => {
+        firebase.auth().onAuthStateChanged((userRes) => {
+            if(userRes != null){
+                setUser(userRes)
+            }
+        })
+    })
     
     return (
         <View style={styles.screen}>
@@ -43,7 +50,12 @@ const OverviewScreen = (props) => {
                 />
             </View>
             <View style={styles.infoCont}>
-                
+                <Button 
+                title='LOGOUT'
+                onPress={() => {
+                    firebase.auth().signOut()
+                }}
+                />
             </View>
             
         </View>

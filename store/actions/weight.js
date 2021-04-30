@@ -6,7 +6,6 @@ import {
     DATABASE_URL
 } from '@env'
 
-// const firebaseUrl = DATABASE_URL
 
 export const createWeight = (weight, date) => {
     return async (dispatch) => {
