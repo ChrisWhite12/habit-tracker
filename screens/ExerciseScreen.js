@@ -7,6 +7,7 @@ import TextDefault from '../components/TextDefault';
 import Colors from "../constants/Colors";
 
 import * as exerciseActions from '../store/actions/exercise'
+import { dateConvert } from '../utils';
 
 //TODO only show exercises for current day
 //TODO remove activity
@@ -16,11 +17,8 @@ const ExerciseScreen = (props) => {
     const [textAct, setTextAct] = useState('')
     const [textCal, setTextCal] = useState('')
     
-    const now = new Date()
-    
-    const day = now.getDate()
-    const month = now.getMonth() + 1
-    const year = now.getFullYear()
+    const convDate = dateConvert(new Date())
+    console.log('convDate',convDate);
     
     const exercisesSel = useSelector(state => {
         // console.log('state.exercise.exerciseList',state.exercise.exerciseList);
@@ -49,7 +47,7 @@ const ExerciseScreen = (props) => {
     return (
         <View style={styles.screen}>
             <View style={styles.formCont}>
-                <TextDefault style={styles.date}>Date: {day}/{month}/{year}</TextDefault>
+                <TextDefault style={styles.date}>Date: {convDate.day}/{convDate.month}/{convDate.year}</TextDefault>
                 <View style={styles.actCont}>
                     <TextDefault>Activity: </TextDefault>                
                     <TextInput style={styles.input} onChangeText={handleChangeAct} />

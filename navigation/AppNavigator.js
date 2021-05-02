@@ -1,7 +1,7 @@
 import React from 'react'
 import { SafeAreaView, View } from 'react-native';
 
-import { createAppContainer } from 'react-navigation'
+import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { createDrawerNavigator, DrawerNavigatorItems } from 'react-navigation-drawer'
 import { createStackNavigator } from 'react-navigation-stack';
 
@@ -62,7 +62,7 @@ const DrawerNavigator = createDrawerNavigator({
     }
 })
 
-const MainNavigator = createStackNavigator({
+const MainNavigator = createSwitchNavigator({
     Startup: StartupScreen,
     Auth: AuthScreen,
     App: DrawerNavigator

@@ -9,6 +9,8 @@ import Colors from "../constants/Colors";
 import { useDispatch, useSelector } from "react-redux";
 
 import * as weightActions from '../store/actions/weight'
+import { dateConvert } from '../utils';
+// import { dateConvert } from '../utils';
 
 //TODO update weight if date already has data
 //TODO not updating when first entry
@@ -26,12 +28,11 @@ const WeightScreen = (props) => {
     const [weightGraph, setWeightGraph] = useState([])
     const [labelGraph, setLabelGraph] = useState([])
 
-    const now = new Date()
+    const convDate = dateConvert(new Date())
+    console.log('now', new Date())
+    console.log('convDate',convDate);
+    const currMonth = convDate.month
 
-    const day = now.getDate()
-    const month = now.getMonth() + 1
-    const year = now.getFullYear()
-    const currMonth = month
     // console.log('weightGraph',weightGraph);
     const handleChange = (text) => {
         setNewWeight(text)
@@ -41,7 +42,7 @@ const WeightScreen = (props) => {
         
         setIsSubmit(true)
         //check if the data already exists
-        console.log('weightData',weightData);
+        // console.log('weightData',weightData);
 
         const existWeight = weightData.find(weightItem => {
             // console.log('weightItem.dateSet',weightItem.dateSet);
@@ -96,7 +97,7 @@ const WeightScreen = (props) => {
         // console.log('filtWeight',filtWeight);
 
         if (filtWeight?.length >= 1){            
-            for (let i = 1; i <= day; i++) {
+            for (let i = 1; i <= convDate.day; i++) {
 
                 let dateTrack = filtWeight.find(el => {
                     const itemDay = new Date(el.dateSet).getDate()
@@ -110,7 +111,7 @@ const WeightScreen = (props) => {
                     tableData.weightOut.push(parseFloat(dateTrack.weight))
                     tableData.dateOut.push(i.toString())
                 }
-                else if(dateTrack === undefined && firstDay === false && i !== day){
+                else if(dateTrack === undefined && firstDay === false && i !== convDate.day){
                     tableData.weightOut.push(tableData.weightOut[tableData.weightOut.length-1])
                     tableData.dateOut.push(i.toString())
                 }
@@ -144,14 +145,14 @@ const WeightScreen = (props) => {
     }, [dispatch])
 
     useEffect(() => {
-        console.log('weightData',weightData);
+        // console.log('weightData',weightData);
         processData()
     },[weightData])
 
     return (
         <View style={styles.screen}>
             <View style={styles.formCont}>
-                <TextDefault style={styles.date}>Date: {day}/{month}/{year}</TextDefault>
+                <TextDefault style={styles.date}>Date: {convDate.day}/{convDate.month}/{convDate.year}</TextDefault>
                 <TextInput style={styles.weightInput} onChangeText={handleChange} keyboardType='decimal-pad' />
                 {isSubmit ? <ActivityIndicator size='small' color={Colors.primary} /> : <Button title="Enter Weight" onPress={handleSubmit} />}
             </View>

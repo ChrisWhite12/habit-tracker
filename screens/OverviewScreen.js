@@ -17,12 +17,13 @@ import * as firebase from 'firebase'
 
 const OverviewScreen = (props) => {
     //TODO when click on square, load activites in infoCont
-    const [user, setUser] = useState({})
+    const [user, setUser] = useState('')
 
     useEffect(() => {
         firebase.auth().onAuthStateChanged((userRes) => {
             if(userRes != null){
-                setUser(userRes)
+                // console.log('userRes', userRes)
+                setUser(userRes.email)
             }
         })
     })
@@ -50,6 +51,7 @@ const OverviewScreen = (props) => {
                 />
             </View>
             <View style={styles.infoCont}>
+                <Text>{user}</Text>
                 <Button 
                 title='LOGOUT'
                 onPress={() => {
