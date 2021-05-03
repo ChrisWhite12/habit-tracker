@@ -97,6 +97,8 @@ export const updateHabit = (id, dateStart, highStreak) => {
             throw new Error('Response not OK')
         }
 
+        //TODO update activity
+
         dispatch({ 
             type: UPDATE_HABIT,
             id: id,

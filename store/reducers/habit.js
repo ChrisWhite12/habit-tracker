@@ -1,7 +1,7 @@
 import Habit from "../../models/habit";
 import { CREATE_HABIT,FETCH_HABIT, UPDATE_HABIT, DELETE_HABIT } from "../actions/habit";
 
-let initState = {
+const initState = {
     habitList : []
 }
 

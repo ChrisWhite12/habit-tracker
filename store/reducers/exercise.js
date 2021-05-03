@@ -1,7 +1,7 @@
 import { CREATE_EXERCISE, DELETE_EXERCISE, FETCH_EXERCISE } from "../actions/exercise";
 import Exercise from '../../models/exrecise'
 
-initState = {
+const initState = {
     exerciseList: []
 }
 

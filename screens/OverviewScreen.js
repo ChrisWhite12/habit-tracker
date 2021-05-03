@@ -11,6 +11,8 @@ import { gridData } from '../data/dummy-data'
 
 import {DATABASE_URL, FIREBASE_API_KEY} from '@env'
 import * as firebase from 'firebase'
+import { useDispatch } from "react-redux";
+import * as activityActions from '../store/actions/activity'
 
 // console.log('DATABASE_URL, FIREBASE_API_KEY',DATABASE_URL, FIREBASE_API_KEY);
 
@@ -18,6 +20,7 @@ import * as firebase from 'firebase'
 const OverviewScreen = (props) => {
     //TODO when click on square, load activites in infoCont
     const [user, setUser] = useState('')
+    const dispatch = useDispatch()
 
     useEffect(() => {
         firebase.auth().onAuthStateChanged((userRes) => {
@@ -26,7 +29,8 @@ const OverviewScreen = (props) => {
                 setUser(userRes.email)
             }
         })
-    })
+        dispatch(activityActions.fetchActivity())
+    },[dispatch])
     
     return (
         <View style={styles.screen}>

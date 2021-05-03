@@ -1,7 +1,7 @@
 import { CREATE_WEIGHT, FETCH_WEIGHT, UPDATE_WEIGHT } from "../actions/weight";
 import Weight from '../../models/weight'
 
-initState = {
+const initState = {
     weightList: []
 }
 

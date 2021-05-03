@@ -18,7 +18,7 @@ const ExerciseScreen = (props) => {
     const [textCal, setTextCal] = useState('')
     
     const convDate = dateConvert(new Date())
-    console.log('convDate',convDate);
+    // console.log('convDate',convDate);
     
     const exercisesSel = useSelector(state => {
         // console.log('state.exercise.exerciseList',state.exercise.exerciseList);
