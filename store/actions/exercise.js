@@ -4,7 +4,7 @@ export const DELETE_EXERCISE = 'DELETE_EXECISE'
 import {
     DATABASE_URL
 } from '@env'
-import { CREATE_ACTIVITY } from './activity'
+import { CREATE_ACTIVITY, UPDATE_ACTIVITY } from './activity'
 
 let createWeightId
 
@@ -77,7 +77,7 @@ export const createExercise = (exerciseName, cal, date) => {
         })
         .then(resData =>
             {
-                console.log('resData',resData);
+                console.log('---------resData-------',resData);
                 dispatch({
                     type: CREATE_EXERCISE,
                     id: createWeightId,
@@ -88,12 +88,21 @@ export const createExercise = (exerciseName, cal, date) => {
                         date
                     }
                 })
-                dispatch({
-                    type: CREATE_ACTIVITY,
-                    // id: resData.name,
-                    weightId: createWeightId,
-                    date: new Date(date).toDateString()
-                })
+                if(!existActivity){
+                    dispatch({
+                        type: CREATE_ACTIVITY,
+                        id: resData.name,
+                        weightId: createWeightId,
+                        date: new Date(date).toDateString()
+                    })
+                }
+                else{
+                    dispatch({
+                        type: UPDATE_ACTIVITY,
+                        weightId: createWeightId,
+                        date: new Date(date).toDateString()
+                    })
+                }
             }
         )
         .catch( err =>

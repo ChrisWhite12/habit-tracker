@@ -1,4 +1,4 @@
-import { CREATE_ACTIVITY, FETCH_ACTIVITY } from '../actions/activity';
+import { CREATE_ACTIVITY, FETCH_ACTIVITY, UPDATE_ACTIVITY } from '../actions/activity';
 import { CREATE_EXERCISE } from '../actions/exercise'
 import { CREATE_HABIT, UPDATE_HABIT } from '../actions/habit'
 import { CREATE_WEIGHT } from '../actions/weight'
@@ -21,43 +21,35 @@ export default (state = initState, action) => {
 
         case CREATE_ACTIVITY:
             //TODO problem with action.id, undefined when updating activity
-            // action - id, weightId, date
-            // const matchDate = state.activityList.find(el => el.date === action.date)
+            console.log('no match')
+            //create a new activity
+            const newActivity = {
+                date: action.date,
+                exerIds: [action.weightId],
+                habitIds: [],
+                id: action.id
+            }
+            return {
+                activityList: state.activityList.concat(newActivity)
+            }
+        case UPDATE_ACTIVITY:
+            console.log('date match')
             const matchDateIndex = state.activityList.findIndex(el => el.date === action.date)
             const matchId = state.activityList.find(el => el.date === action.date)?.id
-            console.log('matchDateIndex',matchDateIndex);
-            console.log('matchId',matchId);
 
-            if(matchDateIndex !== -1){
-                console.log('date match')
-                //update the existing activity
-                const updateActivity = {
-                    date: action.date,
-                    exerIds: [state.activityList[matchDateIndex].exerIds.concat(action.weightId)],
-                    habitIds: [state.activityList[matchDateIndex].habitIds],
-                    id: matchId
-                }
-                const updatedActivites = [...state.activityList]
-                updatedActivites[matchDateIndex] = updateActivity
-                return {
-                    activityList: updatedActivites
-                }
+            //update the existing activity
+            const updateActivity = {
+                date: action.date,
+                exerIds: [...state.activityList[matchDateIndex].exerIds, action.weightId],
+                habitIds: [state.activityList[matchDateIndex].habitIds],
+                id: matchId
             }
-            else{
-                console.log('no match')
-                //create a new activity
-                const newActivity = {
-                    date: action.date,
-                    exerIds: [action.weightId],
-                    habitIds: [],
-                    id: matchId
-                }
-                return {
-                    activityList: state.activityList.concat(newActivity)
-                }
+            const updatedActivites = [...state.activityList]
+            updatedActivites[matchDateIndex] = updateActivity
+
+            return {
+                activityList: updatedActivites
             }
-        case UPDATE_HABIT:
-            return state
 
         default:
             return state;

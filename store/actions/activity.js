@@ -1,5 +1,6 @@
 export const FETCH_ACTIVITY = 'FETCH_ACTIVITY'
 export const CREATE_ACTIVITY = 'CREATE_ACTIVITY'
+export const UPDATE_ACTIVITY = 'UPDATE_ACTIVITY'
 
 import {
     DATABASE_URL
