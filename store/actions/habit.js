@@ -6,10 +6,11 @@ export const DELETE_HABIT = 'DELETE_HABIT'
 import {
     DATABASE_URL
 } from '@env'
+import { CREATE_ACTIVITY, UPDATE_ACTIVITY } from './activity'
 
 export const createHabit = (habitName) => {
     return async (dispatch) => {
-        const response = await fetch(`${DATABASE_URL}/habit.json`, {
+        await fetch(`${DATABASE_URL}/habit.json`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -20,23 +21,30 @@ export const createHabit = (habitName) => {
                 highStreak: '0'
             })
         })
-        const resData = await response.json()
-
-        if(!response.ok){
-            throw new Error('Response not OK')
-        }
-
-        console.log(resData)
-
-        dispatch({
-            type: CREATE_HABIT,
-            habitData: {
-                id: resData.name,
-                habitName,
-                dateStart: new Date().toISOString(), 
-                highStreak: '0'
+        .then(response => {
+            if (response.ok){
+                return response.json()
             }
+            else{
+                throw new Error('Response not OK')
+            } 
         })
+        .then(resData => {
+            console.log('resData',resData);
+            console.log('resData.name',resData.name);
+            dispatch({
+                type: CREATE_HABIT,
+                id: resData.name,
+                habitData: {
+                    habitName,
+                    dateStart: new Date().toISOString(), 
+                    highStreak: '0'
+                }
+            })
+        })
+        .catch( err =>
+            console.log(err)
+        )
     }
 }
 
@@ -57,8 +65,9 @@ export const fetchHabit = () => {
 
 export const updateHabit = (id, dateStart, highStreak) => {
     return async (dispatch, getState) => {
-        //get current state
-
+        //see if the activity already exists
+        const existActivity = getState().activity.activityList.find(el => el.date === new Date(dateStart).toDateString())
+        
         //if dateNew( current date ) - dateStart is greater than highStreak
         // console.log('id, dS, hS', id, dateStart, highStreak)
         // console.log((new Date() - new Date(dateStart))/ (1000* 60 * 60 * 24))
@@ -83,7 +92,7 @@ export const updateHabit = (id, dateStart, highStreak) => {
         }
         
 
-        const response = await fetch(`${DATABASE_URL}/habit/${id}.json`, {
+        await fetch(`${DATABASE_URL}/habit/${id}.json`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -91,19 +100,89 @@ export const updateHabit = (id, dateStart, highStreak) => {
             body: JSON.stringify(dataOut)
             //send new values in body
         })
-
-        if(!response.ok){
-            console.log(response)
-            throw new Error('Response not OK')
-        }
-
-        //TODO update activity
-
-        dispatch({ 
-            type: UPDATE_HABIT,
-            id: id,
-            habitData: dataOut
+        .then(response => {
+            if (response.ok){
+                return response.json()
+            }
+            else{
+                throw new Error('Response not OK')
+            } 
         })
+        .then(data => {
+            console.log('id',id);
+            console.log('existActivity?.habitIds',existActivity?.habitIds);
+            console.log('!(existActivity?.habitIds.includes(id))', existActivity?.habitIds.includes(id));
+            if (existActivity && !(existActivity?.habitIds.includes(id))){
+                return fetch(`${DATABASE_URL}/activity/${existActivity.id}.json`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(
+                        {
+                            date: new Date(dateStart).toDateString(),
+                            habitIds: [...existActivity.habitIds, id],
+                        }
+                    )
+                })
+            }
+            else if (!existActivity){
+                return fetch(`${DATABASE_URL}/activity.json`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(
+                        {
+                            date: new Date(dateStart).toDateString(),
+                            exerIds: [],
+                            habitIds: [id]
+                        }
+                    )
+                })
+            }
+            else {
+                return
+            }
+        })
+        .then(response => {
+            // console.log('(existActivity?.habitIds.includes(id)) -- 2',(existActivity?.habitIds.includes(id)));
+            if (response?.ok){
+                return response.json()
+            }
+            else if (existActivity && (existActivity?.habitIds.includes(id))) {
+                return {message: 'activity not updated'}
+            }
+            else{
+                throw new Error('Response not OK')
+            } 
+        })
+        .then(resData =>
+            {
+                console.log('---------resData-------',resData);
+                dispatch({ 
+                    type: UPDATE_HABIT,
+                    id: id,
+                    habitData: dataOut
+                })
+                if(!existActivity){
+                    dispatch({
+                        type: CREATE_ACTIVITY,
+                        id: resData.name,
+                        habitId: id,
+                        date: new Date(dateStart).toDateString()
+                    })
+                }
+                else if (existActivity && !(existActivity?.habitIds.includes(id))){
+                    dispatch({
+                        type: UPDATE_ACTIVITY,
+                        habitId: id,
+                        date: new Date(dateStart).toDateString()
+                    })
+                }
+            }
+        )
+        
     }
 }
 

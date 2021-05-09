@@ -6,12 +6,15 @@ import {
 } from '@env'
 import { CREATE_ACTIVITY, UPDATE_ACTIVITY } from './activity'
 
-let createWeightId
+
 
 export const createExercise = (exerciseName, cal, date) => {
     // console.log('DATABASE_URL',DATABASE_URL);
     return async (dispatch, getState) => {
         const tempState = getState()
+
+        let createWeightId
+        
         console.log('tempState',tempState);
         const existActivity = getState().activity.activityList.find(el => el.date === new Date(date).toDateString())
         console.log('existActivity',existActivity);

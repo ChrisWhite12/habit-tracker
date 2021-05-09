@@ -18,7 +18,7 @@ const HabitScreen = (props) => {
 
     const habits = useSelector( state => {
         console.log('habitList',state.habit.habitList)
-        return state.habit.habitList
+            return state.habit.habitList
         }
     )
     const dispatch = useDispatch()

@@ -25,8 +25,8 @@ export default (state = initState, action) => {
             //create a new activity
             const newActivity = {
                 date: action.date,
-                exerIds: [action.weightId],
-                habitIds: [],
+                exerIds: action.weightId ? [action.weightId] : [],
+                habitIds: action.habitId ? [action.habitId] : [],
                 id: action.id
             }
             return {
@@ -40,8 +40,8 @@ export default (state = initState, action) => {
             //update the existing activity
             const updateActivity = {
                 date: action.date,
-                exerIds: [...state.activityList[matchDateIndex].exerIds, action.weightId],
-                habitIds: [state.activityList[matchDateIndex].habitIds],
+                exerIds: action.weightId ? [...state.activityList[matchDateIndex].exerIds, action.weightId] : [...state.activityList[matchDateIndex].exerIds],
+                habitIds: action.habitId ? [...state.activityList[matchDateIndex].habitIds, action.habitId] : [...state.activityList[matchDateIndex].habitIds],
                 id: matchId
             }
             const updatedActivites = [...state.activityList]
