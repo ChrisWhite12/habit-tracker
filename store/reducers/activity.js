@@ -37,11 +37,50 @@ export default (state = initState, action) => {
             const matchDateIndex = state.activityList.findIndex(el => el.date === action.date)
             const matchId = state.activityList.find(el => el.date === action.date)?.id
 
+            const exerIdsOut = (() => {
+                if(state.activityList[matchDateIndex].exerIds){
+                    if(action.weightId){
+                        return [...state.activityList[matchDateIndex].exerIds, action.weightId]
+                    }
+                    else{
+                        return [...state.activityList[matchDateIndex].exerIds]
+                    }
+                }
+                else{
+                    if(action.weightId){
+                        return [action.weightId]
+                    }
+                    else{
+                        return []
+                    }
+                }
+                
+            })
+
+            const habitIdsOut = (() => {
+                if(state.activityList[matchDateIndex].habitIds){
+                    if(action.habitId){
+                        return [...state.activityList[matchDateIndex].habitIds, action.habitId]
+                    }
+                    else{
+                        return [...state.activityList[matchDateIndex].habitIds]
+                    }
+                }
+                else{
+                    if(action.habitId){
+                        return [action.habitId]
+                    }
+                    else{
+                        return []
+                    }
+                }
+                
+            })
             //update the existing activity
             const updateActivity = {
                 date: action.date,
-                exerIds: action.weightId ? [...state.activityList[matchDateIndex].exerIds, action.weightId] : [...state.activityList[matchDateIndex].exerIds],
-                habitIds: action.habitId ? [...state.activityList[matchDateIndex].habitIds, action.habitId] : [...state.activityList[matchDateIndex].habitIds],
+                exerIds: exerIdsOut(),
+                habitIds: habitIdsOut(),
                 id: matchId
             }
             const updatedActivites = [...state.activityList]

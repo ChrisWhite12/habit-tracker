@@ -110,9 +110,13 @@ export const updateHabit = (id, dateStart, highStreak) => {
         })
         .then(data => {
             console.log('id',id);
-            console.log('existActivity?.habitIds',existActivity?.habitIds);
-            console.log('!(existActivity?.habitIds.includes(id))', existActivity?.habitIds.includes(id));
-            if (existActivity && !(existActivity?.habitIds.includes(id))){
+            // console.log('existActivity?.habitIds',existActivity?.habitIds);
+            // console.log('!(existActivity?.habitIds.includes(id))', existActivity?.habitIds.includes(id));
+            //if the activity exists on the current day and doesn't include the id being updated
+            if (existActivity && !(existActivity?.habitIds?.includes(id))){
+                console.log('existActivity',existActivity);
+                //update the current activity on firebase
+                const habitIdsOut = (existActivity.habitIds === undefined) ? [id] : [...existActivity.habitIds, id]
                 return fetch(`${DATABASE_URL}/activity/${existActivity.id}.json`, {
                     method: 'PATCH',
                     headers: {
@@ -121,7 +125,7 @@ export const updateHabit = (id, dateStart, highStreak) => {
                     body: JSON.stringify(
                         {
                             date: new Date(dateStart).toDateString(),
-                            habitIds: [...existActivity.habitIds, id],
+                            habitIds: habitIdsOut,
                         }
                     )
                 })
@@ -150,7 +154,7 @@ export const updateHabit = (id, dateStart, highStreak) => {
             if (response?.ok){
                 return response.json()
             }
-            else if (existActivity && (existActivity?.habitIds.includes(id))) {
+            else if (existActivity && (existActivity?.habitIds?.includes(id))) {
                 return {message: 'activity not updated'}
             }
             else{
@@ -173,7 +177,7 @@ export const updateHabit = (id, dateStart, highStreak) => {
                         date: new Date(dateStart).toDateString()
                     })
                 }
-                else if (existActivity && !(existActivity?.habitIds.includes(id))){
+                else if (existActivity && !(existActivity?.habitIds?.includes(id))){
                     dispatch({
                         type: UPDATE_ACTIVITY,
                         habitId: id,
