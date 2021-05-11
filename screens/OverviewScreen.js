@@ -11,7 +11,7 @@ import { gridData } from '../data/dummy-data'
 
 import {DATABASE_URL, FIREBASE_API_KEY} from '@env'
 import * as firebase from 'firebase'
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as activityActions from '../store/actions/activity'
 import * as habitActions from '../store/actions/habit'
 import * as exerciseActions from '../store/actions/exercise'
@@ -26,16 +26,20 @@ const OverviewScreen = (props) => {
 
     const [user, setUser] = useState('')
     const [dateText, setDateText] = useState('')
+    const [exerText, setExerText] = useState([])
+    const [habitText, setHabitText] = useState([])
 
     const [week4,setWeek4] = useState(new Date(new Date().setDate(nowDate.getDate() + (7 - currDay))))
     const [week3,setWeek3] = useState(new Date(new Date().setDate(nowDate.getDate() - currDay)))
     const [week2,setWeek2] = useState(new Date(new Date().setDate(nowDate.getDate() - currDay - 7)))
     const [week1,setWeek1] = useState(new Date(new Date().setDate(nowDate.getDate() - currDay - 14)))
 
-    // console.log('Week',(week1).toDateString(), (week2).toDateString(), (week3).toDateString(), (week4).toDateString());
+    const exerData = useSelector(state => state.exercise.exerciseList)
+    const habitData = useSelector(state => state.habit.habitList)    
 
     const [isLoading, setIsLoading] = useState(true)
     const dispatch = useDispatch()
+
     // const dateOut = {}
     useEffect(() => {
         setIsLoading(true)
@@ -54,8 +58,27 @@ const OverviewScreen = (props) => {
 
     },[dispatch])
 
-    const handleClick = (date) => {
-        // console.log('date',date);
+    const handleClick = (date, exerIds, habitIds) => {
+        let exerResult = []
+        let habitResult = []
+
+        if(exerIds){
+            for (let ind = 0; ind < exerIds.length; ind++) {
+                exerResult.push(exerData.find(el => el.id === exerIds[ind])?.exerciseName)
+                console.log('exerResult',exerResult);
+            }
+        }
+        
+        if(habitIds){
+            for (let ind = 0; ind < habitIds.length; ind++) {
+                habitResult.push(habitData.find(el => el.id === habitIds[ind])?.habitName)         //TODO if there is no result
+                console.log('habitResult',habitResult);
+            }
+        }
+        
+        setHabitText(habitResult)
+        setExerText(exerResult)
+
         setDateText(date)
     }
     
@@ -84,6 +107,28 @@ const OverviewScreen = (props) => {
             </View>
             <View style={styles.infoCont}>
                 <TextDefault>{dateText}</TextDefault>
+                <View style={styles.habitExerCont}>
+                    <View style={styles.exerCont}>
+                        <TextDefault style={styles.exerTitle}>Exercise</TextDefault>
+                        {
+                            (exerText.length > 0) ?
+                            exerText.map((el, ind) => <TextDefault key={'exer_',ind}>{el}</TextDefault>)
+                            :
+                            <TextDefault>No exercise</TextDefault>
+                        }
+
+                    </View>
+                    <View style={styles.habitCont}>
+                        <TextDefault style={styles.habitTitle}>Bad Habits</TextDefault>
+                        {
+                            (habitText.length > 0) ?
+                            habitText.map((el, ind) => <TextDefault key={'habit_',ind}>{el}</TextDefault>)
+                            :
+                            <TextDefault>No bad habit</TextDefault>
+                        }
+                    </View>
+
+                </View>
                 {/* <Text>{user}</Text> */}
                 <Button 
                 title='LOGOUT'
@@ -138,6 +183,24 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-evenly'
+    },
+    habitExerCont:{
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        margin: 10
+    },
+    exerCont:{
+
+    },
+    habitCont:{
+
+    },
+    exerTitle:{
+        color: 'green'
+    },
+    habitTitle:{
+        color: 'red'
     }
 });
 
