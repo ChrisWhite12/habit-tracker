@@ -17,16 +17,29 @@ import * as habitActions from '../store/actions/habit'
 import * as exerciseActions from '../store/actions/exercise'
 import GridWeek from "../components/GridWeek";
 
-const dateOut = {}
+// const dateOut = {}
 
 const OverviewScreen = (props) => {
     //TODO when click on square, load activites in infoCont
+    const nowDate = new Date()
+    const currDay = nowDate.getDay() === 0 ? 7 : nowDate.getDay()
+
     const [user, setUser] = useState('')
-    // const [dateOut, setDateOut] = useState({})
+    const [dateText, setDateText] = useState('')
+
+    const [week4,setWeek4] = useState(new Date(new Date().setDate(nowDate.getDate() + (7 - currDay))))
+    const [week3,setWeek3] = useState(new Date(new Date().setDate(nowDate.getDate() - currDay)))
+    const [week2,setWeek2] = useState(new Date(new Date().setDate(nowDate.getDate() - currDay - 7)))
+    const [week1,setWeek1] = useState(new Date(new Date().setDate(nowDate.getDate() - currDay - 14)))
+
+    // console.log('Week',(week1).toDateString(), (week2).toDateString(), (week3).toDateString(), (week4).toDateString());
+
     const [isLoading, setIsLoading] = useState(true)
     const dispatch = useDispatch()
-    
+    // const dateOut = {}
     useEffect(() => {
+        setIsLoading(true)
+
         firebase.auth().onAuthStateChanged((userRes) => {
             if(userRes != null){
                 // console.log('userRes', userRes)
@@ -36,31 +49,15 @@ const OverviewScreen = (props) => {
         dispatch(activityActions.fetchActivity())
         dispatch(habitActions.fetchHabit())
         dispatch(exerciseActions.fetchExercise())
-    },[dispatch])
-    
-    useEffect(() => {
-        setIsLoading(true)
-        //dates out == days that gridWeek comp ends on
-        //last week will be current date
-        const nowDate = new Date()
-        const currDay = nowDate.getDay()
-        dateOut.week4 = new Date(new Date().setDate(nowDate.getDate() + (7 - currDay)))
-        //getDay from current date 0 - 6 / sun - saturday
-        console.log('currDay',currDay);
-        if(currDay > 0){
-            dateOut.week3 = new Date(new Date().setDate(nowDate.getDate() - currDay))
-        }
-        else{
-            dateOut.week3 = new Date(new Date().setDate(nowDate.getDate() - 7))
-        }
-        //previous week is current date - getDay?
-        // next previous is -7days
-        dateOut.week2 = new Date(new Date().setDate(dateOut.week3.getDate() - 7))
-        dateOut.week1 = new Date(new Date().setDate(dateOut.week3.getDate() - 14))
+        
         setIsLoading(false)
-        console.log('dateOut',dateOut);
-    },[])
 
+    },[dispatch])
+
+    const handleClick = (date) => {
+        // console.log('date',date);
+        setDateText(date)
+    }
     
     return (
         <View style={styles.screen}>
@@ -76,16 +73,17 @@ const OverviewScreen = (props) => {
                 </View>
                 {!isLoading ? 
                     <View style={styles.gridCont2}>
-                        <GridWeek key={'week1'} dayEnd={dateOut["week1"]} />
-                        <GridWeek key={'week2'} dayEnd={dateOut["week2"]} />
-                        <GridWeek key={'week3'} dayEnd={dateOut["week3"]} />
-                        <GridWeek key={'week4'} dayEnd={dateOut["week4"]} />
+                        <GridWeek key={'week1'} dayEnd={week1} handleClick={handleClick}/>
+                        <GridWeek key={'week2'} dayEnd={week2} handleClick={handleClick}/>
+                        <GridWeek key={'week3'} dayEnd={week3} handleClick={handleClick}/>
+                        <GridWeek key={'week4'} dayEnd={week4} handleClick={handleClick}/>
                     </View>
                 :
                     <ActivityIndicator size={'large'} color={Colors.primary}/>
                 }
             </View>
             <View style={styles.infoCont}>
+                <TextDefault>{dateText}</TextDefault>
                 {/* <Text>{user}</Text> */}
                 <Button 
                 title='LOGOUT'
@@ -117,7 +115,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: Colors.background,
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
         padding: 10
     },
     gridCont: {
@@ -127,8 +125,9 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     infoCont: {
-        height: '30%',
+        height: '40%',
         width: '100%',
+        justifyContent: 'space-between'
     },
     dayText:{
         height: '95%',
