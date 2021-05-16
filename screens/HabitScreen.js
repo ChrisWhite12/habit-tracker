@@ -17,7 +17,7 @@ import { withDecay } from 'react-native-reanimated';
 const HabitScreen = (props) => {
 
     const habits = useSelector( state => {
-        console.log('habitList',state.habit.habitList)
+        // console.log('habitList',state.habit.habitList)
             return state.habit.habitList
         }
     )

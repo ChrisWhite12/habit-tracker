@@ -66,7 +66,7 @@ export const fetchHabit = () => {
 export const updateHabit = (id, dateStart, highStreak) => {
     return async (dispatch, getState) => {
         //see if the activity already exists
-        const existActivity = getState().activity.activityList.find(el => el.date === new Date(dateStart).toDateString())
+        const existActivity = getState().activity.activityList.find(el => el.date === new Date().toDateString())
         
         //if dateNew( current date ) - dateStart is greater than highStreak
         // console.log('id, dS, hS', id, dateStart, highStreak)
@@ -113,8 +113,8 @@ export const updateHabit = (id, dateStart, highStreak) => {
             // console.log('existActivity?.habitIds',existActivity?.habitIds);
             // console.log('!(existActivity?.habitIds.includes(id))', existActivity?.habitIds.includes(id));
             //if the activity exists on the current day and doesn't include the id being updated
+            console.log('existActivity',existActivity);
             if (existActivity && !(existActivity?.habitIds?.includes(id))){
-                console.log('existActivity',existActivity);
                 //update the current activity on firebase
                 const habitIdsOut = (existActivity.habitIds === undefined) ? [id] : [...existActivity.habitIds, id]
                 return fetch(`${DATABASE_URL}/activity/${existActivity.id}.json`, {
@@ -131,6 +131,7 @@ export const updateHabit = (id, dateStart, highStreak) => {
                 })
             }
             else if (!existActivity){
+                console.log("activity doesn't exist")
                 return fetch(`${DATABASE_URL}/activity.json`, {
                     method: 'POST',
                     headers: {
@@ -170,18 +171,20 @@ export const updateHabit = (id, dateStart, highStreak) => {
                     habitData: dataOut
                 })
                 if(!existActivity){
+                    console.log('creating activity')
                     dispatch({
                         type: CREATE_ACTIVITY,
                         id: resData.name,
                         habitId: id,
-                        date: new Date(dateStart).toDateString()
+                        date: new Date().toDateString()
                     })
                 }
                 else if (existActivity && !(existActivity?.habitIds?.includes(id))){
+                    console.log('updating activity')
                     dispatch({
                         type: UPDATE_ACTIVITY,
                         habitId: id,
-                        date: new Date(dateStart).toDateString()
+                        date: new Date().toDateString()
                     })
                 }
             }
@@ -201,5 +204,6 @@ export const deleteHabit = habitId => {
         }
 
         dispatch({ type: DELETE_HABIT, id: habitId })
+        //TODO update activity with deleted id
     } 
 }

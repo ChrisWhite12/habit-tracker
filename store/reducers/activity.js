@@ -25,7 +25,7 @@ export default (state = initState, action) => {
             //create a new activity
             const newActivity = {
                 date: action.date,
-                exerIds: action.weightId ? [action.weightId] : [],
+                exerIds: action.exerId ? [action.exerId] : [],
                 habitIds: action.habitId ? [action.habitId] : [],
                 id: action.id
             }
@@ -38,17 +38,20 @@ export default (state = initState, action) => {
             const matchId = state.activityList.find(el => el.date === action.date)?.id
 
             const exerIdsOut = (() => {
-                if(state.activityList[matchDateIndex].exerIds){
-                    if(action.weightId){
-                        return [...state.activityList[matchDateIndex].exerIds, action.weightId]
+                if(state.activityList[matchDateIndex].exerIds.length > 0){
+                    if(action.exerId){
+                        return [...state.activityList[matchDateIndex].exerIds, action.exerId]
+                    }
+                    else if(action.exerDelId){
+                        //TODO FILTER OUT ID
                     }
                     else{
                         return [...state.activityList[matchDateIndex].exerIds]
                     }
                 }
                 else{
-                    if(action.weightId){
-                        return [action.weightId]
+                    if(action.exerId){
+                        return [action.exerId]
                     }
                     else{
                         return []
@@ -61,6 +64,9 @@ export default (state = initState, action) => {
                 if(state.activityList[matchDateIndex].habitIds){
                     if(action.habitId){
                         return [...state.activityList[matchDateIndex].habitIds, action.habitId]
+                    }
+                    else if (action.habitDelId){
+                        
                     }
                     else{
                         return [...state.activityList[matchDateIndex].habitIds]

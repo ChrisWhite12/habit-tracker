@@ -13,7 +13,7 @@ export const createExercise = (exerciseName, cal, date) => {
     return async (dispatch, getState) => {
         const tempState = getState()
 
-        let createWeightId
+        let createExerId
         
         console.log('tempState',tempState);
         const existActivity = getState().activity.activityList.find(el => el.date === new Date(date).toDateString())
@@ -35,8 +35,7 @@ export const createExercise = (exerciseName, cal, date) => {
             } 
         })
         .then(data => {
-            createWeightId = data.name
-            // console.log('createWeightId',createWeightId);
+            createExerId = data.name
             console.log('existActivity.id',existActivity?.id);
             console.log('existActivity.exerIds',existActivity?.exerIds);
 
@@ -49,7 +48,7 @@ export const createExercise = (exerciseName, cal, date) => {
                     body: JSON.stringify(
                         {
                             date: new Date(date).toDateString(),
-                            exerIds: [...existActivity.exerIds, createWeightId],
+                            exerIds: [...existActivity.exerIds, createExerId],
                         }
                     )
                 })
@@ -63,7 +62,7 @@ export const createExercise = (exerciseName, cal, date) => {
                     body: JSON.stringify(
                         {
                             date: new Date(date).toDateString(),
-                            exerIds: [createWeightId],
+                            exerIds: [createExerId],
                             habitIds: []
                         }
                     )
@@ -83,26 +82,27 @@ export const createExercise = (exerciseName, cal, date) => {
                 console.log('---------resData-------',resData);
                 dispatch({
                     type: CREATE_EXERCISE,
-                    id: createWeightId,
+                    id: createExerId,
                     exerciseData: {
-                        id: createWeightId,
+                        id: createExerId,
                         exerciseName,
                         cal,
-                        date
+                        date,
+                        actId: resData.name
                     }
                 })
                 if(!existActivity){
                     dispatch({
                         type: CREATE_ACTIVITY,
                         id: resData.name,
-                        weightId: createWeightId,
+                        exerId: createExerId,
                         date: new Date(date).toDateString()
                     })
                 }
                 else{
                     dispatch({
                         type: UPDATE_ACTIVITY,
-                        weightId: createWeightId,
+                        exerId: createExerId,
                         date: new Date(date).toDateString()
                     })
                 }
@@ -130,9 +130,18 @@ export const fetchExercise = () => {
 }
 
 export const deleteExercise = (exerId) => {
-    return async (dispatch) => {
-        const response = await fetch(`${DATABASE_URL}/exercise/${exerId}.json`, {
+    return async (dispatch, getState) => {
+        // const delItem = getState().exercise.exerciseList.find(el => el.id === exerId)
+        // const actId = delItem.actId
+        // console.log('actId',actId);
+        fetch(`${DATABASE_URL}/exercise/${exerId}.json`, {
             method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+
+
+
         })
 
         if(!response.ok){
@@ -141,4 +150,5 @@ export const deleteExercise = (exerId) => {
 
         dispatch({ type: DELETE_EXERCISE, id: exerId })
     }
+    //TODO update activity with deleted id
 }

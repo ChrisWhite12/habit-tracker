@@ -12,16 +12,6 @@ const GridSquare = (props) => {
         return actFilter
     })
 
-    // const habitInfo = useSelector(state => state.habit.habitList.filter(el => {
-    //     if (activityDay && activityDay?.habitIds?.includes(el.id)){
-    //         return el
-    //     }
-    // }))
-
-    // const exerInfo = useSelector(state => state.exercise.exerciseList?.find(exer => ))
-    // console.log('habitInfo',habitInfo);
-    // console.log('activityDay',activityDay);
-
     let boxColor = Colors.primary
 
     if(activityDay){
@@ -37,7 +27,11 @@ const GridSquare = (props) => {
     }
 
     return (
-        <TouchableOpacity onPress={() => props.handleClick(props.boxData.date, activityDay?.exerIds, activityDay?.habitIds)} style={{...styles.box,...{backgroundColor: boxColor, borderColor: boxColor}}}>
+        <TouchableOpacity onPress={() => {
+            // console.log('activityDay',activityDay);
+            // console.log('activityDay.habitIds',activityDay.habitIds);
+            return props.handleClick(props.boxData.date, activityDay?.exerIds, activityDay?.habitIds)
+            }} style={{...styles.box,...{backgroundColor: boxColor, borderColor: boxColor}}}>
                 {/* <Text style={styles.boxText}>{props.boxData.date}</Text> */}
         </TouchableOpacity>
     );

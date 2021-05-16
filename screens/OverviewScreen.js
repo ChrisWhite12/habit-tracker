@@ -59,6 +59,8 @@ const OverviewScreen = (props) => {
     },[dispatch])
 
     const handleClick = (date, exerIds, habitIds) => {
+        console.log('habitData',habitData);
+        console.log('habitIds',habitIds);
         let exerResult = []
         let habitResult = []
 
