@@ -4,6 +4,7 @@ class Habit {
         this.habitName = habitName
         this.dateStart = dateStart
         this.highStreak = highStreak
+        this.actId = ''
     }
 }
 

@@ -37,16 +37,21 @@ export default (state = initState, action) => {
             const matchDateIndex = state.activityList.findIndex(el => el.date === action.date)
             const matchId = state.activityList.find(el => el.date === action.date)?.id
 
-            const exerIdsOut = (() => {
-                if(state.activityList[matchDateIndex].exerIds.length > 0){
+            const exerIdsOut = (() => {                
+                if(state.activityList[matchDateIndex].exerIds.length > 0 ){
+
+                    const exerIdsArr = state.activityList[matchDateIndex].exerIds
+                    console.log('exerIdsArr',exerIdsArr);
+
                     if(action.exerId){
-                        return [...state.activityList[matchDateIndex].exerIds, action.exerId]
+                        return [...exerIdsArr, action.exerId]
                     }
                     else if(action.exerDelId){
-                        //TODO FILTER OUT ID
+                        console.log('action.exerDelId',action.exerDelId);
+                        return [...exerIdsArr.filter(el => el !== action.exerDelId)]
                     }
                     else{
-                        return [...state.activityList[matchDateIndex].exerIds]
+                        return [...exerIdsArr]
                     }
                 }
                 else{
@@ -65,9 +70,10 @@ export default (state = initState, action) => {
                     if(action.habitId){
                         return [...state.activityList[matchDateIndex].habitIds, action.habitId]
                     }
-                    else if (action.habitDelId){
-                        
-                    }
+                    // else if (action.habitDelId){
+                    //     console.log('action.habitDelId',action.habitDelId);
+                    //     return [...state.activityList[matchDateIndex].habitIds.filter(el => el !== habitDelId)]
+                    // }
                     else{
                         return [...state.activityList[matchDateIndex].habitIds]
                     }

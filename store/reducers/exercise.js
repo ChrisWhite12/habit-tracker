@@ -1,5 +1,5 @@
 import { CREATE_EXERCISE, DELETE_EXERCISE, FETCH_EXERCISE } from "../actions/exercise";
-import Exercise from '../../models/exrecise'
+import Exercise from '../../models/exercise'
 
 const initState = {
     exerciseList: []
@@ -15,6 +15,7 @@ export default (state = initState, action) => {
                 action.exerciseData.exerciseName,
                 action.exerciseData.cal,
                 action.exerciseData.date,
+                action.exerciseData.actId
             )
         return {
             ...state,

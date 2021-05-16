@@ -37,9 +37,10 @@ export const createExercise = (exerciseName, cal, date) => {
         .then(data => {
             createExerId = data.name
             console.log('existActivity.id',existActivity?.id);
-            console.log('existActivity.exerIds',existActivity?.exerIds);
+            console.log('existActivity.exerIds',existActivity.exerIds);
 
             if (existActivity){
+                const exerIdsOut = (existActivity.exerIds === undefined) ? [createExerId] : [...existActivity.exerIds, createExerId]
                 return fetch(`${DATABASE_URL}/activity/${existActivity.id}.json`, {
                     method: 'PATCH',
                     headers: {
@@ -48,7 +49,7 @@ export const createExercise = (exerciseName, cal, date) => {
                     body: JSON.stringify(
                         {
                             date: new Date(date).toDateString(),
-                            exerIds: [...existActivity.exerIds, createExerId],
+                            exerIds: exerIdsOut,
                         }
                     )
                 })
@@ -88,7 +89,7 @@ export const createExercise = (exerciseName, cal, date) => {
                         exerciseName,
                         cal,
                         date,
-                        actId: resData.name
+                        actId: (existActivity ? existActivity.id : resData.name)
                     }
                 })
                 if(!existActivity){
@@ -131,24 +132,51 @@ export const fetchExercise = () => {
 
 export const deleteExercise = (exerId) => {
     return async (dispatch, getState) => {
-        // const delItem = getState().exercise.exerciseList.find(el => el.id === exerId)
-        // const actId = delItem.actId
-        // console.log('actId',actId);
+        const delItem = getState().exercise.exerciseList.find(el => el.id === exerId)       //item in the exercise list that is being delete
+        console.log('delItem',delItem);
+        const activityUpdate = getState().activity.activityList.find(el => el.id === delItem.actId)
+        const actId = delItem.actId
+
+        console.log('actId, exerId',actId, exerId);
         fetch(`${DATABASE_URL}/exercise/${exerId}.json`, {
             method: 'DELETE'
         })
-        .then(response => response.json())
-        .then(data => {
-
-
-
+        .then(response => {
+            if (response.ok){
+                return response.json()
+            }
+            else{
+                throw new Error('Response not OK')
+            } 
         })
+        .then(data => {
+            const exerIdsOut = activityUpdate.exerIds.filter(el => el !== exerId)
+            return fetch(`${DATABASE_URL}/activity/${actId}.json`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(
+                    {
+                        exerIds: exerIdsOut
+                    }
+                )
+            })
+        })
+        .then(response => {
+            if (response.ok){
+                return response.json()
+            }
+            else{
+                throw new Error('Response not OK')
+            } 
+        })
+        .then(resData => {
+            dispatch({ type: DELETE_EXERCISE, id: exerId })
+            dispatch({ type: UPDATE_ACTIVITY, exerDelId: exerId, date: delItem.date.toDateString()})
+        })
+        .catch(err => console.log(err))
 
-        if(!response.ok){
-            throw new Error('Response not OK')
-        }
-
-        dispatch({ type: DELETE_EXERCISE, id: exerId })
     }
     //TODO update activity with deleted id
 }

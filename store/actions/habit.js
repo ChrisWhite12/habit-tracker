@@ -168,7 +168,8 @@ export const updateHabit = (id, dateStart, highStreak) => {
                 dispatch({ 
                     type: UPDATE_HABIT,
                     id: id,
-                    habitData: dataOut
+                    habitData: dataOut,
+                    actId: resData.name
                 })
                 if(!existActivity){
                     console.log('creating activity')
@@ -194,16 +195,33 @@ export const updateHabit = (id, dateStart, highStreak) => {
 }
 
 export const deleteHabit = habitId => {
-    return async (dispatch) => {
-        const response = await fetch(`${DATABASE_URL}/habit/${habitId}.json`, {
+    return async (dispatch, getState) => {
+        const delItem = getState().habit.habitList.find(el => el.id === habitId)
+        const actId = delItem.actId
+
+        fetch(`${DATABASE_URL}/habit/${habitId}.json`, {
             method: 'DELETE'
         })
+        .then(response => response.json())
+        .then(data => {
+            console.log('delHabit data',data);
+            return fetch(`${DATABASE_URL}/activity/${actId}/habitIds/${habitId}.json`, {
+                method: 'DELETE'
+            })
+        })
+        .then(response => {
+            if (response.ok){
+                return response.json()
+            }
+            else{
+                throw new Error('Response not OK')
+            } 
+        })
+        .then(resData => {
+            dispatch({ type: DELETE_HABIT, id: habitId })
+            dispatch({ type: UPDATE_ACTIVITY, habitDelId: habitId})
+        })
 
-        if(!response.ok){
-            throw new Error('Response not OK')
-        }
-
-        dispatch({ type: DELETE_HABIT, id: habitId })
         //TODO update activity with deleted id
     } 
 }
