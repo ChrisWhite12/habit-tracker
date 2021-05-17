@@ -46,10 +46,13 @@ const OverviewScreen = (props) => {
 
         firebase.auth().onAuthStateChanged((userRes) => {
             if(userRes != null){
-                // console.log('userRes', userRes)
+                console.log('userRes', userRes)
+                console.log('userRes.uid', userRes.uid)
+
                 setUser(userRes.email)
             }
         })
+
         dispatch(activityActions.fetchActivity())
         dispatch(habitActions.fetchHabit())
         dispatch(exerciseActions.fetchExercise())

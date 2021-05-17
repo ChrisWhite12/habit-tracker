@@ -12,6 +12,7 @@ export const createExercise = (exerciseName, cal, date) => {
     // console.log('DATABASE_URL',DATABASE_URL);
     return async (dispatch, getState) => {
         const tempState = getState()
+        const token = getState().auth.token
 
         let createExerId
         
@@ -25,23 +26,21 @@ export const createExercise = (exerciseName, cal, date) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({exerciseName: exerciseName, cal: cal, date: date})
+            //TODO add userID
         })
         .then(response => {
             if (response.ok){
                 return response.json()
             }
             else{
-                throw new Error('Response not OK')
+                throw new Error('Response not OK, can"t post exercise')
             } 
         })
         .then(data => {
             createExerId = data.name
-            console.log('existActivity.id',existActivity?.id);
-            console.log('existActivity.exerIds',existActivity.exerIds);
-
             if (existActivity){
                 const exerIdsOut = (existActivity.exerIds === undefined) ? [createExerId] : [...existActivity.exerIds, createExerId]
-                return fetch(`${DATABASE_URL}/activity/${existActivity.id}.json`, {
+                return fetch(`${DATABASE_URL}/activity/${existActivity.id}.json?auth=${token}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
@@ -55,7 +54,7 @@ export const createExercise = (exerciseName, cal, date) => {
                 })
             }
             else{
-                return fetch(`${DATABASE_URL}/activity.json`, {
+                return fetch(`${DATABASE_URL}/activity.json?auth=${token}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -66,6 +65,7 @@ export const createExercise = (exerciseName, cal, date) => {
                             exerIds: [createExerId],
                             habitIds: []
                         }
+                        //TODO add userID
                     )
                 })
             }
@@ -75,7 +75,7 @@ export const createExercise = (exerciseName, cal, date) => {
                 return response.json()
             }
             else{
-                throw new Error('Response not OK')
+                throw new Error('Response not OK, can"t update activity')
             } 
         })
         .then(resData =>
@@ -91,6 +91,7 @@ export const createExercise = (exerciseName, cal, date) => {
                         date,
                         actId: (existActivity ? existActivity.id : resData.name)
                     }
+                    //TODO add userID
                 })
                 if(!existActivity){
                     dispatch({
@@ -99,6 +100,7 @@ export const createExercise = (exerciseName, cal, date) => {
                         exerId: createExerId,
                         date: new Date(date).toDateString()
                     })
+                    //TODO add userID
                 }
                 else{
                     dispatch({
@@ -132,13 +134,14 @@ export const fetchExercise = () => {
 
 export const deleteExercise = (exerId) => {
     return async (dispatch, getState) => {
+        const token = getState().auth.token
         const delItem = getState().exercise.exerciseList.find(el => el.id === exerId)       //item in the exercise list that is being delete
         console.log('delItem',delItem);
         const activityUpdate = getState().activity.activityList.find(el => el.id === delItem.actId)
         const actId = delItem.actId
 
         console.log('actId, exerId',actId, exerId);
-        fetch(`${DATABASE_URL}/exercise/${exerId}.json`, {
+        fetch(`${DATABASE_URL}/exercise/${exerId}.json?auth=${token}`, {
             method: 'DELETE'
         })
         .then(response => {
@@ -151,7 +154,7 @@ export const deleteExercise = (exerId) => {
         })
         .then(data => {
             const exerIdsOut = activityUpdate.exerIds.filter(el => el !== exerId)
-            return fetch(`${DATABASE_URL}/activity/${actId}.json`, {
+            return fetch(`${DATABASE_URL}/activity/${actId}.json?auth=${token}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'

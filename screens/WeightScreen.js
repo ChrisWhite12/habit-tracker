@@ -29,8 +29,8 @@ const WeightScreen = (props) => {
     const [labelGraph, setLabelGraph] = useState([])
 
     const convDate = dateConvert(new Date())
-    console.log('now', new Date())
-    console.log('convDate',convDate);
+    // console.log('now', new Date())
+    // console.log('convDate',convDate);
     const currMonth = convDate.month
 
     // console.log('weightGraph',weightGraph);

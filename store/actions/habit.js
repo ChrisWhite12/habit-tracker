@@ -10,7 +10,8 @@ import { CREATE_ACTIVITY, UPDATE_ACTIVITY } from './activity'
 
 export const createHabit = (habitName) => {
     return async (dispatch) => {
-        await fetch(`${DATABASE_URL}/habit.json`, {
+        const token = getState().auth.token
+        await fetch(`${DATABASE_URL}/habit.json?auth=${token}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -20,6 +21,7 @@ export const createHabit = (habitName) => {
                 dateStart: new Date().toISOString(), 
                 highStreak: '0'
             })
+            //TODO add userID
         })
         .then(response => {
             if (response.ok){
@@ -41,6 +43,7 @@ export const createHabit = (habitName) => {
                     highStreak: '0'
                 }
             })
+            //TODO add userID
         })
         .catch( err =>
             console.log(err)
@@ -65,6 +68,7 @@ export const fetchHabit = () => {
 
 export const updateHabit = (id, dateStart, highStreak) => {
     return async (dispatch, getState) => {
+        const token = getState().auth.token
         //see if the activity already exists
         const existActivity = getState().activity.activityList.find(el => el.date === new Date().toDateString())
         
@@ -92,7 +96,7 @@ export const updateHabit = (id, dateStart, highStreak) => {
         }
         
 
-        await fetch(`${DATABASE_URL}/habit/${id}.json`, {
+        await fetch(`${DATABASE_URL}/habit/${id}.json?auth=${token}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -117,7 +121,8 @@ export const updateHabit = (id, dateStart, highStreak) => {
             if (existActivity && !(existActivity?.habitIds?.includes(id))){
                 //update the current activity on firebase
                 const habitIdsOut = (existActivity.habitIds === undefined) ? [id] : [...existActivity.habitIds, id]
-                return fetch(`${DATABASE_URL}/activity/${existActivity.id}.json`, {
+
+                return fetch(`${DATABASE_URL}/activity/${existActivity.id}.json?auth=${token}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
@@ -132,7 +137,7 @@ export const updateHabit = (id, dateStart, highStreak) => {
             }
             else if (!existActivity){
                 console.log("activity doesn't exist")
-                return fetch(`${DATABASE_URL}/activity.json`, {
+                return fetch(`${DATABASE_URL}/activity.json?auth=${token}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -165,14 +170,17 @@ export const updateHabit = (id, dateStart, highStreak) => {
         .then(resData =>
             {
                 console.log('---------resData-------',resData);
-                dispatch({ 
-                    type: UPDATE_HABIT,
-                    id: id,
-                    habitData: dataOut,
-                    actId: resData.name
-                })
+                console.log('resData.name',resData.name);
+                //TODO resData.name is undefined when exist activity (PATCHING)
+                
                 if(!existActivity){
                     console.log('creating activity')
+                    dispatch({ 
+                        type: UPDATE_HABIT,
+                        id: id,
+                        habitData: dataOut,
+                        actId: resData.name
+                    })
                     dispatch({
                         type: CREATE_ACTIVITY,
                         id: resData.name,
@@ -182,6 +190,12 @@ export const updateHabit = (id, dateStart, highStreak) => {
                 }
                 else if (existActivity && !(existActivity?.habitIds?.includes(id))){
                     console.log('updating activity')
+                    dispatch({ 
+                        type: UPDATE_HABIT,
+                        id: id,
+                        habitData: dataOut,
+                        actId: existActivity.id
+                    })
                     dispatch({
                         type: UPDATE_ACTIVITY,
                         habitId: id,
@@ -196,16 +210,17 @@ export const updateHabit = (id, dateStart, highStreak) => {
 
 export const deleteHabit = habitId => {
     return async (dispatch, getState) => {
+        const token = getState().auth.token
         const delItem = getState().habit.habitList.find(el => el.id === habitId)
         const actId = delItem.actId
 
-        fetch(`${DATABASE_URL}/habit/${habitId}.json`, {
+        fetch(`${DATABASE_URL}/habit/${habitId}.json?auth=${token}`, {
             method: 'DELETE'
         })
         .then(response => response.json())
         .then(data => {
             console.log('delHabit data',data);
-            return fetch(`${DATABASE_URL}/activity/${actId}/habitIds/${habitId}.json`, {
+            return fetch(`${DATABASE_URL}/activity/${actId}/habitIds/${habitId}.json?auth=${token}`, {
                 method: 'DELETE'
             })
         })

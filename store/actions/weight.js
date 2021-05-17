@@ -8,28 +8,42 @@ import {
 
 
 export const createWeight = (weight, date) => {
-    return async (dispatch) => {
-        const response = await fetch(`${DATABASE_URL}/weight.json`, {
+    return async (dispatch, getState) => {
+        const token = getState().auth.token
+        const userId = getState().auth.userId
+        console.log('token',token);
+
+        fetch(`${DATABASE_URL}/weight.json?auth=${token}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({weight: weight, date: date})
+            //TODO add userID
         })
-        const resData = await response.json()
-
-        if(!response.ok){
-            throw new Error('Response not OK')
-        }
-
-        dispatch({
-            type: CREATE_WEIGHT,
-            id: resData.name,
-            weightData: {
-                weight,
-                date
+        .then(response => {
+            if (response.ok){
+                return response.json()
+            }
+            else{
+                return response.json()
+                // throw new Error('Response not OK, failed to create weight')
             }
         })
+        .then(resData => {
+            console.log('resData',resData);
+            dispatch({
+                type: CREATE_WEIGHT,
+                id: resData.name,
+                weightData: {
+                    weight,
+                    date
+                }
+                //TODO add userID
+            })
+            
+        })
+        .catch(err => console.log(err))
     }
 }
 
@@ -49,9 +63,9 @@ export const fetchWeight = () => {
 }
 
 export const updateWeight = (id, weight, date) => {
-    return async (dispatch) => {
-
-        const response = await fetch(`${DATABASE_URL}/weight/${id}.json`, {
+    return async (dispatch, getState) => {
+        const token = getState().auth.token
+        const response = await fetch(`${DATABASE_URL}/weight/${id}.json?auth=${token}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'

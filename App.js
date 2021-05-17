@@ -10,6 +10,7 @@ import ActivityReducer from './store/reducers/activity'
 import ExerciseReducer from './store/reducers/exercise'
 import WeightReducer from './store/reducers/weight'
 import HabitReducer from './store/reducers/habit'
+import AuthReducer from './store/reducers/auth'
 
 import * as firebase from 'firebase'
 
@@ -20,7 +21,8 @@ const rootReducer = combineReducers({
   activity: ActivityReducer,
   exercise: ExerciseReducer,
   weight: WeightReducer,
-  habit: HabitReducer
+  habit: HabitReducer,
+  auth: AuthReducer
 })
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk))

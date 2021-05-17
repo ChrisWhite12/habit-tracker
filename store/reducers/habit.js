@@ -34,7 +34,7 @@ export default (state = initState, action) => {
                 action.habitData.dateStart,
                 action.habitData.highStreak
                 )
-
+                //TODO add array of activity Ids
             
             const updatedHabits = [...state.habitList]
             updatedHabits[habitIndex] = updatedHabit

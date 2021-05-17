@@ -70,10 +70,12 @@ export default (state = initState, action) => {
                     if(action.habitId){
                         return [...state.activityList[matchDateIndex].habitIds, action.habitId]
                     }
-                    // else if (action.habitDelId){
+                    else if (action.habitDelId){
+                        //look through activityList, filter if habitIds include action.habitDelId
+
                     //     console.log('action.habitDelId',action.habitDelId);
                     //     return [...state.activityList[matchDateIndex].habitIds.filter(el => el !== habitDelId)]
-                    // }
+                    }
                     else{
                         return [...state.activityList[matchDateIndex].habitIds]
                     }
@@ -81,6 +83,9 @@ export default (state = initState, action) => {
                 else{
                     if(action.habitId){
                         return [action.habitId]
+                    }
+                    else if(action.habitDelId){
+
                     }
                     else{
                         return []
