@@ -21,6 +21,7 @@ export default (state = initState, action) => {
 
         case CREATE_ACTIVITY:
             //TODO problem with action.id, undefined when updating activity
+
             console.log('no match')
             //create a new activity
             const newActivity = {
@@ -33,7 +34,6 @@ export default (state = initState, action) => {
                 activityList: state.activityList.concat(newActivity)
             }
         case UPDATE_ACTIVITY:
-            console.log('date match')
             const matchDateIndex = state.activityList.findIndex(el => el.date === action.date)
             const matchId = state.activityList.find(el => el.date === action.date)?.id
 
@@ -71,10 +71,25 @@ export default (state = initState, action) => {
                         return [...state.activityList[matchDateIndex].habitIds, action.habitId]
                     }
                     else if (action.habitDelId){
+                        //TODO
                         //look through activityList, filter if habitIds include action.habitDelId
-
-                    //     console.log('action.habitDelId',action.habitDelId);
-                    //     return [...state.activityList[matchDateIndex].habitIds.filter(el => el !== habitDelId)]
+                        console.log('action.habitDelId',action.habitDelId);
+                        const updatedActList = state.activityList.map(el => {
+                            if(el.habitIds.includes(action.habitDelId)){
+                                const filtHabitIds = el.habitIds.filter(el => el !== action.habitDelId)
+                                const actOut = {
+                                    ...el,
+                                    habitIds: filtHabitIds
+                                }
+                                console.log('actOut',actOut);
+                                return actOut
+                            }
+                            else{
+                                return el
+                            }
+                        })
+                        console.log('updatedActList',updatedActList);
+                        return updatedActList
                     }
                     else{
                         return [...state.activityList[matchDateIndex].habitIds]

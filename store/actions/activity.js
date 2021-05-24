@@ -8,6 +8,7 @@ import {
 
 export const fetchActivity = () => {
     return async (dispatch) => {
+        //URL/${USER_ID}/activity
         const response = await fetch(`${DATABASE_URL}/activity.json`)
         const resData = await response.json()
         let resOut = []

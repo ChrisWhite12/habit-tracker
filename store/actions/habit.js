@@ -9,9 +9,9 @@ import {
 import { CREATE_ACTIVITY, UPDATE_ACTIVITY } from './activity'
 
 export const createHabit = (habitName) => {
-    return async (dispatch) => {
+    return async (dispatch,getState) => {
         const token = getState().auth.token
-        await fetch(`${DATABASE_URL}/habit.json?auth=${token}`, {
+        await fetch(`${DATABASE_URL}/habit.json`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -66,23 +66,23 @@ export const fetchHabit = () => {
     }
 }
 
-export const updateHabit = (id, dateStart, highStreak) => {
+export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
     return async (dispatch, getState) => {
         const token = getState().auth.token
         //see if the activity already exists
-        const existActivity = getState().activity.activityList.find(el => el.date === new Date().toDateString())
+        const existActivity = getState().activity.activityList.find(el => el.date === new Date(dateBreak).toDateString())
         
         //if dateNew( current date ) - dateStart is greater than highStreak
         // console.log('id, dS, hS', id, dateStart, highStreak)
         // console.log((new Date() - new Date(dateStart))/ (1000* 60 * 60 * 24))
         let dataOut = {}
-        const timeDiff = Math.floor((new Date() - new Date(dateStart))/ (1000* 60 * 60 * 24))
+        const timeDiff = Math.floor((new Date(dateBreak) - new Date(dateStart))/ (1000* 60 * 60 * 24))
         if(timeDiff > parseInt(highStreak)){
             //update highStreak
             //update dateStart
             dataOut = {
                 highStreak: timeDiff.toString(),
-                dateStart: new Date().toISOString()
+                dateStart: new Date(dateBreak).toISOString()
             }
         }
         else{
@@ -90,13 +90,13 @@ export const updateHabit = (id, dateStart, highStreak) => {
             //use old highStreak
             dataOut = {
                 highStreak,
-                dateStart: new Date().toISOString()
+                dateStart: new Date(dateBreak).toISOString()
             }
 
         }
         
 
-        await fetch(`${DATABASE_URL}/habit/${id}.json?auth=${token}`, {
+        await fetch(`${DATABASE_URL}/habit/${id}.json`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -118,18 +118,19 @@ export const updateHabit = (id, dateStart, highStreak) => {
             // console.log('!(existActivity?.habitIds.includes(id))', existActivity?.habitIds.includes(id));
             //if the activity exists on the current day and doesn't include the id being updated
             console.log('existActivity',existActivity);
+            
             if (existActivity && !(existActivity?.habitIds?.includes(id))){
                 //update the current activity on firebase
                 const habitIdsOut = (existActivity.habitIds === undefined) ? [id] : [...existActivity.habitIds, id]
 
-                return fetch(`${DATABASE_URL}/activity/${existActivity.id}.json?auth=${token}`, {
+                return fetch(`${DATABASE_URL}/activity/${existActivity.id}.json`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(
                         {
-                            date: new Date(dateStart).toDateString(),
+                            date: new Date(dateBreak).toDateString(),               //dateStart ??
                             habitIds: habitIdsOut,
                         }
                     )
@@ -137,14 +138,14 @@ export const updateHabit = (id, dateStart, highStreak) => {
             }
             else if (!existActivity){
                 console.log("activity doesn't exist")
-                return fetch(`${DATABASE_URL}/activity.json?auth=${token}`, {
+                return fetch(`${DATABASE_URL}/activity.json`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(
                         {
-                            date: new Date(dateStart).toDateString(),
+                            date: new Date(dateBreak).toDateString(),               //dateStart ??
                             exerIds: [],
                             habitIds: [id]
                         }
@@ -160,7 +161,7 @@ export const updateHabit = (id, dateStart, highStreak) => {
             if (response?.ok){
                 return response.json()
             }
-            else if (existActivity && (existActivity?.habitIds?.includes(id))) {
+            else if (existActivity && (existActivity.habitIds?.includes(id))) {
                 return {message: 'activity not updated'}
             }
             else{
@@ -185,10 +186,10 @@ export const updateHabit = (id, dateStart, highStreak) => {
                         type: CREATE_ACTIVITY,
                         id: resData.name,
                         habitId: id,
-                        date: new Date().toDateString()
+                        date: new Date(dateBreak).toDateString()
                     })
                 }
-                else if (existActivity && !(existActivity?.habitIds?.includes(id))){
+                else if (existActivity && !(existActivity.habitIds?.includes(id))){
                     console.log('updating activity')
                     dispatch({ 
                         type: UPDATE_HABIT,
@@ -199,7 +200,7 @@ export const updateHabit = (id, dateStart, highStreak) => {
                     dispatch({
                         type: UPDATE_ACTIVITY,
                         habitId: id,
-                        date: new Date().toDateString()
+                        date: new Date(dateBreak).toDateString()
                     })
                 }
             }
@@ -211,16 +212,31 @@ export const updateHabit = (id, dateStart, highStreak) => {
 export const deleteHabit = habitId => {
     return async (dispatch, getState) => {
         const token = getState().auth.token
-        const delItem = getState().habit.habitList.find(el => el.id === habitId)
+        const delItem = getState().habit.habitList.find(el => el.id === habitId) // only finds one
+
+        const actList = getState().activity.activityList
+
+        const actFilter = actList.filter(el => {
+            return (el.habitIds?.includes(habitId))
+        })
+
+        console.log('actFilter',actFilter);
+        
         const actId = delItem.actId
 
-        fetch(`${DATABASE_URL}/habit/${habitId}.json?auth=${token}`, {
+        fetch(`${DATABASE_URL}/habit/${habitId}.json`, {
             method: 'DELETE'
         })
         .then(response => response.json())
         .then(data => {
+
+            //TODO update activity with deleted id
+            //go through each activity and check if the habit id exists in the habitIds
+            //create a fetch request to update the habitIds of activity
+            //execute all fetch requests
+
             console.log('delHabit data',data);
-            return fetch(`${DATABASE_URL}/activity/${actId}/habitIds/${habitId}.json?auth=${token}`, {
+            return fetch(`${DATABASE_URL}/activity/${actId}/habitIds/${habitId}.json`, {
                 method: 'DELETE'
             })
         })
@@ -237,6 +253,6 @@ export const deleteHabit = habitId => {
             dispatch({ type: UPDATE_ACTIVITY, habitDelId: habitId})
         })
 
-        //TODO update activity with deleted id
+
     } 
 }

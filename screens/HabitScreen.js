@@ -43,7 +43,7 @@ const HabitScreen = (props) => {
                         name={habit.item.habitName}
                         handleBreakStreak={() => {
                             //should update the currStreak and highStreak
-                            dispatch(habitActions.updateHabit(habit.item.id, habit.item.dateStart, habit.item.highStreak))
+                            dispatch(habitActions.updateHabit(habit.item.id, habit.item.dateStart, habit.item.highStreak, new Date()))
                         }}
                         onRemove={() => {
                             dispatch(habitActions.deleteHabit(habit.item.id))

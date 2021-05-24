@@ -16,9 +16,9 @@ export const createExercise = (exerciseName, cal, date) => {
 
         let createExerId
         
-        console.log('tempState',tempState);
+        // console.log('tempState',tempState);
         const existActivity = getState().activity.activityList.find(el => el.date === new Date(date).toDateString())
-        console.log('existActivity',existActivity);
+        // console.log('existActivity',existActivity);
 
         await fetch(`${DATABASE_URL}/exercise.json`, {
             method: 'POST',
@@ -40,7 +40,7 @@ export const createExercise = (exerciseName, cal, date) => {
             createExerId = data.name
             if (existActivity){
                 const exerIdsOut = (existActivity.exerIds === undefined) ? [createExerId] : [...existActivity.exerIds, createExerId]
-                return fetch(`${DATABASE_URL}/activity/${existActivity.id}.json?auth=${token}`, {
+                return fetch(`${DATABASE_URL}/activity/${existActivity.id}.json`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
@@ -54,7 +54,7 @@ export const createExercise = (exerciseName, cal, date) => {
                 })
             }
             else{
-                return fetch(`${DATABASE_URL}/activity.json?auth=${token}`, {
+                return fetch(`${DATABASE_URL}/activity.json`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -141,7 +141,7 @@ export const deleteExercise = (exerId) => {
         const actId = delItem.actId
 
         console.log('actId, exerId',actId, exerId);
-        fetch(`${DATABASE_URL}/exercise/${exerId}.json?auth=${token}`, {
+        fetch(`${DATABASE_URL}/exercise/${exerId}.json`, {
             method: 'DELETE'
         })
         .then(response => {
@@ -154,7 +154,7 @@ export const deleteExercise = (exerId) => {
         })
         .then(data => {
             const exerIdsOut = activityUpdate.exerIds.filter(el => el !== exerId)
-            return fetch(`${DATABASE_URL}/activity/${actId}.json?auth=${token}`, {
+            return fetch(`${DATABASE_URL}/activity/${actId}.json`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'

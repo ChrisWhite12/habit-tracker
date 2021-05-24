@@ -13,7 +13,7 @@ export const createWeight = (weight, date) => {
         const userId = getState().auth.userId
         console.log('token',token);
 
-        fetch(`${DATABASE_URL}/weight.json?auth=${token}`, {
+        fetch(`${DATABASE_URL}/weight.json`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -65,7 +65,7 @@ export const fetchWeight = () => {
 export const updateWeight = (id, weight, date) => {
     return async (dispatch, getState) => {
         const token = getState().auth.token
-        const response = await fetch(`${DATABASE_URL}/weight/${id}.json?auth=${token}`, {
+        const response = await fetch(`${DATABASE_URL}/weight/${id}.json`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'

@@ -12,6 +12,7 @@ import ExerciseScreen from '../screens/ExerciseScreen'
 import HabitScreen from '../screens/HabitScreen'
 import OverviewScreen from '../screens/OverviewScreen'
 import StartupScreen from '../screens/StartupScreen';
+import UserScreen from '../screens/UserScreen';
 import WeightScreen from '../screens/WeightScreen'
 
 
@@ -46,11 +47,18 @@ const ExerciseStack = createStackNavigator({
     defaultNavigationOptions: defaultNavOptions
 })
 
+const UserStack = createStackNavigator({
+    screen: UserScreen
+},{
+    defaultNavigationOptions: defaultNavOptions
+})
+
 const DrawerNavigator = createDrawerNavigator({
     Overview: OverviewStack,
     Weight: WeightStack,
     Habits: HabitStack,
-    Exercise: ExerciseStack
+    Exercise: ExerciseStack,
+    Profile: UserStack
 
 },{
     contentComponent: props => {

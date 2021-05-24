@@ -86,6 +86,23 @@ const OverviewScreen = (props) => {
 
         setDateText(date)
     }
+
+    const handleAddData = () => {
+        dispatch(habitActions.createHabit('Pizza'))
+
+        for (let ind = 0; ind < 6; ind++) {
+
+            const dateIn = new Date(new Date().setDate(nowDate.getDate() - ind))
+            console.log('dateIn',dateIn);
+            dispatch(exerciseActions.createExercise('walk','123', dateIn))
+        }
+
+        const pizzaHabit = habitData.find(el => el.name === 'Pizza')
+        console.log('pizzaHabit',pizzaHabit);
+        dispatch(habitActions.updateHabit(pizzaHabit.id, '1', '2', new Date(new Date().setDate(nowDate.getDate() - 1))))
+        dispatch(habitActions.updateHabit(pizzaHabit.id, '1', '2', new Date(new Date().setDate(nowDate.getDate() - 4))))
+        dispatch(habitActions.updateHabit(pizzaHabit.id, '1', '2', new Date(new Date().setDate(nowDate.getDate() - 9))))
+    }
     
     return (
         <View style={styles.screen}>
@@ -134,7 +151,10 @@ const OverviewScreen = (props) => {
                     </View>
 
                 </View>
-                {/* <Text>{user}</Text> */}
+                <Button 
+                    title='Load Data'
+                    onPress={handleAddData}
+                />
                 <Button 
                 title='LOGOUT'
                 onPress={() => {
