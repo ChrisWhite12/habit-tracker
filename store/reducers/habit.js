@@ -9,7 +9,7 @@ export default (state = initState, action) => {
     switch (action.type) {
 
         case CREATE_HABIT:
-            console.log('action.id',action.id);
+            console.log('create Habit',action.id);
         const newHabit = new Habit(
             action.id,
             action.habitData.habitName,
@@ -17,7 +17,6 @@ export default (state = initState, action) => {
             action.habitData.highStreak
         );
         return {
-            ...state,
             habitList: state.habitList.concat(newHabit)
         };
 

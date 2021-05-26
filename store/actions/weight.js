@@ -31,7 +31,7 @@ export const createWeight = (weight, date) => {
             }
         })
         .then(resData => {
-            console.log('resData',resData);
+            // console.log('resData',resData);
             dispatch({
                 type: CREATE_WEIGHT,
                 id: resData.name,
@@ -52,7 +52,7 @@ export const fetchWeight = () => {
         const response = await fetch(`${DATABASE_URL}/weight.json`)
         const resData = await response.json()
         let resOut = []
-        console.log('resData', resData)
+        // console.log('resData', resData)
 
         for (const key in resData) {
             resOut.push({weight: resData[key].weight, dateSet: resData[key].date, id: key})

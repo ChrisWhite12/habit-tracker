@@ -22,7 +22,7 @@ export default (state = initState, action) => {
         case CREATE_ACTIVITY:
             //TODO problem with action.id, undefined when updating activity
 
-            console.log('no match')
+            // console.log('no match')
             //create a new activity
             const newActivity = {
                 date: action.date,

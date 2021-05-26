@@ -12,9 +12,12 @@ import { gridData } from '../data/dummy-data'
 import {DATABASE_URL, FIREBASE_API_KEY} from '@env'
 import * as firebase from 'firebase'
 import { useDispatch, useSelector } from "react-redux";
+
 import * as activityActions from '../store/actions/activity'
 import * as habitActions from '../store/actions/habit'
 import * as exerciseActions from '../store/actions/exercise'
+import * as authActions from '../store/actions/auth'
+
 import GridWeek from "../components/GridWeek";
 
 // const dateOut = {}
@@ -28,6 +31,7 @@ const OverviewScreen = (props) => {
     const [dateText, setDateText] = useState('')
     const [exerText, setExerText] = useState([])
     const [habitText, setHabitText] = useState([])
+    const [isDummy, setIsDummy] = useState(false)
 
     const [week4,setWeek4] = useState(new Date(new Date().setDate(nowDate.getDate() + (7 - currDay))))
     const [week3,setWeek3] = useState(new Date(new Date().setDate(nowDate.getDate() - currDay)))
@@ -43,12 +47,13 @@ const OverviewScreen = (props) => {
     // const dateOut = {}
     useEffect(() => {
         setIsLoading(true)
-
+        console.log('in useEffect')
+        
         firebase.auth().onAuthStateChanged((userRes) => {
             if(userRes != null){
                 console.log('userRes', userRes)
                 console.log('userRes.uid', userRes.uid)
-
+                dispatch(authActions.setUserId(userRes.uid))
                 setUser(userRes.email)
             }
         })
@@ -57,9 +62,22 @@ const OverviewScreen = (props) => {
         dispatch(habitActions.fetchHabit())
         dispatch(exerciseActions.fetchExercise())
         
+        console.log('habitData ----',habitData);
+
+        if(isDummy){
+            const pizzaHabit = habitData.find(el => el.habitName === 'Pizza')            //TODO need to wait for redux to get new habit
+            console.log('pizzaHabit',pizzaHabit);
+            if(pizzaHabit){
+                dispatch(habitActions.updateHabit(pizzaHabit.id, new Date(new Date().setDate(nowDate.getDate() - 5)), '2', new Date(new Date().setDate(nowDate.getDate() - 1))))
+                dispatch(habitActions.updateHabit(pizzaHabit.id, new Date(new Date().setDate(nowDate.getDate() - 9)), '2', new Date(new Date().setDate(nowDate.getDate() - 4))))
+                dispatch(habitActions.updateHabit(pizzaHabit.id, new Date(new Date().setDate(nowDate.getDate() - 15)), '2', new Date(new Date().setDate(nowDate.getDate() - 9))))
+                setIsDummy(false)
+            }
+        }
+
         setIsLoading(false)
 
-    },[dispatch])
+    },[dispatch, isDummy])
 
     const handleClick = (date, exerIds, habitIds) => {
         console.log('habitData',habitData);
@@ -70,14 +88,14 @@ const OverviewScreen = (props) => {
         if(exerIds){
             for (let ind = 0; ind < exerIds.length; ind++) {
                 exerResult.push(exerData.find(el => el.id === exerIds[ind])?.exerciseName)
-                console.log('exerResult',exerResult);
+                // console.log('exerResult',exerResult);
             }
         }
         
         if(habitIds){
             for (let ind = 0; ind < habitIds.length; ind++) {
                 habitResult.push(habitData.find(el => el.id === habitIds[ind])?.habitName)         //TODO if there is no result
-                console.log('habitResult',habitResult);
+                // console.log('habitResult',habitResult);
             }
         }
         
@@ -87,21 +105,17 @@ const OverviewScreen = (props) => {
         setDateText(date)
     }
 
-    const handleAddData = () => {
-        dispatch(habitActions.createHabit('Pizza'))
-
+    const handleAddData = async () => {
+        
         for (let ind = 0; ind < 6; ind++) {
-
+            
             const dateIn = new Date(new Date().setDate(nowDate.getDate() - ind))
-            console.log('dateIn',dateIn);
-            dispatch(exerciseActions.createExercise('walk','123', dateIn))
+            // console.log('dateIn',dateIn);
+            await dispatch(exerciseActions.createExercise('walk','123', dateIn))
         }
 
-        const pizzaHabit = habitData.find(el => el.name === 'Pizza')
-        console.log('pizzaHabit',pizzaHabit);
-        dispatch(habitActions.updateHabit(pizzaHabit.id, '1', '2', new Date(new Date().setDate(nowDate.getDate() - 1))))
-        dispatch(habitActions.updateHabit(pizzaHabit.id, '1', '2', new Date(new Date().setDate(nowDate.getDate() - 4))))
-        dispatch(habitActions.updateHabit(pizzaHabit.id, '1', '2', new Date(new Date().setDate(nowDate.getDate() - 9))))
+        await dispatch(habitActions.createHabit('Pizza'))
+        setIsDummy(true) 
     }
     
     return (

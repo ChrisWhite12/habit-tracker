@@ -13,6 +13,9 @@ export const createExercise = (exerciseName, cal, date) => {
     return async (dispatch, getState) => {
         const tempState = getState()
         const token = getState().auth.token
+        const userId = getState().auth.userId
+
+        console.log('userId',userId);
 
         let createExerId
         
@@ -80,7 +83,7 @@ export const createExercise = (exerciseName, cal, date) => {
         })
         .then(resData =>
             {
-                console.log('---------resData-------',resData);
+                // console.log('---------resData-------',resData);
                 dispatch({
                     type: CREATE_EXERCISE,
                     id: createExerId,

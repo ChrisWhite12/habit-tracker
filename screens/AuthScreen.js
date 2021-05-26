@@ -44,10 +44,7 @@ const AuthScreen = (props) => {
                     .auth()
                     .signInWithCredential(credential);
                     
-                // console.log("credential", credential);
-                // console.log("googleProfileData", googleProfileData);
-                    console.log('sign in result', result)
-                    dispatch(AuthActions.setAuth(result.user.id, result.idToken))
+                    // await dispatch(AuthActions.setAuth(result.user.id, result.idToken))
                     props.navigation.navigate("App");
 
             } else {

@@ -11,6 +11,7 @@ import { CREATE_ACTIVITY, UPDATE_ACTIVITY } from './activity'
 export const createHabit = (habitName) => {
     return async (dispatch,getState) => {
         const token = getState().auth.token
+        let idOut = ''
         await fetch(`${DATABASE_URL}/habit.json`, {
             method: 'POST',
             headers: {
@@ -32,8 +33,9 @@ export const createHabit = (habitName) => {
             } 
         })
         .then(resData => {
-            console.log('resData',resData);
-            console.log('resData.name',resData.name);
+            // console.log('resData',resData);
+            // console.log('resData.name',resData.name);
+            idOut = resData.name
             dispatch({
                 type: CREATE_HABIT,
                 id: resData.name,
@@ -48,6 +50,7 @@ export const createHabit = (habitName) => {
         .catch( err =>
             console.log(err)
         )
+        return idOut
     }
 }
 
@@ -68,6 +71,7 @@ export const fetchHabit = () => {
 
 export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
     return async (dispatch, getState) => {
+        console.log('dateStart',dateStart);
         const token = getState().auth.token
         //see if the activity already exists
         const existActivity = getState().activity.activityList.find(el => el.date === new Date(dateBreak).toDateString())
@@ -170,8 +174,8 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
         })
         .then(resData =>
             {
-                console.log('---------resData-------',resData);
-                console.log('resData.name',resData.name);
+                // console.log('---------resData-------',resData);
+                // console.log('resData.name',resData.name);
                 //TODO resData.name is undefined when exist activity (PATCHING)
                 
                 if(!existActivity){
