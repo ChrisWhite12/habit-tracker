@@ -22,16 +22,16 @@ const AuthScreen = (props) => {
 
   const signInWithGoogleAsync = async () => {
       // console.log('ANDROID_ID',ANDROID_ID)
-      console.log("in signinwithgoogle");
+      // console.log("in signinwithgoogle");
       try {
-            const result = await Google.logInAsync({
+            const result = await Google.logInAsync({                                                //login with google
                 behavior: "web",
                 androidClientId: ANDROID_ID,
                 scopes: ["profile", "email"],
             });
 
-            if (result.type === "success") {
-                await firebase
+            if (result.type === "success") {                                                        //if response is success
+                await firebase                                                                      //authenticate with firebase
                     .auth()
                     .setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
@@ -43,16 +43,15 @@ const AuthScreen = (props) => {
                 const googleProfileData = await firebase
                     .auth()
                     .signInWithCredential(credential);
-                    
-                    // await dispatch(AuthActions.setAuth(result.user.id, result.idToken))
-                    props.navigation.navigate("App");
+
+                    props.navigation.navigate("App");                                               //navigate to App page
 
             } else {
             return { cancelled: true };
             }
       } catch (e) {
         console.log(e);
-        Alert.alert("An error has occured", error, [{ text: "Okay" }]);
+        Alert.alert("An error has occured", error, [{ text: "Okay" }]);                             //report error
         return { error: true };
       }
   };

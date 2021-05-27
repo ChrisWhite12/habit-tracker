@@ -4,32 +4,25 @@ export const DELETE_EXERCISE = 'DELETE_EXECISE'
 import {
     DATABASE_URL
 } from '@env'
-import { CREATE_ACTIVITY, UPDATE_ACTIVITY } from './activity'
+import { CREATE_ACTIVITY, UPDATE_ACTIVITY_CREATE, UPDATE_ACTIVITY_DELETE } from './activity'
 
 
 
 export const createExercise = (exerciseName, cal, date) => {
-    // console.log('DATABASE_URL',DATABASE_URL);
     return async (dispatch, getState) => {
         const tempState = getState()
-        const token = getState().auth.token
         const userId = getState().auth.userId
-
-        console.log('userId',userId);
 
         let createExerId
         
-        // console.log('tempState',tempState);
         const existActivity = getState().activity.activityList.find(el => el.date === new Date(date).toDateString())
-        // console.log('existActivity',existActivity);
 
-        await fetch(`${DATABASE_URL}/exercise.json`, {
+        await fetch(`${DATABASE_URL}/${userId}/exercise.json`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({exerciseName: exerciseName, cal: cal, date: date})
-            //TODO add userID
         })
         .then(response => {
             if (response.ok){
@@ -43,7 +36,7 @@ export const createExercise = (exerciseName, cal, date) => {
             createExerId = data.name
             if (existActivity){
                 const exerIdsOut = (existActivity.exerIds === undefined) ? [createExerId] : [...existActivity.exerIds, createExerId]
-                return fetch(`${DATABASE_URL}/activity/${existActivity.id}.json`, {
+                return fetch(`${DATABASE_URL}/${userId}/activity/${existActivity.id}.json`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
@@ -57,7 +50,7 @@ export const createExercise = (exerciseName, cal, date) => {
                 })
             }
             else{
-                return fetch(`${DATABASE_URL}/activity.json`, {
+                return fetch(`${DATABASE_URL}/${userId}/activity.json`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -68,7 +61,6 @@ export const createExercise = (exerciseName, cal, date) => {
                             exerIds: [createExerId],
                             habitIds: []
                         }
-                        //TODO add userID
                     )
                 })
             }
@@ -83,7 +75,6 @@ export const createExercise = (exerciseName, cal, date) => {
         })
         .then(resData =>
             {
-                // console.log('---------resData-------',resData);
                 dispatch({
                     type: CREATE_EXERCISE,
                     id: createExerId,
@@ -94,7 +85,6 @@ export const createExercise = (exerciseName, cal, date) => {
                         date,
                         actId: (existActivity ? existActivity.id : resData.name)
                     }
-                    //TODO add userID
                 })
                 if(!existActivity){
                     dispatch({
@@ -103,11 +93,10 @@ export const createExercise = (exerciseName, cal, date) => {
                         exerId: createExerId,
                         date: new Date(date).toDateString()
                     })
-                    //TODO add userID
                 }
                 else{
                     dispatch({
-                        type: UPDATE_ACTIVITY,
+                        type: UPDATE_ACTIVITY_CREATE,
                         exerId: createExerId,
                         date: new Date(date).toDateString()
                     })
@@ -122,8 +111,9 @@ export const createExercise = (exerciseName, cal, date) => {
 }
 
 export const fetchExercise = () => {
-    return async (dispatch) => {
-        const response = await fetch(`${DATABASE_URL}/exercise.json`)
+    return async (dispatch, getState) => {
+        const userId = getState().auth.userId
+        const response = await fetch(`${DATABASE_URL}/${userId}/exercise.json`)
         const resData = await response.json()
         let resOut = []
 
@@ -137,14 +127,13 @@ export const fetchExercise = () => {
 
 export const deleteExercise = (exerId) => {
     return async (dispatch, getState) => {
-        const token = getState().auth.token
+        const userId = getState().auth.userId
         const delItem = getState().exercise.exerciseList.find(el => el.id === exerId)       //item in the exercise list that is being delete
-        console.log('delItem',delItem);
         const activityUpdate = getState().activity.activityList.find(el => el.id === delItem.actId)
+
         const actId = delItem.actId
 
-        console.log('actId, exerId',actId, exerId);
-        fetch(`${DATABASE_URL}/exercise/${exerId}.json`, {
+        fetch(`${DATABASE_URL}/${userId}/exercise/${exerId}.json`, {
             method: 'DELETE'
         })
         .then(response => {
@@ -157,7 +146,7 @@ export const deleteExercise = (exerId) => {
         })
         .then(data => {
             const exerIdsOut = activityUpdate.exerIds.filter(el => el !== exerId)
-            return fetch(`${DATABASE_URL}/activity/${actId}.json`, {
+            return fetch(`${DATABASE_URL}/${userId}/activity/${actId}.json`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
@@ -179,10 +168,9 @@ export const deleteExercise = (exerId) => {
         })
         .then(resData => {
             dispatch({ type: DELETE_EXERCISE, id: exerId })
-            dispatch({ type: UPDATE_ACTIVITY, exerDelId: exerId, date: delItem.date.toDateString()})
+            dispatch({ type: UPDATE_ACTIVITY_DELETE, exerDelId: exerId, date: delItem.date.toDateString(), actId: actId})
         })
         .catch(err => console.log(err))
 
     }
-    //TODO update activity with deleted id
 }

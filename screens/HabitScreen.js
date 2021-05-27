@@ -7,34 +7,27 @@ import Colors from "../constants/Colors";
 
 import * as habitActions from '../store/actions/habit'
 
-import { habitData } from '../data/dummy-data'
-import { withDecay } from 'react-native-reanimated';
-
-//TODO wider flatlist
-//TODO add remove button and function
-
-
 const HabitScreen = (props) => {
 
     const habits = useSelector( state => {
-        // console.log('habitList',state.habit.habitList)
             return state.habit.habitList
         }
     )
     const dispatch = useDispatch()
 
     const handleAdd = () => {
-        props.navigation.navigate('create')
+        props.navigation.navigate('create')                     //navigate to create page
     }
     
     useEffect(() => {
-        dispatch(habitActions.fetchHabit())
+        dispatch(habitActions.fetchHabit())                     //fetch all habits
     },[dispatch])
 
     return (
         <View style={styles.screen}>
             <View>
                 <FlatList style={styles.flat} data={habits} renderItem={(habit) => {
+                    //calculate current streak
                     const currStreak = Math.floor(((new Date()) - (new Date(habit.item.dateStart))) / (1000 * 60 * 60 * 24))
                     return (
                         <HabitItem 
@@ -42,7 +35,7 @@ const HabitScreen = (props) => {
                         highStreak={habit.item.highStreak}
                         name={habit.item.habitName}
                         handleBreakStreak={() => {
-                            //should update the currStreak and highStreak
+                            //update the currStreak and highStreak
                             dispatch(habitActions.updateHabit(habit.item.id, habit.item.dateStart, habit.item.highStreak, new Date()))
                         }}
                         onRemove={() => {

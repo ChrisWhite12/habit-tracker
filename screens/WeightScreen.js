@@ -10,11 +10,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 import * as weightActions from '../store/actions/weight'
 import { dateConvert } from '../utils';
-// import { dateConvert } from '../utils';
-
-//TODO update weight if date already has data
-//TODO not updating when first entry
-
 
 const WeightScreen = (props) => {
 
@@ -29,11 +24,8 @@ const WeightScreen = (props) => {
     const [labelGraph, setLabelGraph] = useState([])
 
     const convDate = dateConvert(new Date())
-    // console.log('now', new Date())
-    // console.log('convDate',convDate);
     const currMonth = convDate.month
 
-    // console.log('weightGraph',weightGraph);
     const handleChange = (text) => {
         setNewWeight(text)
     }
@@ -42,16 +34,10 @@ const WeightScreen = (props) => {
         
         setIsSubmit(true)
         //check if the data already exists
-        // console.log('weightData',weightData);
 
         const existWeight = weightData.find(weightItem => {
-            // console.log('weightItem.dateSet',weightItem.dateSet);
             const date1 = new Date(weightItem.dateSet).toDateString()
-            // .toDateString()
             const date2 = new Date().toDateString()
-
-            // console.log('date1, date2',date1, date2);
-
             return date1 === date2
         })
 
@@ -68,20 +54,12 @@ const WeightScreen = (props) => {
         setIsSubmit(false)
         },[dispatch, newWeight]) 
 
-    // const loadWeight = (( ) => {
-        
-    // })
-    // ,[dispatch, setError, setIsLoading]
 
     //processData - sets the weightGraph state
     const processData = () => {
-        // console.log('in processData')
 
         const filtWeight = (weightData?.length >= 1) ? 
         weightData.filter(el => {
-            // console.log('month',typeof((new Date(el.dateSet)).getMonth()));
-            // const stringParts = el.dateSet.split('/')
-
             if(((new Date(el.dateSet)).getMonth() + 1) === currMonth){
                 return el
             }
@@ -94,18 +72,14 @@ const WeightScreen = (props) => {
             dateOut: []
         }
 
-        // console.log('filtWeight',filtWeight);
-
         if (filtWeight?.length >= 1){            
             for (let i = 1; i <= convDate.day; i++) {
 
                 let dateTrack = filtWeight.find(el => {
                     const itemDay = new Date(el.dateSet).getDate()
-                    // console.log('itemDay, i',itemDay, i);
                     return itemDay === i
                 })
 
-                // console.log('dateTrack',dateTrack);
                 if(dateTrack !== undefined && firstDay === true){
                     firstDay = false
                     tableData.weightOut.push(parseFloat(dateTrack.weight))
@@ -120,7 +94,6 @@ const WeightScreen = (props) => {
                     tableData.dateOut.push(i.toString())
                 }
             }
-            // console.log('tableData',tableData);
             setWeightGraph(tableData.weightOut)
             setLabelGraph(tableData.dateOut)
             // return tableData
@@ -130,22 +103,9 @@ const WeightScreen = (props) => {
     useEffect(() => {
         // setIsLoading(true)
         dispatch(weightActions.fetchWeight()) 
-
-        // console.log('data', weightData)
-        
-        // console.log('data2', weightData)
-        // console.log('done processData')
-        // setIsLoading(false)
-        // .catch(err => {
-        //     console.log(err)
-        //     setError(err.message)
-        // })
-        
-
     }, [dispatch])
 
     useEffect(() => {
-        // console.log('weightData',weightData);
         processData()
     },[weightData])
 

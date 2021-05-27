@@ -10,7 +10,7 @@ const GridWeek = (props) => {
 
     useEffect(() => {
         setIsLoading(true)
-        console.log('props.dayEnd',props.dayEnd.toDateString());
+        // console.log('props.dayEnd',props.dayEnd.toDateString());
         let dateOut = [{date: props.dayEnd.toDateString()}]
 
         for (let ind = 1; ind < 7; ind++) {

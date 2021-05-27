@@ -16,8 +16,8 @@ const CreateHabitScreen = (props) => {
     }
 
     const handleSubmit = useCallback(async() => {
-        await dispatch(habitActions.createHabit(habitName))
-        props.navigation.goBack()
+        await dispatch(habitActions.createHabit(habitName))                             //create habit
+        props.navigation.goBack()                                                       //navigate back to the previous page
     },[dispatch, habitName])
 
     return (

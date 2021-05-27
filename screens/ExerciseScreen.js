@@ -9,19 +9,15 @@ import Colors from "../constants/Colors";
 import * as exerciseActions from '../store/actions/exercise'
 import { dateConvert } from '../utils';
 
-//TODO only show exercises for current day
-//TODO remove activity
-//go back to previous days?
 
 const ExerciseScreen = (props) => {
     const [textAct, setTextAct] = useState('')
     const [textCal, setTextCal] = useState('')
     
     const convDate = dateConvert(new Date())
-    // console.log('convDate',convDate);
     
     const exercisesSel = useSelector(state => {
-        // console.log('state.exercise.exerciseList',state.exercise.exerciseList);
+        //get the exercise for current day
         const exerFiltered = state.exercise?.exerciseList?.filter(exer => new Date(exer.date).toDateString() === new Date().toDateString())
         return exerFiltered
     })
@@ -37,11 +33,11 @@ const ExerciseScreen = (props) => {
     }
 
     const handleSubmit = useCallback(async() => {
-        await dispatch(exerciseActions.createExercise(textAct,textCal, new Date()))
+        await dispatch(exerciseActions.createExercise(textAct,textCal, new Date()))             //create a new exercise
     })
 
     useEffect(() => {
-        dispatch(exerciseActions.fetchExercise())
+        dispatch(exerciseActions.fetchExercise())                               //retrive all exercises
     },[dispatch])
 
     return (

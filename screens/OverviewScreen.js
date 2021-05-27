@@ -23,7 +23,6 @@ import GridWeek from "../components/GridWeek";
 // const dateOut = {}
 
 const OverviewScreen = (props) => {
-    //TODO when click on square, load activites in infoCont
     const nowDate = new Date()
     const currDay = nowDate.getDay() === 0 ? 7 : nowDate.getDay()
 
@@ -47,31 +46,29 @@ const OverviewScreen = (props) => {
     // const dateOut = {}
     useEffect(() => {
         setIsLoading(true)
-        console.log('in useEffect')
-        
-        firebase.auth().onAuthStateChanged((userRes) => {
+        // console.log('in useEffect')
+
+        firebase.auth().onAuthStateChanged((userRes) => {                       //when the user is logged in
             if(userRes != null){
-                console.log('userRes', userRes)
+                // console.log('userRes', userRes)
                 console.log('userRes.uid', userRes.uid)
-                dispatch(authActions.setUserId(userRes.uid))
+                dispatch(authActions.setUserId(userRes.uid))                    //set the auth userId to userRes.uid
                 setUser(userRes.email)
             }
         })
 
         dispatch(activityActions.fetchActivity())
         dispatch(habitActions.fetchHabit())
-        dispatch(exerciseActions.fetchExercise())
-        
-        console.log('habitData ----',habitData);
+        dispatch(exerciseActions.fetchExercise())                               //fetch all data
 
-        if(isDummy){
-            const pizzaHabit = habitData.find(el => el.habitName === 'Pizza')            //TODO need to wait for redux to get new habit
-            console.log('pizzaHabit',pizzaHabit);
+        if(isDummy){                                                            //if the dummy data is being setup
+            const pizzaHabit = habitData.find(el => el.habitName === 'Pizza')   //find the pizza habit
             if(pizzaHabit){
-                dispatch(habitActions.updateHabit(pizzaHabit.id, new Date(new Date().setDate(nowDate.getDate() - 5)), '2', new Date(new Date().setDate(nowDate.getDate() - 1))))
+                //update habit to occur on three days
+                dispatch(habitActions.updateHabit(pizzaHabit.id, new Date(new Date().setDate(nowDate.getDate() - 5)), '2', new Date(new Date().setDate(nowDate.getDate()))))
                 dispatch(habitActions.updateHabit(pizzaHabit.id, new Date(new Date().setDate(nowDate.getDate() - 9)), '2', new Date(new Date().setDate(nowDate.getDate() - 4))))
                 dispatch(habitActions.updateHabit(pizzaHabit.id, new Date(new Date().setDate(nowDate.getDate() - 15)), '2', new Date(new Date().setDate(nowDate.getDate() - 9))))
-                setIsDummy(false)
+                setIsDummy(false)               //done with dummy setup
             }
         }
 
@@ -80,42 +77,36 @@ const OverviewScreen = (props) => {
     },[dispatch, isDummy])
 
     const handleClick = (date, exerIds, habitIds) => {
-        console.log('habitData',habitData);
-        console.log('habitIds',habitIds);
         let exerResult = []
         let habitResult = []
 
         if(exerIds){
             for (let ind = 0; ind < exerIds.length; ind++) {
-                exerResult.push(exerData.find(el => el.id === exerIds[ind])?.exerciseName)
-                // console.log('exerResult',exerResult);
+                exerResult.push(exerData.find(el => el.id === exerIds[ind])?.exerciseName)          //load names from exercise data
             }
         }
         
         if(habitIds){
             for (let ind = 0; ind < habitIds.length; ind++) {
-                habitResult.push(habitData.find(el => el.id === habitIds[ind])?.habitName)         //TODO if there is no result
-                // console.log('habitResult',habitResult);
+                habitResult.push(habitData.find(el => el.id === habitIds[ind])?.habitName)          //load names from habit data
             }
         }
         
         setHabitText(habitResult)
-        setExerText(exerResult)
+        setExerText(exerResult)                 //set text
 
-        setDateText(date)
+        setDateText(date)                       //set date text
     }
 
-    const handleAddData = async () => {
+    const handleAddData = async () => {             //trigged when loading dummy data
         
-        for (let ind = 0; ind < 6; ind++) {
-            
-            const dateIn = new Date(new Date().setDate(nowDate.getDate() - ind))
-            // console.log('dateIn',dateIn);
-            await dispatch(exerciseActions.createExercise('walk','123', dateIn))
+        for (let ind = 0; ind < 6; ind++) {         
+            const dateIn = new Date(new Date().setDate(nowDate.getDate() - ind))    //create new date - ind
+            await dispatch(exerciseActions.createExercise('walk','123', dateIn))    //create exercise with new date
         }
 
-        await dispatch(habitActions.createHabit('Pizza'))
-        setIsDummy(true) 
+        await dispatch(habitActions.createHabit('Pizza'))           //create habit
+        setIsDummy(true)                                            //set dummy data state
     }
     
     return (

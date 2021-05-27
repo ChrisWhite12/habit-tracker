@@ -28,11 +28,8 @@ const GridSquare = (props) => {
 
     return (
         <TouchableOpacity onPress={() => {
-            // console.log('activityDay',activityDay);
-            // console.log('activityDay.habitIds',activityDay.habitIds);
             return props.handleClick(props.boxData.date, activityDay?.exerIds, activityDay?.habitIds)
             }} style={{...styles.box,...{backgroundColor: boxColor, borderColor: boxColor}}}>
-                {/* <Text style={styles.boxText}>{props.boxData.date}</Text> */}
         </TouchableOpacity>
     );
 };

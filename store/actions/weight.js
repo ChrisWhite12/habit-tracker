@@ -9,11 +9,9 @@ import {
 
 export const createWeight = (weight, date) => {
     return async (dispatch, getState) => {
-        const token = getState().auth.token
         const userId = getState().auth.userId
-        console.log('token',token);
 
-        fetch(`${DATABASE_URL}/weight.json`, {
+        fetch(`${DATABASE_URL}/${userId}/weight.json`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -31,7 +29,6 @@ export const createWeight = (weight, date) => {
             }
         })
         .then(resData => {
-            // console.log('resData',resData);
             dispatch({
                 type: CREATE_WEIGHT,
                 id: resData.name,
@@ -48,11 +45,11 @@ export const createWeight = (weight, date) => {
 }
 
 export const fetchWeight = () => {
-    return async (dispatch) => {
-        const response = await fetch(`${DATABASE_URL}/weight.json`)
+    return async (dispatch, getState) => {
+        const userId = getState().auth.userId
+        const response = await fetch(`${DATABASE_URL}/${userId}/weight.json`)
         const resData = await response.json()
         let resOut = []
-        // console.log('resData', resData)
 
         for (const key in resData) {
             resOut.push({weight: resData[key].weight, dateSet: resData[key].date, id: key})
@@ -64,8 +61,8 @@ export const fetchWeight = () => {
 
 export const updateWeight = (id, weight, date) => {
     return async (dispatch, getState) => {
-        const token = getState().auth.token
-        const response = await fetch(`${DATABASE_URL}/weight/${id}.json`, {
+        const userId = getState().auth.userId
+        const response = await fetch(`${DATABASE_URL}/${userId}/weight/${id}.json`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -75,7 +72,6 @@ export const updateWeight = (id, weight, date) => {
         })
 
         if(!response.ok){
-            console.log(response)
             throw new Error('Response not OK')
         }
 

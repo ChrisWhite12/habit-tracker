@@ -9,7 +9,6 @@ export default (state = initState, action) => {
     switch (action.type) {
 
         case CREATE_HABIT:
-            console.log('create Habit',action.id);
         const newHabit = new Habit(
             action.id,
             action.habitData.habitName,
@@ -36,8 +35,7 @@ export default (state = initState, action) => {
             
             const updatedHabits = [...state.habitList]
             updatedHabits[habitIndex] = updatedHabit
-            console.log('updatedHabits',updatedHabits);
-
+            
             return {
                 ...state,
                 habitList: updatedHabits

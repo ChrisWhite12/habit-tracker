@@ -6,13 +6,13 @@ export const DELETE_HABIT = 'DELETE_HABIT'
 import {
     DATABASE_URL
 } from '@env'
-import { CREATE_ACTIVITY, UPDATE_ACTIVITY } from './activity'
+import { CREATE_ACTIVITY, UPDATE_ACTIVITY_CREATE, UPDATE_ACTIVITY_DELETE } from './activity'
 
 export const createHabit = (habitName) => {
     return async (dispatch,getState) => {
-        const token = getState().auth.token
+        const userId = getState().auth.userId
         let idOut = ''
-        await fetch(`${DATABASE_URL}/habit.json`, {
+        await fetch(`${DATABASE_URL}/${userId}/habit.json`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -22,7 +22,6 @@ export const createHabit = (habitName) => {
                 dateStart: new Date().toISOString(), 
                 highStreak: '0'
             })
-            //TODO add userID
         })
         .then(response => {
             if (response.ok){
@@ -33,8 +32,6 @@ export const createHabit = (habitName) => {
             } 
         })
         .then(resData => {
-            // console.log('resData',resData);
-            // console.log('resData.name',resData.name);
             idOut = resData.name
             dispatch({
                 type: CREATE_HABIT,
@@ -45,7 +42,6 @@ export const createHabit = (habitName) => {
                     highStreak: '0'
                 }
             })
-            //TODO add userID
         })
         .catch( err =>
             console.log(err)
@@ -55,11 +51,11 @@ export const createHabit = (habitName) => {
 }
 
 export const fetchHabit = () => {
-    return async (dispatch) => {
-        const response = await fetch(`${DATABASE_URL}/habit.json`)
+    return async (dispatch, getState) => {
+        const userId = getState().auth.userId
+        const response = await fetch(`${DATABASE_URL}/${userId}/habit.json`)
         const resData = await response.json()
         let resOut = []
-        // console.log('fetchHabit ', resData)
 
         for (const key in resData) {
             resOut.push({dateStart: resData[key].dateStart, habitName: resData[key].habitName, highStreak: resData[key].highStreak, id: key})
@@ -71,36 +67,32 @@ export const fetchHabit = () => {
 
 export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
     return async (dispatch, getState) => {
-        console.log('dateStart',dateStart);
-        const token = getState().auth.token
+        const tempState = getState()
+        const userId = getState().auth.userId
+
+        console.log('tempState',tempState);
         //see if the activity already exists
         const existActivity = getState().activity.activityList.find(el => el.date === new Date(dateBreak).toDateString())
         
-        //if dateNew( current date ) - dateStart is greater than highStreak
-        // console.log('id, dS, hS', id, dateStart, highStreak)
-        // console.log((new Date() - new Date(dateStart))/ (1000* 60 * 60 * 24))
         let dataOut = {}
         const timeDiff = Math.floor((new Date(dateBreak) - new Date(dateStart))/ (1000* 60 * 60 * 24))
+
         if(timeDiff > parseInt(highStreak)){
-            //update highStreak
-            //update dateStart
             dataOut = {
-                highStreak: timeDiff.toString(),
-                dateStart: new Date(dateBreak).toISOString()
+                highStreak: timeDiff.toString(),                                                //update highStreak
+                dateStart: new Date(dateBreak).toISOString()                                    //update dateStart
             }
         }
         else{
-            //update dateStart
-            //use old highStreak
             dataOut = {
-                highStreak,
-                dateStart: new Date(dateBreak).toISOString()
+                highStreak,                                                                     //update dateStart
+                dateStart: new Date(dateBreak).toISOString()                                    //use old highStreak
             }
 
         }
         
 
-        await fetch(`${DATABASE_URL}/habit/${id}.json`, {
+        await fetch(`${DATABASE_URL}/${userId}/habit/${id}.json`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -117,17 +109,14 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
             } 
         })
         .then(data => {
-            console.log('id',id);
-            // console.log('existActivity?.habitIds',existActivity?.habitIds);
-            // console.log('!(existActivity?.habitIds.includes(id))', existActivity?.habitIds.includes(id));
-            //if the activity exists on the current day and doesn't include the id being updated
             console.log('existActivity',existActivity);
             
             if (existActivity && !(existActivity?.habitIds?.includes(id))){
-                //update the current activity on firebase
+                console.log("activity does exist")
                 const habitIdsOut = (existActivity.habitIds === undefined) ? [id] : [...existActivity.habitIds, id]
-
-                return fetch(`${DATABASE_URL}/activity/${existActivity.id}.json`, {
+                
+                //update the current activity on firebase
+                return fetch(`${DATABASE_URL}/${userId}/activity/${existActivity.id}.json`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
@@ -142,7 +131,8 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
             }
             else if (!existActivity){
                 console.log("activity doesn't exist")
-                return fetch(`${DATABASE_URL}/activity.json`, {
+                
+                return fetch(`${DATABASE_URL}/${userId}/activity.json`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -161,7 +151,6 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
             }
         })
         .then(response => {
-            // console.log('(existActivity?.habitIds.includes(id)) -- 2',(existActivity?.habitIds.includes(id)));
             if (response?.ok){
                 return response.json()
             }
@@ -174,12 +163,10 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
         })
         .then(resData =>
             {
-                // console.log('---------resData-------',resData);
-                // console.log('resData.name',resData.name);
-                //TODO resData.name is undefined when exist activity (PATCHING)
-                
                 if(!existActivity){
                     console.log('creating activity')
+                    console.log('updating habit, actId ', resData.name )
+
                     dispatch({ 
                         type: UPDATE_HABIT,
                         id: id,
@@ -195,6 +182,7 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
                 }
                 else if (existActivity && !(existActivity.habitIds?.includes(id))){
                     console.log('updating activity')
+                    console.log('existActivity.id',existActivity.id);
                     dispatch({ 
                         type: UPDATE_HABIT,
                         id: id,
@@ -202,7 +190,7 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
                         actId: existActivity.id
                     })
                     dispatch({
-                        type: UPDATE_ACTIVITY,
+                        type: UPDATE_ACTIVITY_CREATE,
                         habitId: id,
                         date: new Date(dateBreak).toDateString()
                     })
@@ -215,9 +203,7 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
 
 export const deleteHabit = habitId => {
     return async (dispatch, getState) => {
-        const token = getState().auth.token
-        const delItem = getState().habit.habitList.find(el => el.id === habitId) // only finds one
-
+        const userId = getState().auth.userId
         const actList = getState().activity.activityList
 
         const actFilter = actList.filter(el => {
@@ -225,37 +211,40 @@ export const deleteHabit = habitId => {
         })
 
         console.log('actFilter',actFilter);
-        
-        const actId = delItem.actId
 
-        fetch(`${DATABASE_URL}/habit/${habitId}.json`, {
+        await Promise.all(
+            actFilter.map(actItem => {
+                const habitIdIndex = actItem.habitIds.findIndex(el => el === habitId)
+                console.log('habitIdIndex',habitIdIndex);
+
+                //TODO - make a post request to update habitIds - to fix index (0,2,3) should be (0,1,2)
+                console.log(`${DATABASE_URL}/${userId}/activity/${actItem.id}/habitIds/${habitIdIndex}.json`)
+                return fetch(`${DATABASE_URL}/${userId}/activity/${actItem.id}/habitIds/${habitIdIndex}.json`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok){
+                        return response.json()
+                    }
+                    else{
+                        throw new Error('Response not OK')
+                    } 
+                })
+                .then(resData => {
+                    dispatch({ type: UPDATE_ACTIVITY_DELETE, habitDelId: habitId, date: actItem.date, actId: actItem.id})
+                })
+                .catch(err => console.log(err))
+            })
+        )
+
+        await fetch(`${DATABASE_URL}/${userId}/habit/${habitId}.json`, {
             method: 'DELETE'
         })
-        .then(response => response.json())
-        .then(data => {
-
-            //TODO update activity with deleted id
-            //go through each activity and check if the habit id exists in the habitIds
-            //create a fetch request to update the habitIds of activity
-            //execute all fetch requests
-
-            console.log('delHabit data',data);
-            return fetch(`${DATABASE_URL}/activity/${actId}/habitIds/${habitId}.json`, {
-                method: 'DELETE'
-            })
-        })
-        .then(response => {
-            if (response.ok){
-                return response.json()
-            }
-            else{
-                throw new Error('Response not OK')
-            } 
-        })
+        .then(response => response.json())        
         .then(resData => {
             dispatch({ type: DELETE_HABIT, id: habitId })
-            dispatch({ type: UPDATE_ACTIVITY, habitDelId: habitId})
         })
+        .catch(err => console.log(err))
 
 
     } 
