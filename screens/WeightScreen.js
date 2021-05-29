@@ -22,6 +22,7 @@ const WeightScreen = (props) => {
     const [error,setError] = useState('')
     const [weightGraph, setWeightGraph] = useState([])
     const [labelGraph, setLabelGraph] = useState([])
+    const [graphMode, setGraphMode] = useState('Current Month')
 
     const convDate = dateConvert(new Date())
     const currMonth = convDate.month
@@ -57,14 +58,29 @@ const WeightScreen = (props) => {
 
     //processData - sets the weightGraph state
     const processData = () => {
+        //TODO fiter the 90days or current month
 
-        const filtWeight = (weightData?.length >= 1) ? 
-        weightData.filter(el => {
-            if(((new Date(el.dateSet)).getMonth() + 1) === currMonth){
-                return el
+        let filtWeight = []
+
+        if (weightData?.length >= 1){
+            if (graphMode === 'Current Month'){
+                filtWeight = weightData.filter(el => {
+                    if(((new Date(el.dateSet)).getMonth() + 1) === currMonth){
+                        return el
+                    }
+                })
             }
-        })
-        :[]
+            else {
+                filtWeight = weightData.filter(el => {
+                    //find difference between current date and el.dateSet
+                    if ((new Date() - new Date(el.dateSet))/(1000 * 60 * 60 * 24) < 90){
+                        return el
+                    }
+                })
+            }
+        }
+
+        console.log('filtWeight',filtWeight);
 
         let firstDay = true
         const tableData = {
@@ -72,31 +88,96 @@ const WeightScreen = (props) => {
             dateOut: []
         }
 
+        //TODO : set data for past 90 days
         if (filtWeight?.length >= 1){            
-            for (let i = 1; i <= convDate.day; i++) {
-
-                let dateTrack = filtWeight.find(el => {
-                    const itemDay = new Date(el.dateSet).getDate()
-                    return itemDay === i
-                })
-
-                if(dateTrack !== undefined && firstDay === true){
-                    firstDay = false
-                    tableData.weightOut.push(parseFloat(dateTrack.weight))
-                    tableData.dateOut.push(i.toString())
+            if(graphMode === 'Current Month'){
+                for (let i = 1; i <= convDate.day; i++) {                                                       //for 1 to current day
+    
+                    const dateTrack = filtWeight.find(el => {                                                     //find the weight data that matches i
+                        const itemDay = new Date(el.dateSet).getDate()
+                        return itemDay === i
+                    })
+    
+                    if(dateTrack !== undefined && firstDay === true){                                           //if the first date in data
+                        firstDay = false
+                        tableData.weightOut.push(parseFloat(dateTrack.weight))                                  //push the weight onto weight out
+                        tableData.dateOut.push((i%3 === 0) ? i.toString() : '')                                                    //set label as i
+                    }
+                    else if(dateTrack === undefined && firstDay === false && i !== convDate.day){               //if undefined, not the first day and not current day
+                        tableData.weightOut.push(tableData.weightOut[tableData.weightOut.length-1])             //use the data from the previous day
+                        tableData.dateOut.push((i%3 === 0) ? i.toString() : '')
+                    }
+                    else if(dateTrack !== undefined && firstDay === false){                                     //if defined and not first day
+                        tableData.weightOut.push(parseFloat(dateTrack.weight))                                  //push to weight out
+                        tableData.dateOut.push((i%3 === 0) ? i.toString() : '')
+                    }
                 }
-                else if(dateTrack === undefined && firstDay === false && i !== convDate.day){
-                    tableData.weightOut.push(tableData.weightOut[tableData.weightOut.length-1])
-                    tableData.dateOut.push(i.toString())
-                }
-                else if(dateTrack !== undefined && firstDay === false){
-                    tableData.weightOut.push(parseFloat(dateTrack.weight))
-                    tableData.dateOut.push(i.toString())
-                }
+                setWeightGraph(tableData.weightOut)
+                setLabelGraph(tableData.dateOut)
             }
-            setWeightGraph(tableData.weightOut)
-            setLabelGraph(tableData.dateOut)
+            else{
+
+                //TODO consider current day, do testing
+                for (let i = 1; i <= 90; i++) {
+                    const dateTrack = filtWeight.find(el => {
+                        const dateDiff = Math.floor((new Date() - new Date(el.dateSet))/(1000 * 60 * 60 * 24))
+                        // console.log('dateDiff',dateDiff);
+                        return dateDiff === i
+                    })
+
+
+                    if (dateTrack) { console.log('dateTrack, i ',dateTrack, i) }
+
+                    if(dateTrack !== undefined && firstDay === true){
+                        firstDay = false
+                        tableData.weightOut.unshift(parseFloat(dateTrack.weight))
+                        tableData.dateOut.unshift((i%10 === 0) ? i.toString() : '')
+                    }
+                    else if(dateTrack === undefined && firstDay === false && i !== 90){                         //if undefined, not the first day and not day 90
+                        tableData.weightOut.unshift(tableData.weightOut[0])
+                        tableData.dateOut.unshift((i%10 === 0) ? i.toString() : '')
+                    }
+                    else if(dateTrack !== undefined && firstDay === false){
+                        tableData.weightOut.unshift(parseFloat(dateTrack.weight))
+                        tableData.dateOut.unshift((i%10 === 0) ? i.toString() : '')
+                    }
+                }
+                setWeightGraph(tableData.weightOut)
+                setLabelGraph(tableData.dateOut)
+            }
+
+
             // return tableData
+        }
+    }
+
+    const handlePressForward = () => {
+        switch (graphMode) {
+            case 'Current Month':
+                setGraphMode('Past 90 days')
+                break;
+
+            case 'Past 90 days':
+                setGraphMode('Current Month')
+                break;
+        
+            default:
+                break;
+        }
+    }
+
+    const handlePressBack = () => {
+        switch (graphMode) {
+            case 'Current Month':
+                setGraphMode('Past 90 days')
+                break;
+
+            case 'Past 90 days':
+                setGraphMode('Current Month')
+                break;
+        
+            default:
+                break;
         }
     }
 
@@ -107,12 +188,16 @@ const WeightScreen = (props) => {
 
     useEffect(() => {
         processData()
-    },[weightData])
+    },[weightData, graphMode])
 
     return (
         <View style={styles.screen}>
             <View style={styles.formCont}>
-                <TextDefault style={styles.date}>Date: {convDate.day}/{convDate.month}/{convDate.year}</TextDefault>
+                <View style={styles.filterCont}>
+                    <CustomHeaderButton name="chevron-back" onPress={handlePressBack}/>
+                    <TextDefault style={styles.date}>{graphMode}</TextDefault>
+                    <CustomHeaderButton name="chevron-forward" onPress={handlePressForward}/>
+                </View>
                 <TextInput style={styles.weightInput} onChangeText={handleChange} keyboardType='decimal-pad' />
                 {isSubmit ? <ActivityIndicator size='small' color={Colors.primary} /> : <Button title="Enter Weight" onPress={handleSubmit} />}
             </View>
@@ -132,6 +217,7 @@ const WeightScreen = (props) => {
 
                     width={Dimensions.get('window').width * 0.8} // from react-native
                     height={220}
+                    withVerticalLines = {false}
                     chartConfig={{
                       backgroundColor: "#e26a00",
                       backgroundGradientFrom: Colors.background,
@@ -143,8 +229,8 @@ const WeightScreen = (props) => {
                         borderRadius: 16
                       },
                       propsForDots: {
-                        r: "4",
-                        strokeWidth: "2",
+                        r: "0",
+                        strokeWidth: "0",
                         stroke: Colors.primary
                       }
                     }}
@@ -178,6 +264,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: Colors.background
+    },
+    filterCont: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '90%'
     },
     weightInput: {
         borderBottomColor: Colors.primary,
