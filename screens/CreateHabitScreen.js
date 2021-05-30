@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import {Button, StyleSheet, TextInput, View} from 'react-native'
+import {Button, Keyboard, StyleSheet, TextInput, TouchableWithoutFeedback, View} from 'react-native'
 import { useDispatch } from 'react-redux';
 import CustomHeaderButton from "../components/CustomHeaderButton";
 import TextDefault from '../components/TextDefault';
@@ -21,15 +21,17 @@ const CreateHabitScreen = (props) => {
     },[dispatch, habitName])
 
     return (
-        <View style={styles.screen}>
-            <View style={styles.formCont}>
-                <View style={styles.actCont}>
-                    <TextDefault>Habit (days since last): </TextDefault>                
-                    <TextInput style={styles.input} onChangeText={handleChange}/>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.screen}>
+                <View style={styles.formCont}>
+                    <View style={styles.actCont}>
+                        <TextDefault>Habit (days since last): </TextDefault>                
+                        <TextInput style={styles.input} onChangeText={handleChange}/>
+                    </View>
+                    <Button title="create" onPress={handleSubmit}/>
                 </View>
-                <Button title="create" onPress={handleSubmit}/>
             </View>
-        </View>
+        </TouchableWithoutFeedback>
     );
 };
 

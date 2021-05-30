@@ -82,7 +82,7 @@ export const createExercise = (exerciseName, cal, date) => {
                         id: createExerId,
                         exerciseName,
                         cal,
-                        date,
+                        date: new Date(date).toISOString(),
                         actId: (existActivity ? existActivity.id : resData.name)
                     }
                 })
@@ -129,9 +129,13 @@ export const deleteExercise = (exerId) => {
     return async (dispatch, getState) => {
         const userId = getState().auth.userId
         const delItem = getState().exercise.exerciseList.find(el => el.id === exerId)       //item in the exercise list that is being delete
-        const activityUpdate = getState().activity.activityList.find(el => el.id === delItem.actId)
+        // const activityUpdate = getState().activity.activityList.find(el => el.id === delItem.actId)
+        //TODO - find the activity by searching thru all activities delItem.date == act.date
+        const activityUpdate = getState().activity.activityList.find(el => el.date === new Date(delItem.date).toDateString())
 
-        const actId = delItem.actId
+        const actId = activityUpdate.id
+        console.log('delItem',delItem);
+        console.log('activityUpdate',activityUpdate);
 
         fetch(`${DATABASE_URL}/${userId}/exercise/${exerId}.json`, {
             method: 'DELETE'
@@ -168,7 +172,7 @@ export const deleteExercise = (exerId) => {
         })
         .then(resData => {
             dispatch({ type: DELETE_EXERCISE, id: exerId })
-            dispatch({ type: UPDATE_ACTIVITY_DELETE, exerDelId: exerId, date: delItem.date.toDateString(), actId: actId})
+            dispatch({ type: UPDATE_ACTIVITY_DELETE, exerDelId: exerId, date: delItem.date, actId: actId})
         })
         .catch(err => console.log(err))
 

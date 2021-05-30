@@ -125,7 +125,6 @@ export default (state = initState, action) => {
                 if(actFind.habitIds?.length > 0 ){
 
                     const habitIdsArr = actFind.habitIds
-                    console.log('habitIdsArr in activity',habitIdsArr);
 
                     if(action.habitDelId){
                         return [...habitIdsArr.filter(el => el !== action.habitDelId)]

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import {StyleSheet, View, TextInput, Button, Dimensions, ActivityIndicator} from 'react-native'
+import {StyleSheet, View, TextInput, Button, Dimensions, ActivityIndicator, TouchableWithoutFeedback, Keyboard} from 'react-native'
 
 import { LineChart } from 'react-native-chart-kit'
 
@@ -193,20 +193,21 @@ const WeightScreen = (props) => {
     },[weightData, graphMode])
 
     return (
-        <View style={styles.screen}>
-            <View style={styles.formCont}>
-                <View style={styles.filterCont}>
-                    <CustomHeaderButton name="chevron-back" onPress={handlePressBack}/>
-                    <TextDefault style={styles.date}>{graphMode}</TextDefault>
-                    <CustomHeaderButton name="chevron-forward" onPress={handlePressForward}/>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.screen}>
+                <View style={styles.formCont}>
+                    <View style={styles.filterCont}>
+                        <CustomHeaderButton name="chevron-back" onPress={handlePressBack}/>
+                        <TextDefault style={styles.date}>{graphMode}</TextDefault>
+                        <CustomHeaderButton name="chevron-forward" onPress={handlePressForward}/>
+                    </View>
+                    <TextInput style={styles.weightInput} onChangeText={handleChange} keyboardType='decimal-pad' />
+                    {isSubmit ? <ActivityIndicator size='small' color={Colors.primary} /> : <Button title="Enter Weight" onPress={handleSubmit} />}
                 </View>
-                <TextInput style={styles.weightInput} onChangeText={handleChange} keyboardType='decimal-pad' />
-                {isSubmit ? <ActivityIndicator size='small' color={Colors.primary} /> : <Button title="Enter Weight" onPress={handleSubmit} />}
-            </View>
-            <View style={styles.graphCont}>
-                {isLoading ?
-                <ActivityIndicator size='large' color={Colors.primary} /> :
-                <LineChart 
+                <View style={styles.graphCont}>
+                    {isLoading ?
+                    <ActivityIndicator size='large' color={Colors.primary} /> :
+                    <LineChart 
                     data={{
                         labels: labelGraph.length >= 1 ? labelGraph : undefined,
                         datasets: [
@@ -216,34 +217,35 @@ const WeightScreen = (props) => {
                             }
                         ]
                     }}
-
+                    
                     width={Dimensions.get('window').width * 0.8} // from react-native
                     height={220}
                     withVerticalLines = {false}
                     chartConfig={{
-                      backgroundColor: "#e26a00",
-                      backgroundGradientFrom: Colors.background,
-                      backgroundGradientTo: Colors.background,
-                      decimalPlaces: 2, // optional, defaults to 2dp
-                      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                      labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                      style: {
-                        borderRadius: 16
-                      },
-                      propsForDots: {
-                        r: "0",
-                        strokeWidth: "0",
-                        stroke: Colors.primary
-                      }
+                        backgroundColor: "#e26a00",
+                        backgroundGradientFrom: Colors.background,
+                        backgroundGradientTo: Colors.background,
+                        decimalPlaces: 2, // optional, defaults to 2dp
+                        color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                        labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                        style: {
+                            borderRadius: 16
+                        },
+                        propsForDots: {
+                            r: "0",
+                            strokeWidth: "0",
+                            stroke: Colors.primary
+                        }
                     }}
                     bezier
                     style={{
-                      marginVertical: 8,
-                      borderRadius: 16
+                        marginVertical: 8,
+                        borderRadius: 16
                     }}
-                />}
+                    />}
+                </View>
             </View>
-        </View>
+        </TouchableWithoutFeedback>
     );
 };
 

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import {StyleSheet, View, Text, TextInput, Button, FlatList} from 'react-native'
+import {StyleSheet, View, Text, TextInput, Button, FlatList, Keyboard, TouchableWithoutFeedback} from 'react-native'
 import { useDispatch, useSelector } from 'react-redux';
 import CustomHeaderButton from '../components/CustomHeaderButton';
 import ExerciseItem from '../components/ExerciseItem';
@@ -41,35 +41,37 @@ const ExerciseScreen = (props) => {
     },[dispatch])
 
     return (
-        <View style={styles.screen}>
-            <View style={styles.formCont}>
-                <TextDefault style={styles.date}>Date: {convDate.day}/{convDate.month}/{convDate.year}</TextDefault>
-                <View style={styles.actCont}>
-                    <TextDefault>Activity: </TextDefault>                
-                    <TextInput style={styles.input} onChangeText={handleChangeAct} />
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.screen}>
+                <View style={styles.formCont}>
+                    <TextDefault style={styles.date}>Date: {convDate.day}/{convDate.month}/{convDate.year}</TextDefault>
+                    <View style={styles.actCont}>
+                        <TextDefault>Activity: </TextDefault>                
+                        <TextInput style={styles.input} onChangeText={handleChangeAct} />
+                    </View>
+                    <View style={styles.calCont}>
+                        <TextDefault>Calories: </TextDefault>          
+                        <TextInput style={styles.input} keyboardType='decimal-pad' onChangeText={handleChangeCal} />
+                    </View>
+                    <Button title="submit" onPress={handleSubmit} />
                 </View>
-                <View style={styles.calCont}>
-                    <TextDefault>Calories: </TextDefault>          
-                    <TextInput style={styles.input} keyboardType='decimal-pad' onChangeText={handleChangeCal} />
-                </View>
-                <Button title="submit" onPress={handleSubmit} />
-            </View>
-            <View style={styles.listCont}>
-                <TextDefault>List of activities</TextDefault>
-                <FlatList 
-                    data={exercisesSel}
-                    renderItem={(exercise) => {
-                        return <ExerciseItem 
+                <View style={styles.listCont}>
+                    <TextDefault>List of activities</TextDefault>
+                    <FlatList 
+                        data={exercisesSel}
+                        renderItem={(exercise) => {
+                            return <ExerciseItem 
                             name={exercise.item.exerciseName}
                             cal={exercise.item.cal}
                             onRemove={() => {
                                 dispatch(exerciseActions.deleteExercise(exercise.item.id))
                             }}
+                            />
+                        }}
                         />
-                    }}
-                />
+                </View>
             </View>
-        </View>
+        </TouchableWithoutFeedback>
     );
 };
 
