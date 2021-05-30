@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as activityActions from '../store/actions/activity'
 import * as habitActions from '../store/actions/habit'
 import * as exerciseActions from '../store/actions/exercise'
+import * as weightActions from '../store/actions/weight'
 import * as authActions from '../store/actions/auth'
 
 import GridWeek from "../components/GridWeek";
@@ -103,6 +104,7 @@ const OverviewScreen = (props) => {
         for (let ind = 0; ind < 6; ind++) {         
             const dateIn = new Date(new Date().setDate(nowDate.getDate() - ind))    //create new date - ind
             await dispatch(exerciseActions.createExercise('walk','123', dateIn))    //create exercise with new date
+            await dispatch(weightActions.createWeight((Math.floor((80 + (Math.random() * 5) - 2.5) * 100)/100).toString(), dateIn.toISOString()))
         }
 
         await dispatch(habitActions.createHabit('Pizza'))           //create habit

@@ -26,6 +26,7 @@ const WeightScreen = (props) => {
 
     const convDate = dateConvert(new Date())
     const currMonth = convDate.month
+    const nowDate = new Date()
 
     const handleChange = (text) => {
         setNewWeight(text)
@@ -44,14 +45,15 @@ const WeightScreen = (props) => {
 
         if (existWeight === undefined){
             await dispatch(
-                weightActions.createWeight(newWeight, new Date())
+                weightActions.createWeight(newWeight, nowDate.toISOString())
             )
         }
         else{
             await dispatch(
-                weightActions.updateWeight(existWeight.id, newWeight, new Date())
+                weightActions.updateWeight(existWeight.id, newWeight, nowDate)
             )
         }
+
         setIsSubmit(false)
         },[dispatch, newWeight]) 
 
@@ -118,7 +120,7 @@ const WeightScreen = (props) => {
             else{
 
                 //TODO consider current day, do testing
-                for (let i = 1; i <= 90; i++) {
+                for (let i = 90; i >= 0; i--) {
                     const dateTrack = filtWeight.find(el => {
                         const dateDiff = Math.floor((new Date() - new Date(el.dateSet))/(1000 * 60 * 60 * 24))
                         // console.log('dateDiff',dateDiff);
@@ -130,16 +132,16 @@ const WeightScreen = (props) => {
 
                     if(dateTrack !== undefined && firstDay === true){
                         firstDay = false
-                        tableData.weightOut.unshift(parseFloat(dateTrack.weight))
-                        tableData.dateOut.unshift((i%10 === 0) ? i.toString() : '')
+                        tableData.weightOut.push(parseFloat(dateTrack.weight))
+                        tableData.dateOut.push((i%10 === 0) ? i.toString() : '')
                     }
                     else if(dateTrack === undefined && firstDay === false && i !== 90){                         //if undefined, not the first day and not day 90
-                        tableData.weightOut.unshift(tableData.weightOut[0])
-                        tableData.dateOut.unshift((i%10 === 0) ? i.toString() : '')
+                        tableData.weightOut.push(tableData.weightOut[tableData.weightOut.length-1])
+                        tableData.dateOut.push((i%10 === 0) ? i.toString() : '')
                     }
                     else if(dateTrack !== undefined && firstDay === false){
-                        tableData.weightOut.unshift(parseFloat(dateTrack.weight))
-                        tableData.dateOut.unshift((i%10 === 0) ? i.toString() : '')
+                        tableData.weightOut.push(parseFloat(dateTrack.weight))
+                        tableData.dateOut.push((i%10 === 0) ? i.toString() : '')
                     }
                 }
                 setWeightGraph(tableData.weightOut)
