@@ -1,8 +1,10 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { View, StyleSheet, Button, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import CustomHeaderButton from '../components/CustomHeaderButton';
 import TextDefault from '../components/TextDefault'
 import Colors from '../constants/Colors';
+import * as Notifications from 'expo-notifications'
+import * as Permissions from 'expo-permissions'                 //For IOS
 
 
 
@@ -14,12 +16,43 @@ const UserScreen = (props) => {
 
     // BMI calculate?
     //cal intake?
-
+    useEffect(() => {
+        Permissions.getAsync(Permissions.NOTIFICATIONS).then(statusObj => {
+            if(statusObj.status !== 'granted'){
+                return Permissions.askAsync(Permissions.NOTIFICATIONS)
+            }
+            return statusObj
+        }).then(statusObj => {
+            if(statusObj.status !== 'granted'){
+                return
+            }
+        })
+    },[])
     //reminder stores info in redux and local storage?
     const [date,setDate] = useState(new Date())
 
     const handleSetTime = () => {
-        console.log('click')
+        const minInt = parseInt(minInput)
+        const hrInt = parseInt(hrInput)
+
+        if( minInt >= 0 && minInt < 60 && hrInt >= 0 && hrInt < 24 ){
+            // const trigger = new Date(Date.now() + 1000 * 60 * 60 * 24)
+            // trigger.setSeconds(0)
+            // trigger.setMinutes(minInt)
+            // trigger.setHours(hrInt)
+    
+            Notifications.scheduleNotificationAsync({
+                content: {
+                    title: 'Habit tracker',
+                    body: 'Checkin with app to update info'
+                },
+                trigger: {
+                    hour: hrInt,
+                    minute: minInt,
+                    repeats: true
+                }
+            })
+        }
     }
 
     const handleHrChange = (text) => {

@@ -32,6 +32,7 @@ const OverviewScreen = (props) => {
     const [exerText, setExerText] = useState([])
     const [habitText, setHabitText] = useState([])
     const [isDummy, setIsDummy] = useState(false)
+    const [userId, setUserId] = useState()
 
     const [week4,setWeek4] = useState(new Date(new Date().setDate(nowDate.getDate() + (7 - currDay))))
     const [week3,setWeek3] = useState(new Date(new Date().setDate(nowDate.getDate() - currDay)))
@@ -52,15 +53,20 @@ const OverviewScreen = (props) => {
         firebase.auth().onAuthStateChanged((userRes) => {                       //when the user is logged in
             if(userRes != null){
                 // console.log('userRes', userRes)
-                console.log('userRes.uid', userRes.uid)
+                // console.log('userRes.uid', userRes.uid)
                 dispatch(authActions.setUserId(userRes.uid))                    //set the auth userId to userRes.uid
                 setUser(userRes.email)
+                setUserId(userRes.uid)
             }
         })
 
-        dispatch(activityActions.fetchActivity())
-        dispatch(habitActions.fetchHabit())
-        dispatch(exerciseActions.fetchExercise())                               //fetch all data
+        if(userId !== undefined){
+            dispatch(activityActions.fetchActivity())
+            dispatch(habitActions.fetchHabit())
+            dispatch(exerciseActions.fetchExercise())                               //fetch all data
+            setIsLoading(false)
+        }
+
 
         if(isDummy){                                                            //if the dummy data is being setup
             const pizzaHabit = habitData.find(el => el.habitName === 'Pizza')   //find the pizza habit
@@ -73,9 +79,9 @@ const OverviewScreen = (props) => {
             }
         }
 
-        setIsLoading(false)
+        // setIsLoading(false)
 
-    },[dispatch, isDummy])
+    },[dispatch, isDummy, userId])
 
     const handleClick = (date, exerIds, habitIds) => {
         let exerResult = []

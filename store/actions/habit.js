@@ -52,6 +52,8 @@ export const createHabit = (habitName) => {
 
 export const fetchHabit = () => {
     return async (dispatch, getState) => {
+
+        console.log('fetching habit')
         const userId = getState().auth.userId
         const response = await fetch(`${DATABASE_URL}/${userId}/habit.json`)
         const resData = await response.json()

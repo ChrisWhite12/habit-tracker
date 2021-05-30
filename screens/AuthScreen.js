@@ -23,6 +23,7 @@ const AuthScreen = (props) => {
   const signInWithGoogleAsync = async () => {
       // console.log('ANDROID_ID',ANDROID_ID)
       // console.log("in signinwithgoogle");
+      setIsLoading(true)
       try {
             const result = await Google.logInAsync({                                                //login with google
                 behavior: "web",

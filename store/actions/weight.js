@@ -46,6 +46,7 @@ export const createWeight = (weight, date) => {
 
 export const fetchWeight = () => {
     return async (dispatch, getState) => {
+        console.log('fetching weight')
         const userId = getState().auth.userId
         const response = await fetch(`${DATABASE_URL}/${userId}/weight.json`)
         const resData = await response.json()

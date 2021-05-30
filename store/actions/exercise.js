@@ -12,12 +12,13 @@ export const createExercise = (exerciseName, cal, date) => {
     return async (dispatch, getState) => {
         const tempState = getState()
         const userId = getState().auth.userId
+        const token = getState().auth.token
 
         let createExerId
         
         const existActivity = getState().activity.activityList.find(el => el.date === new Date(date).toDateString())
 
-        await fetch(`${DATABASE_URL}/${userId}/exercise.json`, {
+        await fetch(`${DATABASE_URL}/${userId}/exercise.json?auth=${token}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -112,6 +113,7 @@ export const createExercise = (exerciseName, cal, date) => {
 
 export const fetchExercise = () => {
     return async (dispatch, getState) => {
+        console.log('fetching exercise')
         const userId = getState().auth.userId
         const response = await fetch(`${DATABASE_URL}/${userId}/exercise.json`)
         const resData = await response.json()

@@ -11,6 +11,7 @@ export const fetchActivity = () => {
     return async (dispatch, getState) => {
         const userId = getState().auth.userId
 
+        console.log('fetching activities')
         //fetch the user activities
         const response = await fetch(`${DATABASE_URL}/${userId}/activity.json`)
         const resData = await response.json()
