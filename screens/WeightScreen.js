@@ -60,7 +60,6 @@ const WeightScreen = (props) => {
 
     //processData - sets the weightGraph state
     const processData = () => {
-        //TODO fiter the 90days or current month
 
         let filtWeight = []
 

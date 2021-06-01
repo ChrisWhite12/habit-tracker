@@ -36,7 +36,6 @@ export const createWeight = (weight, date) => {
                     weight,
                     date
                 }
-                //TODO add userID
             })
             
         })
