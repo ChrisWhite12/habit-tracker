@@ -5,8 +5,8 @@ import Colors from '../constants/Colors'
 import * as firebase from 'firebase'
 
 const StartupScreen = (props) => {
-    
-    const isLoggedIn = () => {
+
+    useEffect(() => {
         firebase.auth().onAuthStateChanged((user) => {
             if(user){
                 props.navigation.navigate('App')
@@ -15,10 +15,6 @@ const StartupScreen = (props) => {
                 props.navigation.navigate('Auth')
             }
         })
-    }
-
-    useEffect(() => {
-        isLoggedIn()
     },[])
 
     return (

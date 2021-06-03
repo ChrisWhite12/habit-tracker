@@ -18,7 +18,7 @@ export const createExercise = (exerciseName, cal, date) => {
         
         const existActivity = getState().activity.activityList.find(el => el.date === new Date(date).toDateString())
 
-        await fetch(`${DATABASE_URL}/${userId}/exercise.json?auth=${token}`, {
+        await fetch(`${DATABASE_URL}/${userId}/exercise.json`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -92,7 +92,7 @@ export const createExercise = (exerciseName, cal, date) => {
                         type: CREATE_ACTIVITY,
                         id: resData.name,
                         exerId: createExerId,
-                        date: new Date(date).toDateString()
+                        date: new Date(date).toDateString()             
                     })
                 }
                 else{
@@ -131,8 +131,6 @@ export const deleteExercise = (exerId) => {
     return async (dispatch, getState) => {
         const userId = getState().auth.userId
         const delItem = getState().exercise.exerciseList.find(el => el.id === exerId)       //item in the exercise list that is being delete
-        // const activityUpdate = getState().activity.activityList.find(el => el.id === delItem.actId)
-        //TODO - find the activity by searching thru all activities delItem.date == act.date
         const activityUpdate = getState().activity.activityList.find(el => el.date === new Date(delItem.date).toDateString())
 
         const actId = activityUpdate.id

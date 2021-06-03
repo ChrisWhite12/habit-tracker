@@ -114,6 +114,7 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
             console.log('existActivity',existActivity);
             
             if (existActivity && !(existActivity?.habitIds?.includes(id))){
+
                 console.log("activity does exist")
                 const habitIdsOut = (existActivity.habitIds === undefined) ? [id] : [...existActivity.habitIds, id]
                 
@@ -169,12 +170,17 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
                     console.log('creating activity')
                     console.log('updating habit, actId ', resData.name )
 
+                    if(!resData.name){
+                        console.log("ID UNDEFINED")
+                    }
+
                     dispatch({ 
                         type: UPDATE_HABIT,
                         id: id,
                         habitData: dataOut,
                         actId: resData.name
                     })
+
                     dispatch({
                         type: CREATE_ACTIVITY,
                         id: resData.name,
@@ -216,13 +222,22 @@ export const deleteHabit = habitId => {
 
         await Promise.all(
             actFilter.map(actItem => {
-                const habitIdIndex = actItem.habitIds.findIndex(el => el === habitId)
-                console.log('habitIdIndex',habitIdIndex);
+                const habitIdsFilter = actItem.habitIds.filter(el => el != habitId)
+                console.log('habitIdsFilter',habitIdsFilter);
+                console.log('actItem', actItem)
 
                 //TODO - make a post request to update habitIds - to fix index (0,2,3) should be (0,1,2)
-                console.log(`${DATABASE_URL}/${userId}/activity/${actItem.id}/habitIds/${habitIdIndex}.json`)
-                return fetch(`${DATABASE_URL}/${userId}/activity/${actItem.id}/habitIds/${habitIdIndex}.json`, {
-                    method: 'DELETE'
+
+                return fetch(`${DATABASE_URL}/${userId}/activity/${actItem.id}.json`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(
+                        {
+                            habitIds: habitIdsFilter,
+                        }
+                    )
                 })
                 .then(response => {
                     if (response.ok){

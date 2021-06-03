@@ -89,7 +89,6 @@ const WeightScreen = (props) => {
             dateOut: []
         }
 
-        //TODO : set data for past 90 days
         if (filtWeight?.length >= 1){            
             if(graphMode === 'Current Month'){
                 for (let i = 1; i <= convDate.day; i++) {                                                       //for 1 to current day
@@ -118,7 +117,6 @@ const WeightScreen = (props) => {
             }
             else{
 
-                //TODO consider current day, do testing
                 for (let i = 90; i >= 0; i--) {
                     const dateTrack = filtWeight.find(el => {
                         const dateDiff = Math.floor((new Date() - new Date(el.dateSet))/(1000 * 60 * 60 * 24))

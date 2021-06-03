@@ -17,7 +17,6 @@ export const createWeight = (weight, date) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({weight: weight, date: date})
-            //TODO add userID
         })
         .then(response => {
             if (response.ok){

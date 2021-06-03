@@ -1,7 +1,7 @@
 import { SET_ID, SIGN_IN } from "../actions/auth"
 
 const initState = {
-    // token: null,
+    token: null,
     userId: null
 }
 
@@ -16,7 +16,8 @@ export default (state = initState, action) => {
         case SET_ID:
             console.log('setting id')
             return {
-                userId: action.userId
+                userId: action.userId,
+                token: action.token
             }
         default:
             return state

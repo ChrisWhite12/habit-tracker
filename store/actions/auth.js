@@ -14,9 +14,9 @@ export const SET_ID = "SET_ID"
 //   }
 // }
 
-export const setUserId = (userId) => {
+export const setUserId = (userId, token) => {
   return dispatch => {
-    dispatch({type: SET_ID, userId: userId})
+    dispatch({type: SET_ID, userId: userId, token: token})
   }
 }
 

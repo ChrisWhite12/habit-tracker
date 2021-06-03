@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Button,
   View,
@@ -6,24 +6,19 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-import * as AuthActions from "../store/actions/auth";
 
 import firebase from "firebase";
 import * as Google from "expo-google-app-auth";
+// import * as Google from "expo-google-sign-in"
 
 import { ANDROID_ID } from "@env";
-import { useDispatch } from "react-redux";
 import Colors from "../constants/Colors";
 
 const AuthScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
-  const dispatch = useDispatch();
 
   const signInWithGoogleAsync = async () => {
-      // console.log('ANDROID_ID',ANDROID_ID)
-      // console.log("in signinwithgoogle");
-      setIsLoading(true)
       try {
             const result = await Google.logInAsync({                                                //login with google
                 behavior: "web",

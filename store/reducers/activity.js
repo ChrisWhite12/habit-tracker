@@ -96,6 +96,7 @@ export default (state = initState, action) => {
 
         case UPDATE_ACTIVITY_DELETE:
 
+            console.log('delete from activity - ', action)
             // action - habitDelId, date, actId
             // action - exerDelId, date, actId
 
@@ -142,7 +143,7 @@ export default (state = initState, action) => {
                 date: action.date,
                 exerIds: exerIdsOutDel(),
                 habitIds: habitIdsOutDel(),
-                id: matchId
+                id: actFind.id
             }
             const updatedActivitesDel = [...state.activityList]
             updatedActivitesDel[actFindIndex] = updateActivityDel
