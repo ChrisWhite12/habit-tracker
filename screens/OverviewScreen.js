@@ -52,12 +52,7 @@ const OverviewScreen = (props) => {
 
         firebase.auth().onAuthStateChanged((userRes) => {                       //when the user is logged in
             if(userRes != null){
-                // console.log('userRes', userRes)
-                // console.log('userRes.uid', userRes.uid)
                 dispatch(authActions.setUserId(userRes.uid))                    //set the auth userId to userRes.uid
-
-                firebase.auth().currentUser.getIdToken(true)
-                .then(token => console.log('token',token))
                 setUser(userRes.email)
                 setUserId(userRes.uid)
             }

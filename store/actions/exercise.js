@@ -6,75 +6,53 @@ import {
 } from '@env'
 import { CREATE_ACTIVITY, UPDATE_ACTIVITY_CREATE, UPDATE_ACTIVITY_DELETE } from './activity'
 
-
+import * as firebase from 'firebase'
 
 export const createExercise = (exerciseName, cal, date) => {
     return async (dispatch, getState) => {
         const tempState = getState()
         const userId = getState().auth.userId
         const token = getState().auth.token
+        const db = firebase.database()
+        const newDate = date.toISOString()
 
         let createExerId
-        
         const existActivity = getState().activity.activityList.find(el => el.date === new Date(date).toDateString())
 
-        await fetch(`${DATABASE_URL}/${userId}/exercise.json`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({exerciseName: exerciseName, cal: cal, date: date})
-        })
-        .then(response => {
-            if (response.ok){
-                return response.json()
-            }
-            else{
-                throw new Error('Response not OK, can"t post exercise')
-            } 
-        })
-        .then(data => {
-            createExerId = data.name
-            if (existActivity){
-                const exerIdsOut = (existActivity.exerIds === undefined) ? [createExerId] : [...existActivity.exerIds, createExerId]
-                return fetch(`${DATABASE_URL}/${userId}/activity/${existActivity.id}.json`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(
-                        {
-                            date: new Date(date).toDateString(),
-                            exerIds: exerIdsOut,
-                        }
-                    )
-                })
-            }
-            else{
-                return fetch(`${DATABASE_URL}/${userId}/activity.json`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(
-                        {
-                            date: new Date(date).toDateString(),
-                            exerIds: [createExerId],
-                            habitIds: []
-                        }
-                    )
-                })
+        db.ref(`/users/${userId}/exercise`).push({
+            exerciseName: exerciseName,
+            cal: cal,
+            date: newDate
+        }, (error) => {
+            if(error)
+            {
+                throw new Error(`Response not OK, can't post exercise`, error)
             }
         })
-        .then(response => {
-            if (response.ok){
-                return response.json()
+        .then((res) => {
+            console.log('exercise posted')
+                createExerId = res.key
+                if (existActivity){
+                    const exerIdsOut = (existActivity.exerIds === undefined) ? [createExerId] : [...existActivity.exerIds, createExerId]
+    
+                    return db.ref(`/users/${userId}/activity/${existActivity.id}`).update({
+                        date: new Date(date).toDateString(),
+                        exerIds: exerIdsOut,
+                    })
+                }
+                else{
+                    return db.ref(`/users/${userId}/activity`).push({
+                        date: new Date(date).toDateString(),
+                        exerIds: [createExerId],
+                        habitIds: []
+                    })
+                }
+        }, (error) => {
+            if(error){
+                throw new Error(`Response not OK, can't update activity`, error)
             }
-            else{
-                throw new Error('Response not OK, can"t update activity')
-            } 
         })
-        .then(resData =>
+        .then(resData1 =>
             {
                 dispatch({
                     type: CREATE_EXERCISE,
@@ -84,13 +62,13 @@ export const createExercise = (exerciseName, cal, date) => {
                         exerciseName,
                         cal,
                         date: new Date(date).toISOString(),
-                        actId: (existActivity ? existActivity.id : resData.name)
+                        actId: (existActivity ? existActivity.id : resData1.key)
                     }
                 })
                 if(!existActivity){
                     dispatch({
                         type: CREATE_ACTIVITY,
-                        id: resData.name,
+                        id: resData1.key,
                         exerId: createExerId,
                         date: new Date(date).toDateString()             
                     })
@@ -113,17 +91,31 @@ export const createExercise = (exerciseName, cal, date) => {
 
 export const fetchExercise = () => {
     return async (dispatch, getState) => {
+        const db = firebase.database()
         console.log('fetching exercise')
         const userId = getState().auth.userId
-        const response = await fetch(`${DATABASE_URL}/${userId}/exercise.json`)
-        const resData = await response.json()
-        let resOut = []
+        db.ref(`/users/${userId}/exercise`)
+        .once('value', (snapshot) => {
+            console.log(`/users/${userId}/exercise`)
+            let resOut = []
+            const resData = snapshot.val()
+            // console.log('snapshot',snapshot.toJSON());
+            // console.log('snapshot.val()',snapshot.val());
 
-        for (const key in resData) {
-            resOut.push({id: key, cal: resData[key].cal, date: resData[key].date, exerciseName: resData[key].exerciseName})
-        }
-
-        dispatch({type: FETCH_EXERCISE, exerciseData: resOut})
+            for (const key in resData) {
+                resOut.push({id: key, cal: resData[key].cal, date: resData[key].date, exerciseName: resData[key].exerciseName})
+            }
+            console.log('resOut',resOut);
+            dispatch({type: FETCH_EXERCISE, exerciseData: resOut})
+        })
+            // .then((resData) => {
+            //     console.log('resData',resData);
+            //     let resOut = []
+            //     for (const key in resData) {
+            //         resOut.push({id: key, cal: resData[key].cal, date: resData[key].date, exerciseName: resData[key].exerciseName})
+            //     }
+            //     dispatch({type: FETCH_EXERCISE, exerciseData: resOut})
+            // })
     }
 }
 
@@ -137,9 +129,7 @@ export const deleteExercise = (exerId) => {
         console.log('delItem',delItem);
         console.log('activityUpdate',activityUpdate);
 
-        fetch(`${DATABASE_URL}/${userId}/exercise/${exerId}.json`, {
-            method: 'DELETE'
-        })
+        firebase.database().ref(`/users/${userId}/exercise/${exerId}`).remove()
         .then(response => {
             if (response.ok){
                 return response.json()
@@ -150,16 +140,8 @@ export const deleteExercise = (exerId) => {
         })
         .then(data => {
             const exerIdsOut = activityUpdate.exerIds.filter(el => el !== exerId)
-            return fetch(`${DATABASE_URL}/${userId}/activity/${actId}.json`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(
-                    {
-                        exerIds: exerIdsOut
-                    }
-                )
+            return firebase.database().ref(`/users/${userId}/activity/${actId}`).update({
+                exerIds: exerIdsOut
             })
         })
         .then(response => {

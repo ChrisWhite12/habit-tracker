@@ -11,7 +11,7 @@ export const createWeight = (weight, date) => {
     return async (dispatch, getState) => {
         const userId = getState().auth.userId
 
-        fetch(`${DATABASE_URL}/${userId}/weight.json`, {
+        fetch(`${DATABASE_URL}/users/${userId}/weight.json`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ export const fetchWeight = () => {
     return async (dispatch, getState) => {
         console.log('fetching weight')
         const userId = getState().auth.userId
-        const response = await fetch(`${DATABASE_URL}/${userId}/weight.json`)
+        const response = await fetch(`${DATABASE_URL}/users/${userId}/weight.json`)
         const resData = await response.json()
         let resOut = []
 
@@ -61,7 +61,7 @@ export const fetchWeight = () => {
 export const updateWeight = (id, weight, date) => {
     return async (dispatch, getState) => {
         const userId = getState().auth.userId
-        const response = await fetch(`${DATABASE_URL}/${userId}/weight/${id}.json`, {
+        const response = await fetch(`${DATABASE_URL}/users/${userId}/weight/${id}.json`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'

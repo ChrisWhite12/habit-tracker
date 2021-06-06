@@ -11,7 +11,7 @@ export const fetchProfile = () => {
     return (dispatch, getState) => {
         const userId = getState().auth.userId
 
-        fetch(`${DATABASE_URL}/${userId}/profile.json`)
+        fetch(`${DATABASE_URL}/users/${userId}/profile.json`)
         .then(response => {
             if (response.ok){
                 return response.json()
@@ -36,7 +36,7 @@ export const updateProfile = (reminder) => {
 
         if(reminderState === ''){
 
-            fetch(`${DATABASE_URL}/${userId}/profile.json`, {
+            fetch(`${DATABASE_URL}/users/${userId}/profile.json`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -60,7 +60,7 @@ export const updateProfile = (reminder) => {
         }
         else{
 
-            fetch(`${DATABASE_URL}/${userId}/profile.json`, {
+            fetch(`${DATABASE_URL}/users/${userId}/profile.json`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'

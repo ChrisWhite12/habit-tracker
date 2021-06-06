@@ -29,7 +29,7 @@ const AuthScreen = (props) => {
             if (result.type === "success") {                                                        //if response is success
                 await firebase                                                                      //authenticate with firebase
                     .auth()
-                    .setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+                    .setPersistence(firebase.auth.Auth.Persistence.LOCAL);        
 
                 const credential = firebase.auth.GoogleAuthProvider.credential(
                     result.idToken,

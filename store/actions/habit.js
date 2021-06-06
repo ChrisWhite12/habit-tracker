@@ -12,7 +12,7 @@ export const createHabit = (habitName) => {
     return async (dispatch,getState) => {
         const userId = getState().auth.userId
         let idOut = ''
-        await fetch(`${DATABASE_URL}/${userId}/habit.json`, {
+        await fetch(`${DATABASE_URL}/users/${userId}/habit.json`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -55,7 +55,7 @@ export const fetchHabit = () => {
 
         console.log('fetching habit')
         const userId = getState().auth.userId
-        const response = await fetch(`${DATABASE_URL}/${userId}/habit.json`)
+        const response = await fetch(`${DATABASE_URL}/users/${userId}/habit.json`)
         const resData = await response.json()
         let resOut = []
 
@@ -94,7 +94,7 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
         }
         
 
-        await fetch(`${DATABASE_URL}/${userId}/habit/${id}.json`, {
+        await fetch(`${DATABASE_URL}/users/${userId}/habit/${id}.json`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -119,7 +119,7 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
                 const habitIdsOut = (existActivity.habitIds === undefined) ? [id] : [...existActivity.habitIds, id]
                 
                 //update the current activity on firebase
-                return fetch(`${DATABASE_URL}/${userId}/activity/${existActivity.id}.json`, {
+                return fetch(`${DATABASE_URL}/users/${userId}/activity/${existActivity.id}.json`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
@@ -135,7 +135,7 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
             else if (!existActivity){
                 console.log("activity doesn't exist")
                 
-                return fetch(`${DATABASE_URL}/${userId}/activity.json`, {
+                return fetch(`${DATABASE_URL}/users/${userId}/activity.json`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -228,7 +228,7 @@ export const deleteHabit = habitId => {
 
                 //TODO - make a post request to update habitIds - to fix index (0,2,3) should be (0,1,2)
 
-                return fetch(`${DATABASE_URL}/${userId}/activity/${actItem.id}.json`, {
+                return fetch(`${DATABASE_URL}/users/${userId}/activity/${actItem.id}.json`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
@@ -254,7 +254,7 @@ export const deleteHabit = habitId => {
             })
         )
 
-        await fetch(`${DATABASE_URL}/${userId}/habit/${habitId}.json`, {
+        await fetch(`${DATABASE_URL}/users/${userId}/habit/${habitId}.json`, {
             method: 'DELETE'
         })
         .then(response => response.json())        

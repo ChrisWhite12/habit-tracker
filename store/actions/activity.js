@@ -13,7 +13,7 @@ export const fetchActivity = () => {
 
         console.log('fetching activities')
         //fetch the user activities
-        const response = await fetch(`${DATABASE_URL}/${userId}/activity.json`)
+        const response = await fetch(`${DATABASE_URL}/users/${userId}/activity.json`)
         const resData = await response.json()
         let resOut = []
 
