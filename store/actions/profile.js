@@ -6,21 +6,27 @@ import {
     DATABASE_URL
 } from '@env'
 
+import * as firebase from 'firebase'
 
 export const fetchProfile = () => {
     return (dispatch, getState) => {
         const userId = getState().auth.userId
 
-        fetch(`${DATABASE_URL}/users/${userId}/profile.json`)
-        .then(response => {
-            if (response.ok){
-                return response.json()
-            }
-            else{
-                throw new Error("Response not OK, can't fetch profile")
-            } 
+        firebase.database().ref(`/users/${userId}/profile`).once('value', (snapshot) => {
+            console.log('snapshot.val() -- profile',snapshot.val());
+            return snapshot.val()
         })
+        // fetch(`${DATABASE_URL}/users/${userId}/profile.json`)
+        // .then(response => {
+        //     if (response.ok){
+        //         return response.json()
+        //     }
+        //     else{
+        //         throw new Error("Response not OK, can't fetch profile")
+        //     } 
+        // })
         .then(resData => {
+            console.log('resData.reminder',resData?.reminder);
             dispatch({type: FETCH_PROFILE, reminder: resData.reminder})
         })
         .catch(err => console.log(err))
@@ -35,22 +41,24 @@ export const updateProfile = (reminder) => {
         const reminderState = getState().profile.reminder
 
         if(reminderState === ''){
-
-            fetch(`${DATABASE_URL}/users/${userId}/profile.json`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({reminder})
+            firebase.database().ref(`/users/${userId}/profile`).push({
+                reminder
             })
-            .then(response => {
-                if (response.ok){
-                    return response.json()
-                }
-                else{
-                    throw new Error("Response not OK, can't update profile")
-                } 
-            })
+            // fetch(`${DATABASE_URL}/users/${userId}/profile.json`, {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify({reminder})
+            // })
+            // .then(response => {
+            //     if (response.ok){
+            //         return response.json()
+            //     }
+            //     else{
+            //         throw new Error("Response not OK, can't update profile")
+            //     } 
+            // })
             .then(resData => {
                 dispatch({type: UPDATE_PROFILE, reminder})
             })
@@ -59,22 +67,24 @@ export const updateProfile = (reminder) => {
 
         }
         else{
-
-            fetch(`${DATABASE_URL}/users/${userId}/profile.json`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({reminder})
+            firebase.database().ref(`/users/${userId}/profile`).update({
+                reminder
             })
-            .then(response => {
-                if (response.ok){
-                    return response.json()
-                }
-                else{
-                    throw new Error("Response not OK, can't update profile")
-                } 
-            })
+            // fetch(`${DATABASE_URL}/users/${userId}/profile.json`, {
+            //     method: 'PATCH',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify({reminder})
+            // })
+            // .then(response => {
+            //     if (response.ok){
+            //         return response.json()
+            //     }
+            //     else{
+            //         throw new Error("Response not OK, can't update profile")
+            //     } 
+            // })
             .then(resData => {
                 dispatch({type: UPDATE_PROFILE, reminder})
             })

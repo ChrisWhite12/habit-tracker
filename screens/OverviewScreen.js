@@ -58,8 +58,6 @@ const OverviewScreen = (props) => {
             }
         })
 
-        
-
         if(userId !== undefined){
             dispatch(activityActions.fetchActivity())
             dispatch(habitActions.fetchHabit())
@@ -67,21 +65,7 @@ const OverviewScreen = (props) => {
             setIsLoading(false)
         }
 
-
-        if(isDummy){                                                            //if the dummy data is being setup
-            const pizzaHabit = habitData.find(el => el.habitName === 'Pizza')   //find the pizza habit
-            if(pizzaHabit){
-                //update habit to occur on three days
-                dispatch(habitActions.updateHabit(pizzaHabit.id, new Date(new Date().setDate(nowDate.getDate() - 5)), '2', new Date(new Date().setDate(nowDate.getDate()))))
-                dispatch(habitActions.updateHabit(pizzaHabit.id, new Date(new Date().setDate(nowDate.getDate() - 9)), '2', new Date(new Date().setDate(nowDate.getDate() - 4))))
-                dispatch(habitActions.updateHabit(pizzaHabit.id, new Date(new Date().setDate(nowDate.getDate() - 15)), '2', new Date(new Date().setDate(nowDate.getDate() - 9))))
-                setIsDummy(false)               //done with dummy setup
-            }
-        }
-
-        // setIsLoading(false)
-
-    },[dispatch, isDummy, userId])
+    },[dispatch, userId])
 
     const handleClick = (date, exerIds, habitIds) => {
         let exerResult = []
@@ -105,16 +89,37 @@ const OverviewScreen = (props) => {
         setDateText(date)                       //set date text
     }
 
-    const handleAddData = async () => {             //trigged when loading dummy data
+    useEffect(() => {
+        if(isDummy){
+            console.log('in isDummy')
+            
+            const pizzaHabit = habitData.find(el => el.habitName === 'Pizza')   //find the pizza habit
+            
+            if(pizzaHabit){
+                //update habit to occur on three days
+                dispatch(habitActions.updateHabit(pizzaHabit.id, new Date(new Date().setDate(nowDate.getDate() - 5)), '2', new Date(new Date().setDate(nowDate.getDate()))))
+                dispatch(habitActions.updateHabit(pizzaHabit.id, new Date(new Date().setDate(nowDate.getDate() - 9)), '2', new Date(new Date().setDate(nowDate.getDate() - 4))))
+                dispatch(habitActions.updateHabit(pizzaHabit.id, new Date(new Date().setDate(nowDate.getDate() - 15)), '2', new Date(new Date().setDate(nowDate.getDate() - 9))))
+            }
+            else{
+                console.log('failed to update habit')
+            }
+            setIsDummy(false)               //done with dummy setup
+        }
+    }, [habitData])
+
+    const handleAddData = () => {             //trigged when loading dummy data
+
         
         for (let ind = 0; ind < 6; ind++) {         
             const dateIn = new Date(new Date().setDate(nowDate.getDate() - ind))    //create new date - ind
-            await dispatch(exerciseActions.createExercise('walk','123', dateIn))    //create exercise with new date
-            await dispatch(weightActions.createWeight((Math.floor((80 + (Math.random() * 5) - 2.5) * 100)/100).toString(), dateIn.toISOString()))
+            dispatch(exerciseActions.createExercise('walk','123', dateIn))    //create exercise with new date
+            dispatch(weightActions.createWeight((Math.floor((80 + (Math.random() * 5) - 2.5) * 100)/100).toString(), dateIn.toISOString()))
         }
-
-        await dispatch(habitActions.createHabit('Pizza'))           //create habit
-        setIsDummy(true)                                            //set dummy data state
+        
+        dispatch(habitActions.createHabit('Pizza'))    
+        console.log('setting dummy to true')
+        setIsDummy(true)
     }
     
     return (

@@ -30,7 +30,6 @@ export const createExercise = (exerciseName, cal, date) => {
             }
         })
         .then((res) => {
-            console.log('exercise posted')
                 createExerId = res.key
                 if (existActivity){
                     const exerIdsOut = (existActivity.exerIds === undefined) ? [createExerId] : [...existActivity.exerIds, createExerId]
@@ -91,16 +90,14 @@ export const createExercise = (exerciseName, cal, date) => {
 
 export const fetchExercise = () => {
     return async (dispatch, getState) => {
-        const db = firebase.database()
         console.log('fetching exercise')
+        const db = firebase.database()
         const userId = getState().auth.userId
+
         db.ref(`/users/${userId}/exercise`)
         .once('value', (snapshot) => {
-            console.log(`/users/${userId}/exercise`)
             let resOut = []
             const resData = snapshot.val()
-            // console.log('snapshot',snapshot.toJSON());
-            // console.log('snapshot.val()',snapshot.val());
 
             for (const key in resData) {
                 resOut.push({id: key, cal: resData[key].cal, date: resData[key].date, exerciseName: resData[key].exerciseName})
@@ -130,27 +127,11 @@ export const deleteExercise = (exerId) => {
         console.log('activityUpdate',activityUpdate);
 
         firebase.database().ref(`/users/${userId}/exercise/${exerId}`).remove()
-        .then(response => {
-            if (response.ok){
-                return response.json()
-            }
-            else{
-                throw new Error('Response not OK')
-            } 
-        })
         .then(data => {
             const exerIdsOut = activityUpdate.exerIds.filter(el => el !== exerId)
             return firebase.database().ref(`/users/${userId}/activity/${actId}`).update({
                 exerIds: exerIdsOut
             })
-        })
-        .then(response => {
-            if (response.ok){
-                return response.json()
-            }
-            else{
-                throw new Error('Response not OK')
-            } 
         })
         .then(resData => {
             dispatch({ type: DELETE_EXERCISE, id: exerId })

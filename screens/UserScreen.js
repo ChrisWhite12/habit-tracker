@@ -30,8 +30,10 @@ const UserScreen = (props) => {
 
     useEffect(() => {
         console.log('profileData',profileData);
-        setHrInput(profileData.reminder.slice(0,2))
-        setMinInput(profileData.reminder.slice(2,4))
+        if(profileData?.reminder){
+            setHrInput(profileData.reminder.slice(0,2))
+            setMinInput(profileData.reminder.slice(2,4))
+        }
     },[profileData])
 
     // for IOS - DEPRECIATED 
