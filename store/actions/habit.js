@@ -10,7 +10,6 @@ import { CREATE_ACTIVITY, UPDATE_ACTIVITY_CREATE, UPDATE_ACTIVITY_DELETE } from 
 export const createHabit = (habitName) => {
     return (dispatch,getState) => {
         const userId = getState().auth.userId
-        let idOut = ''
 
         firebase.database().ref(`/users/${userId}/habit`).push({
             habitName: habitName, 
@@ -37,7 +36,6 @@ export const createHabit = (habitName) => {
         .catch( err =>
             console.log(err)
         )
-        return idOut
     }
 }
 

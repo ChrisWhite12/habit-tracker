@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import {StyleSheet, View, Text, TextInput, Button, FlatList, Keyboard, TouchableWithoutFeedback} from 'react-native'
+import {StyleSheet, View, Text, TextInput, Button, FlatList, Keyboard, TouchableWithoutFeedback, Alert} from 'react-native'
 import { useDispatch, useSelector } from 'react-redux';
 import CustomHeaderButton from '../components/CustomHeaderButton';
 import ExerciseItem from '../components/ExerciseItem';
@@ -36,6 +36,15 @@ const ExerciseScreen = (props) => {
         await dispatch(exerciseActions.createExercise(textAct,textCal, new Date()))             //create a new exercise
     })
 
+    const handleDelete = (id) => {
+        Alert.alert('Are you sure?', 'Do you want to delete this item?', [
+            {text: 'No', style: 'default'},
+            {text: 'Yes', style: 'destructive', onPress:() => {
+                dispatch(exerciseActions.deleteExercise(id))
+            }}
+        ])
+    }
+
     useEffect(() => {
         dispatch(exerciseActions.fetchExercise())                               //retrive all exercises
     },[dispatch])
@@ -64,7 +73,7 @@ const ExerciseScreen = (props) => {
                             name={exercise.item.exerciseName}
                             cal={exercise.item.cal}
                             onRemove={() => {
-                                dispatch(exerciseActions.deleteExercise(exercise.item.id))
+                                handleDelete(exercise.item.id)
                             }}
                             />
                         }}

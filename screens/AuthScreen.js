@@ -13,6 +13,7 @@ import * as Google from "expo-google-app-auth";
 
 import { ANDROID_ID } from "@env";
 import Colors from "../constants/Colors";
+import TextDefault from "../components/TextDefault";
 
 const AuthScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -59,6 +60,7 @@ const AuthScreen = (props) => {
       ) : (
         <Button onPress={() => {signInWithGoogleAsync()}} title="Login with Google" />
       )}
+      <TextDefault >App currently in development, information likely to be lost in upcoming updates</TextDefault>
     </View>
   );
 };

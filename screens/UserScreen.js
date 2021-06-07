@@ -7,6 +7,7 @@ import * as Notifications from 'expo-notifications'
 import * as Permissions from 'expo-permissions'                 //For IOS
 import * as profileActions from '../store/actions/profile'
 import { useDispatch, useSelector } from 'react-redux';
+import { Ionicons } from '@expo/vector-icons';
 
 
 
@@ -14,6 +15,7 @@ const UserScreen = (props) => {
     const [amPmType, setAmPmType] = useState('am')
     const [hrInput, setHrInput] = useState('')
     const [minInput, setMinInput] = useState('')
+    const [reminderSend, setReminderSend] = useState(false)
     const refInput1 = useRef()
     const refInput2 = useRef()
 
@@ -52,10 +54,12 @@ const UserScreen = (props) => {
 
 
     const handleSetTime = () => {
+        setReminderSend(true)
         const minInt = parseInt(minInput)
         const hrInt = parseInt(hrInput)
 
         if( minInt >= 0 && minInt < 60 && hrInt >= 0 && hrInt < 24 ){
+
             Notifications.cancelAllScheduledNotificationsAsync()
             .then (() => {
                 Notifications.scheduleNotificationAsync({
@@ -72,6 +76,7 @@ const UserScreen = (props) => {
             })
 
             dispatch(profileActions.updateProfile(hrInput + minInput))
+            setTimeout(() => {setReminderSend(false)}, 2000)
 
         }
     }
@@ -127,10 +132,13 @@ const UserScreen = (props) => {
                         />
                     </View>
                 </View>
+                
+                {reminderSend ?
+                <Ionicons name='checkmark-circle' size={32} color="green" /> : 
                 <Button 
                     title='Set Time'
                     onPress={handleSetTime}
-                    />
+                    />}
             </View>
         </TouchableWithoutFeedback>
     );

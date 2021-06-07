@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import {StyleSheet, View, Text, FlatList, Button} from 'react-native'
+import {StyleSheet, View, Text, FlatList, Button, Alert} from 'react-native'
 import { useDispatch, useSelector } from 'react-redux';
 import CustomHeaderButton from '../components/CustomHeaderButton';
 import HabitItem from '../components/HabitItem';
@@ -23,6 +23,15 @@ const HabitScreen = (props) => {
         dispatch(habitActions.fetchHabit())                     //fetch all habits
     },[dispatch])
 
+    const handleDelete = (id) => {
+        Alert.alert('Are you sure?', 'Do you want to delete this item?', [
+            {text: 'No', style: 'default'},
+            {text: 'Yes', style: 'destructive', onPress:() => {
+                dispatch(habitActions.deleteHabit(id))
+            }}
+        ])
+    }
+
     return (
         <View style={styles.screen}>
             <View>
@@ -39,7 +48,7 @@ const HabitScreen = (props) => {
                             dispatch(habitActions.updateHabit(habit.item.id, habit.item.dateStart, habit.item.highStreak, new Date()))
                         }}
                         onRemove={() => {
-                            dispatch(habitActions.deleteHabit(habit.item.id))
+                            handleDelete(habit.item.id)
                         }}
                         />
                         )

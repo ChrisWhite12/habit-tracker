@@ -108,7 +108,7 @@ const OverviewScreen = (props) => {
         }
     }, [habitData])
 
-    const handleAddData = () => {             //trigged when loading dummy data
+    const handleAddData = async () => {             //trigged when loading dummy data
 
         
         for (let ind = 0; ind < 6; ind++) {         
@@ -117,8 +117,7 @@ const OverviewScreen = (props) => {
             dispatch(weightActions.createWeight((Math.floor((80 + (Math.random() * 5) - 2.5) * 100)/100).toString(), dateIn.toISOString()))
         }
         
-        dispatch(habitActions.createHabit('Pizza'))    
-        console.log('setting dummy to true')
+        await dispatch(habitActions.createHabit('Pizza'))
         setIsDummy(true)
     }
     
