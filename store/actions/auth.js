@@ -6,13 +6,6 @@ import * as Google from "expo-google-app-auth";
 export const SIGN_IN = "SIGN_IN";
 export const SET_ID = "SET_ID"
 
-// export const setAuth = (userId, token) => {
-//   console.log('in setAuth, id, token', userId, token)
-//   return dispatch => {
-//     dispatch({type: SIGN_IN, userId: userId, token: token})
-//   }
-// }
-
 export const setUserId = (userId, token) => {
   return dispatch => {
     dispatch({type: SET_ID, userId: userId, token: token})

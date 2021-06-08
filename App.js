@@ -16,6 +16,11 @@ import ProfileReducer from './store/reducers/profile'
 import * as firebase from 'firebase'
 
 import { firebaseConfig } from './config/firebaseConfig'
+import _ from 'lodash';
+
+import { LogBox } from 'react-native';
+
+
 firebase.initializeApp(firebaseConfig)
 
 const rootReducer = combineReducers({
@@ -30,6 +35,9 @@ const rootReducer = combineReducers({
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk))
 
 export default function App() {
+  LogBox.ignoreLogs(['Setting a timer']);
+  LogBox.ignoreLogs(['If you want to use Reanimated 2'])
+  LogBox.ignoreLogs(['Native Google Sign-In'])
   return (
     <Provider store={store}>
       <AppNavigator />

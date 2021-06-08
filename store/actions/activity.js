@@ -13,7 +13,6 @@ export const fetchActivity = () => {
     return async (dispatch, getState) => {
         const userId = getState().auth.userId
 
-        console.log('fetching activities')
         //fetch the user activities
         firebase.database().ref(`/users/${userId}/activity`).once('value', (snapshot) => {
             let resOut = []

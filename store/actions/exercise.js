@@ -17,6 +17,7 @@ export const createExercise = (exerciseName, cal, date) => {
         const newDate = date.toISOString()
 
         let createExerId
+        console.log('getState().activity.activityList',getState().activity.activityList);
         const existActivity = getState().activity.activityList.find(el => el.date === new Date(date).toDateString())
 
         db.ref(`/users/${userId}/exercise`).push({
@@ -90,7 +91,6 @@ export const createExercise = (exerciseName, cal, date) => {
 
 export const fetchExercise = () => {
     return async (dispatch, getState) => {
-        console.log('fetching exercise')
         const db = firebase.database()
         const userId = getState().auth.userId
 
@@ -102,17 +102,8 @@ export const fetchExercise = () => {
             for (const key in resData) {
                 resOut.push({id: key, cal: resData[key].cal, date: resData[key].date, exerciseName: resData[key].exerciseName})
             }
-            console.log('resOut',resOut);
             dispatch({type: FETCH_EXERCISE, exerciseData: resOut})
         })
-            // .then((resData) => {
-            //     console.log('resData',resData);
-            //     let resOut = []
-            //     for (const key in resData) {
-            //         resOut.push({id: key, cal: resData[key].cal, date: resData[key].date, exerciseName: resData[key].exerciseName})
-            //     }
-            //     dispatch({type: FETCH_EXERCISE, exerciseData: resOut})
-            // })
     }
 }
 

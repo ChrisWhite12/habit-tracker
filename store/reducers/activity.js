@@ -11,7 +11,9 @@ const initState = {
 
 
 export default (state = initState, action) => {
-    
+
+    // console.log('before activity reducer', state.activityList)
+
     switch (action.type) {
         case FETCH_ACTIVITY:
             return {
@@ -20,9 +22,6 @@ export default (state = initState, action) => {
             }
 
         case CREATE_ACTIVITY:
-            //TODO problem with action.id, undefined when updating activity
-
-            console.log('no match, creating new activity, action.id', action.id)
             //create a new activity
             const newActivity = {
                 date: action.date,
@@ -96,7 +95,7 @@ export default (state = initState, action) => {
 
         case UPDATE_ACTIVITY_DELETE:
 
-            console.log('delete from activity - ', action)
+            // console.log('delete from activity - ', action)
             // action - habitDelId, date, actId
             // action - exerDelId, date, actId
 
@@ -140,13 +139,19 @@ export default (state = initState, action) => {
             })
             //update the existing activity
             const updateActivityDel = {
-                date: action.date,
+                date: new Date(action.date).toDateString(),
                 exerIds: exerIdsOutDel(),
                 habitIds: habitIdsOutDel(),
                 id: actFind.id
             }
+
+            // console.log('updateActivityDel', updateActivityDel)
+            // console.log('actFindIndex',actFindIndex);
+
             const updatedActivitesDel = [...state.activityList]
             updatedActivitesDel[actFindIndex] = updateActivityDel
+
+            // console.log('updatedActivitesDel',updatedActivitesDel);
 
             return {
                 activityList: updatedActivitesDel

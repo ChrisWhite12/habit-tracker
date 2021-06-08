@@ -50,7 +50,7 @@ const OverviewScreen = (props) => {
         setIsLoading(true)
         // console.log('in useEffect')
 
-        firebase.auth().onAuthStateChanged((userRes) => {                       //when the user is logged in
+        const unsubscribe = firebase.auth().onAuthStateChanged((userRes) => {                       //when the user is logged in
             if(userRes != null){
                 dispatch(authActions.setUserId(userRes.uid))                    //set the auth userId to userRes.uid
                 setUser(userRes.email)
@@ -65,6 +65,7 @@ const OverviewScreen = (props) => {
             setIsLoading(false)
         }
 
+        return () => unsubscribe()
     },[dispatch, userId])
 
     const handleClick = (date, exerIds, habitIds) => {
@@ -89,37 +90,37 @@ const OverviewScreen = (props) => {
         setDateText(date)                       //set date text
     }
 
-    useEffect(() => {
-        if(isDummy){
-            console.log('in isDummy')
+    // useEffect(() => {
+    //     if(isDummy){
+    //         console.log('in isDummy')
             
-            const pizzaHabit = habitData.find(el => el.habitName === 'Pizza')   //find the pizza habit
+    //         const pizzaHabit = habitData.find(el => el.habitName === 'Pizza')   //find the pizza habit
             
-            if(pizzaHabit){
-                //update habit to occur on three days
-                dispatch(habitActions.updateHabit(pizzaHabit.id, new Date(new Date().setDate(nowDate.getDate() - 5)), '2', new Date(new Date().setDate(nowDate.getDate()))))
-                dispatch(habitActions.updateHabit(pizzaHabit.id, new Date(new Date().setDate(nowDate.getDate() - 9)), '2', new Date(new Date().setDate(nowDate.getDate() - 4))))
-                dispatch(habitActions.updateHabit(pizzaHabit.id, new Date(new Date().setDate(nowDate.getDate() - 15)), '2', new Date(new Date().setDate(nowDate.getDate() - 9))))
-            }
-            else{
-                console.log('failed to update habit')
-            }
-            setIsDummy(false)               //done with dummy setup
-        }
-    }, [habitData])
+    //         if(pizzaHabit){
+    //             //update habit to occur on three days
+    //             dispatch(habitActions.updateHabit(pizzaHabit.id, new Date(new Date().setDate(nowDate.getDate() - 5)), '2', new Date(new Date().setDate(nowDate.getDate()))))
+    //             dispatch(habitActions.updateHabit(pizzaHabit.id, new Date(new Date().setDate(nowDate.getDate() - 9)), '2', new Date(new Date().setDate(nowDate.getDate() - 4))))
+    //             dispatch(habitActions.updateHabit(pizzaHabit.id, new Date(new Date().setDate(nowDate.getDate() - 15)), '2', new Date(new Date().setDate(nowDate.getDate() - 9))))
+    //         }
+    //         else{
+    //             console.log('failed to update habit')
+    //         }
+    //         setIsDummy(false)               //done with dummy setup
+    //     }
+    // }, [habitData])
 
-    const handleAddData = async () => {             //trigged when loading dummy data
+    // const handleAddData = async () => {             //trigged when loading dummy data
 
         
-        for (let ind = 0; ind < 6; ind++) {         
-            const dateIn = new Date(new Date().setDate(nowDate.getDate() - ind))    //create new date - ind
-            dispatch(exerciseActions.createExercise('walk','123', dateIn))    //create exercise with new date
-            dispatch(weightActions.createWeight((Math.floor((80 + (Math.random() * 5) - 2.5) * 100)/100).toString(), dateIn.toISOString()))
-        }
+    //     for (let ind = 0; ind < 6; ind++) {         
+    //         const dateIn = new Date(new Date().setDate(nowDate.getDate() - ind))    //create new date - ind
+    //         dispatch(exerciseActions.createExercise('walk','123', dateIn))    //create exercise with new date
+    //         dispatch(weightActions.createWeight((Math.floor((80 + (Math.random() * 5) - 2.5) * 100)/100).toString(), dateIn.toISOString()))
+    //     }
         
-        await dispatch(habitActions.createHabit('Pizza'))
-        setIsDummy(true)
-    }
+    //     await dispatch(habitActions.createHabit('Pizza'))
+    //     setIsDummy(true)
+    // }
     
     return (
         <View style={styles.screen}>
@@ -168,10 +169,10 @@ const OverviewScreen = (props) => {
                     </View>
 
                 </View>
-                <Button 
+                {/* <Button 
                     title='Load Data'
                     onPress={handleAddData}
-                />
+                /> */}
                 <Button 
                 title='LOGOUT'
                 onPress={() => {

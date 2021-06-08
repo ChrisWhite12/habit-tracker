@@ -60,7 +60,6 @@ const AuthScreen = (props) => {
       ) : (
         <Button onPress={() => {signInWithGoogleAsync()}} title="Login with Google" />
       )}
-      <TextDefault >App currently in development, information likely to be lost in upcoming updates</TextDefault>
     </View>
   );
 };

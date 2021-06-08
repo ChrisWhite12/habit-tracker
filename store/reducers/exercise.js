@@ -7,6 +7,9 @@ const initState = {
 
 
 export default (state = initState, action) => {
+    
+    // console.log('before exercise reducer', state.exerciseList)
+
     switch (action.type) {
 
         case CREATE_EXERCISE:

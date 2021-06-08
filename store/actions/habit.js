@@ -42,7 +42,6 @@ export const createHabit = (habitName) => {
 export const fetchHabit = () => {
     return async (dispatch, getState) => {
 
-        console.log('fetching habit')
         const userId = getState().auth.userId
 
         firebase.database().ref(`/users/${userId}/habit`).once('value', (snapshot) => {
@@ -61,8 +60,6 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
     return async (dispatch, getState) => {
         const tempState = getState()
         const userId = getState().auth.userId
-
-        console.log('tempState',tempState);
 
         //see if the activity already exists
         const existActivity = getState().activity.activityList.find(el => el.date === new Date(dateBreak).toDateString())
@@ -86,11 +83,9 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
         
         firebase.database().ref(`/users/${userId}/habit/${id}`).update(dataOut)
         .then(data => {
-            console.log('existActivity',existActivity);
             
             if (existActivity && !(existActivity?.habitIds?.includes(id))){
 
-                console.log("activity does exist")
                 const habitIdsOut = (existActivity.habitIds === undefined) ? [id] : [...existActivity.habitIds, id]
                 
                 //update the current activity on firebase
@@ -100,7 +95,6 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
                 })
             }
             else if (!existActivity){
-                console.log("activity doesn't exist")
                 
                 return firebase.database().ref(`/users/${userId}/activity`).push({
                     date: new Date(dateBreak).toDateString(),
@@ -112,13 +106,6 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
         .then(resData =>
             {
                 if(!existActivity){
-                    console.log('creating activity')
-                    console.log('updating habit, actId ', resData.key )
-
-                    if(!resData.key){
-                        console.log("ID UNDEFINED")
-                    }
-
                     dispatch({ 
                         type: UPDATE_HABIT,
                         id: id,
@@ -134,8 +121,6 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
                     })
                 }
                 else if (existActivity && !(existActivity.habitIds?.includes(id))){
-                    console.log('updating activity')
-                    console.log('existActivity.id',existActivity.id);
                     dispatch({ 
                         type: UPDATE_HABIT,
                         id: id,
@@ -163,13 +148,9 @@ export const deleteHabit = habitId => {
             return (el.habitIds?.includes(habitId))
         })
 
-        console.log('actFilter',actFilter);
-
         await Promise.all(
             actFilter.map(actItem => {
                 const habitIdsFilter = actItem.habitIds.filter(el => el != habitId)
-                console.log('habitIdsFilter',habitIdsFilter);
-                console.log('actItem', actItem)
 
                 return firebase.database().ref(`/users/${userId}/activity/${actItem.id}`).update({
                     habitIds: habitIdsFilter

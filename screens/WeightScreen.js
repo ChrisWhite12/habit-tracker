@@ -81,8 +81,6 @@ const WeightScreen = (props) => {
             }
         }
 
-        console.log('filtWeight',filtWeight);
-
         let firstDay = true
         const tableData = {
             weightOut: [],
@@ -120,12 +118,8 @@ const WeightScreen = (props) => {
                 for (let i = 90; i >= 0; i--) {
                     const dateTrack = filtWeight.find(el => {
                         const dateDiff = Math.floor((new Date() - new Date(el.dateSet))/(1000 * 60 * 60 * 24))
-                        // console.log('dateDiff',dateDiff);
                         return dateDiff === i
                     })
-
-
-                    if (dateTrack) { console.log('dateTrack, i ',dateTrack, i) }
 
                     if(dateTrack !== undefined && firstDay === true){
                         firstDay = false

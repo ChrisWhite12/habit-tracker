@@ -31,7 +31,6 @@ const UserScreen = (props) => {
     },[dispatch])
 
     useEffect(() => {
-        console.log('profileData',profileData);
         if(profileData?.reminder){
             setHrInput(profileData.reminder.slice(0,2))
             setMinInput(profileData.reminder.slice(2,4))
@@ -82,11 +81,9 @@ const UserScreen = (props) => {
     }
 
     const handleHrChange = (text) => {
-        console.log('text',text)
         
         setHrInput(text)
         if (text.length >= 2){
-            console.log('changing')
             refInput2.current.focus()
         }
     }
@@ -109,7 +106,6 @@ const UserScreen = (props) => {
                         style={styles.hrInput}
                         onChangeText={handleHrChange}
                         onFocus={() => {
-                            console.log('hr focus')
                             setHrInput('')
                         }}
                         keyboardType='numeric'
@@ -123,7 +119,6 @@ const UserScreen = (props) => {
                         style={styles.minInput}
                         onChangeText={handleMinChange}
                         onFocus={() => {
-                            console.log('min focus')
                             setMinInput('')
                         }}
                         keyboardType='numeric'

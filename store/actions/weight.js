@@ -50,7 +50,6 @@ export const createWeight = (weight, date) => {
 
 export const fetchWeight = () => {
     return async (dispatch, getState) => {
-        console.log('fetching weight')
         const userId = getState().auth.userId
 
         firebase.database().ref(`/users/${userId}/weight`).once('value', (snapshot) => {
