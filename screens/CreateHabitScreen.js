@@ -11,7 +11,7 @@ const CreateHabitScreen = (props) => {
     const [habitName, setHabitName] = useState('')
     const dispatch = useDispatch()
 
-    const handleChange = (text) => {
+    const handleChange = (text) => {                                                    //on text change set name
         setHabitName(text)
     }
 

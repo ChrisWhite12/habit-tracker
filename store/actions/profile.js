@@ -2,16 +2,13 @@ export const CREATE_PROFILE = 'CREATE_PROFILE'
 export const FETCH_PROFILE = 'FETCH_PROFILE'
 export const UPDATE_PROFILE = 'UPDATE_PROFILE'
 
-import {
-    DATABASE_URL
-} from '@env'
-
 import * as firebase from 'firebase'
 
 export const fetchProfile = () => {
     return (dispatch, getState) => {
         const userId = getState().auth.userId
 
+        //get data from profile
         firebase.database().ref(`/users/${userId}/profile`).once('value', (snapshot) => {
             return snapshot.val()
         })
@@ -30,24 +27,10 @@ export const updateProfile = (reminder) => {
         const reminderState = getState().profile.reminder
 
         if(reminderState === ''){
+            //if empty string push new reminder tor firebase
             firebase.database().ref(`/users/${userId}/profile`).push({
                 reminder
             })
-            // fetch(`${DATABASE_URL}/users/${userId}/profile.json`, {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify({reminder})
-            // })
-            // .then(response => {
-            //     if (response.ok){
-            //         return response.json()
-            //     }
-            //     else{
-            //         throw new Error("Response not OK, can't update profile")
-            //     } 
-            // })
             .then(resData => {
                 dispatch({type: UPDATE_PROFILE, reminder})
             })
@@ -56,24 +39,10 @@ export const updateProfile = (reminder) => {
 
         }
         else{
+            //otherwise update reminder
             firebase.database().ref(`/users/${userId}/profile`).update({
                 reminder
             })
-            // fetch(`${DATABASE_URL}/users/${userId}/profile.json`, {
-            //     method: 'PATCH',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify({reminder})
-            // })
-            // .then(response => {
-            //     if (response.ok){
-            //         return response.json()
-            //     }
-            //     else{
-            //         throw new Error("Response not OK, can't update profile")
-            //     } 
-            // })
             .then(resData => {
                 dispatch({type: UPDATE_PROFILE, reminder})
             })

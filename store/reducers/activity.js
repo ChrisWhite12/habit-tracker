@@ -106,13 +106,13 @@ export default (state = initState, action) => {
             const exerIdsOutDel = (() => {                
                 if(actFind.exerIds?.length > 0 ){
 
-                    const exerIdsArr = actFind.exerIds
+                    const exerIdsArr = actFind.exerIds                                                  //array of current ids
 
                     if(action.exerDelId){
-                        return [...exerIdsArr.filter(el => el !== action.exerDelId)]
+                        return [...exerIdsArr.filter(el => el !== action.exerDelId)]                    //delete the id
                     }
                     else{
-                        return [...exerIdsArr]
+                        return [...exerIdsArr]                                                          //change nothing
                     }
                 }
                 else{
@@ -124,13 +124,13 @@ export default (state = initState, action) => {
             const habitIdsOutDel = (() => {
                 if(actFind.habitIds?.length > 0 ){
 
-                    const habitIdsArr = actFind.habitIds
+                    const habitIdsArr = actFind.habitIds                                                //array of current ids
 
                     if(action.habitDelId){
-                        return [...habitIdsArr.filter(el => el !== action.habitDelId)]
+                        return [...habitIdsArr.filter(el => el !== action.habitDelId)]                  //delete the id
                     }
                     else{
-                        return [...habitIdsArr]
+                        return [...habitIdsArr]                                                         //change nothing
                     }
                 }
                 else{
@@ -145,13 +145,8 @@ export default (state = initState, action) => {
                 id: actFind.id
             }
 
-            // console.log('updateActivityDel', updateActivityDel)
-            // console.log('actFindIndex',actFindIndex);
-
             const updatedActivitesDel = [...state.activityList]
-            updatedActivitesDel[actFindIndex] = updateActivityDel
-
-            // console.log('updatedActivitesDel',updatedActivitesDel);
+            updatedActivitesDel[actFindIndex] = updateActivityDel                                       //put updated activity in updatedActivitiesDel
 
             return {
                 activityList: updatedActivitesDel

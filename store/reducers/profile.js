@@ -21,7 +21,6 @@ export default (state = initState, action) => {
                 ...state,
                 reminder: action.reminder
             }
-
         default:
         return state;
     }

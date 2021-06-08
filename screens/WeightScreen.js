@@ -38,6 +38,7 @@ const WeightScreen = (props) => {
         //check if the data already exists
 
         const existWeight = weightData.find(weightItem => {
+            //return item if date matches todays date
             const date1 = new Date(weightItem.dateSet).toDateString()
             const date2 = new Date().toDateString()
             return date1 === date2
@@ -45,11 +46,13 @@ const WeightScreen = (props) => {
 
         if (existWeight === undefined){
             await dispatch(
+                //create if undefined
                 weightActions.createWeight(newWeight, nowDate.toISOString())
             )
         }
         else{
             await dispatch(
+                //update if existing
                 weightActions.updateWeight(existWeight.id, newWeight, nowDate)
             )
         }
@@ -65,6 +68,7 @@ const WeightScreen = (props) => {
 
         if (weightData?.length >= 1){
             if (graphMode === 'Current Month'){
+                //filter data matching current month
                 filtWeight = weightData.filter(el => {
                     if(((new Date(el.dateSet)).getMonth() + 1) === currMonth){
                         return el
@@ -74,6 +78,7 @@ const WeightScreen = (props) => {
             else {
                 filtWeight = weightData.filter(el => {
                     //find difference between current date and el.dateSet
+                    //return items that are less than 90 days
                     if ((new Date() - new Date(el.dateSet))/(1000 * 60 * 60 * 24) < 90){
                         return el
                     }
@@ -116,7 +121,7 @@ const WeightScreen = (props) => {
             else{
 
                 for (let i = 90; i >= 0; i--) {
-                    const dateTrack = filtWeight.find(el => {
+                    const dateTrack = filtWeight.find(el => {                       //find weight that matches i
                         const dateDiff = Math.floor((new Date() - new Date(el.dateSet))/(1000 * 60 * 60 * 24))
                         return dateDiff === i
                     })
@@ -147,7 +152,7 @@ const WeightScreen = (props) => {
     const handlePressForward = () => {
         switch (graphMode) {
             case 'Current Month':
-                setGraphMode('Past 90 days')
+                setGraphMode('Past 90 days')                //toggle text
                 break;
 
             case 'Past 90 days':
@@ -162,7 +167,7 @@ const WeightScreen = (props) => {
     const handlePressBack = () => {
         switch (graphMode) {
             case 'Current Month':
-                setGraphMode('Past 90 days')
+                setGraphMode('Past 90 days')                //toggle text
                 break;
 
             case 'Past 90 days':

@@ -11,7 +11,7 @@ export const createHabit = (habitName) => {
     return (dispatch,getState) => {
         const userId = getState().auth.userId
 
-        firebase.database().ref(`/users/${userId}/habit`).push({
+        firebase.database().ref(`/users/${userId}/habit`).push({                            //create habit in firebase
             habitName: habitName, 
             dateStart: new Date().toISOString(), 
             highStreak: '0'
@@ -21,9 +21,8 @@ export const createHabit = (habitName) => {
                 throw new Error(`Response not OK, can't post exercise`, error)
             }
         })
-        .then(resData => {
-            idOut = resData.key         // * was resData.name
-            dispatch({
+        .then(resData => {     
+            dispatch({                                                                      //save to redux
                 type: CREATE_HABIT,
                 id: resData.key,
                 habitData: {
@@ -43,7 +42,7 @@ export const fetchHabit = () => {
     return async (dispatch, getState) => {
 
         const userId = getState().auth.userId
-
+        //fetch habits from firebase
         firebase.database().ref(`/users/${userId}/habit`).once('value', (snapshot) => {
             let resOut = []
             const resData = snapshot.val()
@@ -51,14 +50,13 @@ export const fetchHabit = () => {
             for (const key in resData) {
                 resOut.push({dateStart: resData[key].dateStart, habitName: resData[key].habitName, highStreak: resData[key].highStreak, id: key})
             }
-            dispatch({type: FETCH_HABIT, habits: resOut})
+            dispatch({type: FETCH_HABIT, habits: resOut})       //save to redux
         })
     }
 }
 
 export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
     return async (dispatch, getState) => {
-        const tempState = getState()
         const userId = getState().auth.userId
 
         //see if the activity already exists
@@ -67,7 +65,7 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
         let dataOut = {}
         const timeDiff = Math.floor((new Date(dateBreak) - new Date(dateStart))/ (1000* 60 * 60 * 24))
 
-        if(timeDiff > parseInt(highStreak)){
+        if(timeDiff > parseInt(highStreak)){                                                    //if the time difference is greater then highest streak
             dataOut = {
                 highStreak: timeDiff.toString(),                                                //update highStreak
                 dateStart: new Date(dateBreak).toISOString()                                    //update dateStart
@@ -81,7 +79,7 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
 
         }
         
-        firebase.database().ref(`/users/${userId}/habit/${id}`).update(dataOut)
+        firebase.database().ref(`/users/${userId}/habit/${id}`).update(dataOut)                 //update the habit
         .then(data => {
             
             if (existActivity && !(existActivity?.habitIds?.includes(id))){
@@ -96,6 +94,7 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
             }
             else if (!existActivity){
                 
+                //post new activity if one doesn't exist
                 return firebase.database().ref(`/users/${userId}/activity`).push({
                     date: new Date(dateBreak).toDateString(),
                     exerIds: [],
@@ -105,7 +104,7 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
         })
         .then(resData =>
             {
-                if(!existActivity){
+                if(!existActivity){                         //save to redux
                     dispatch({ 
                         type: UPDATE_HABIT,
                         id: id,
@@ -144,15 +143,15 @@ export const deleteHabit = habitId => {
         const userId = getState().auth.userId
         const actList = getState().activity.activityList
 
-        const actFilter = actList.filter(el => {
+        const actFilter = actList.filter(el => {            //filter all activities that have habitId
             return (el.habitIds?.includes(habitId))
         })
 
         await Promise.all(
             actFilter.map(actItem => {
-                const habitIdsFilter = actItem.habitIds.filter(el => el != habitId)
+                const habitIdsFilter = actItem.habitIds.filter(el => el != habitId)                 //filter out the id
 
-                return firebase.database().ref(`/users/${userId}/activity/${actItem.id}`).update({
+                return firebase.database().ref(`/users/${userId}/activity/${actItem.id}`).update({  //update the activity with filter
                     habitIds: habitIdsFilter
                 })
                 .then(resData => {
@@ -162,7 +161,7 @@ export const deleteHabit = habitId => {
             })
         )
 
-        firebase.database().ref(`/users/${userId}/habit/${habitId}`).remove() 
+        firebase.database().ref(`/users/${userId}/habit/${habitId}`).remove()               //remove the habit
         .then(resData => {
             dispatch({ type: DELETE_HABIT, id: habitId })
         })

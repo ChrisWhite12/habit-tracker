@@ -13,6 +13,7 @@ const HabitScreen = (props) => {
             return state.habit.habitList
         }
     )
+
     const dispatch = useDispatch()
 
     const handleAdd = () => {
@@ -24,7 +25,7 @@ const HabitScreen = (props) => {
     },[dispatch])
 
     const handleDelete = (id) => {
-        Alert.alert('Are you sure?', 'Do you want to delete this item?', [
+        Alert.alert('Are you sure?', 'Do you want to delete this item?', [              //trigger popup when trying to delete
             {text: 'No', style: 'default'},
             {text: 'Yes', style: 'destructive', onPress:() => {
                 dispatch(habitActions.deleteHabit(id))

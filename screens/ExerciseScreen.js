@@ -37,7 +37,7 @@ const ExerciseScreen = (props) => {
     })
 
     const handleDelete = (id) => {
-        Alert.alert('Are you sure?', 'Do you want to delete this item?', [
+        Alert.alert('Are you sure?', 'Do you want to delete this item?', [                  //trigger popup when trying to delete
             {text: 'No', style: 'default'},
             {text: 'Yes', style: 'destructive', onPress:() => {
                 dispatch(exerciseActions.deleteExercise(id))

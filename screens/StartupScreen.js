@@ -7,12 +7,12 @@ import * as firebase from 'firebase'
 const StartupScreen = (props) => {
 
     useEffect(() => {
-        firebase.auth().onAuthStateChanged((user) => {
+        firebase.auth().onAuthStateChanged((user) => {                      //check if user is already in firebase
             if(user){
-                props.navigation.navigate('App')
+                props.navigation.navigate('App')                            //navigate to app if signed in 
             }
             else{
-                props.navigation.navigate('Auth')
+                props.navigation.navigate('Auth')                           //otherwise go to auth screen
             }
         })
     },[])

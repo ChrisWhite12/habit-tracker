@@ -12,10 +12,10 @@ import { Ionicons } from '@expo/vector-icons';
 
 
 const UserScreen = (props) => {
-    const [amPmType, setAmPmType] = useState('am')
     const [hrInput, setHrInput] = useState('')
     const [minInput, setMinInput] = useState('')
     const [reminderSend, setReminderSend] = useState(false)
+    const [cancelReminderSend, setCancelReminderSend] = useState(false)
     const refInput1 = useRef()
     const refInput2 = useRef()
 
@@ -24,7 +24,6 @@ const UserScreen = (props) => {
 
     // BMI calculate?
     //cal intake?
-    //TODO - fetch the reminder time
 
     useEffect(() => {
         dispatch(profileActions.fetchProfile())
@@ -80,6 +79,12 @@ const UserScreen = (props) => {
         }
     }
 
+    const handleCancelReminder = () => {
+        setCancelReminderSend(true)
+        Notifications.cancelAllScheduledNotificationsAsync()
+        setTimeout(() => {setCancelReminderSend(false)}, 2000)
+    }
+
     const handleHrChange = (text) => {
         
         setHrInput(text)
@@ -128,12 +133,26 @@ const UserScreen = (props) => {
                     </View>
                 </View>
                 
-                {reminderSend ?
-                <Ionicons name='checkmark-circle' size={32} color="green" /> : 
-                <Button 
-                    title='Set Time'
-                    onPress={handleSetTime}
-                    />}
+                <View style={styles.setTime_btn}>
+                    {reminderSend ?
+                    <Ionicons name='checkmark-circle' size={32} color="green" /> : 
+                    <Button 
+                        
+                        title='Set Time'
+                        onPress={handleSetTime}
+                        color={Colors.primary}
+                        />}
+                </View>
+
+                <View style={styles.removeReminder_btn}>
+                    {cancelReminderSend ?
+                    <Ionicons name='checkmark-circle' size={32} color="green" /> : 
+                    <Button 
+                        title='Remove Reminder'
+                        onPress={handleCancelReminder}
+                        color={'#aa3333'}
+                        />}
+                </View>
             </View>
         </TouchableWithoutFeedback>
     );
@@ -202,6 +221,14 @@ const styles = StyleSheet.create({
         fontSize: 30,
         width: '100%',
         textAlign: 'center'
+    },
+    setTime_btn: {
+        margin: 10,
+        width: '50%'
+    },
+    removeReminder_btn: {
+        margin: 10,
+        width: '50%'
     }
 });
 export default UserScreen

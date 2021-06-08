@@ -6,27 +6,25 @@ import GridSquare from './GridSquare'
 const GridWeek = (props) => {
     const [dateArr, setDateArr] = useState([])
     const [isLoading, setIsLoading] = useState(true)
-    const gridData = []
 
     useEffect(() => {
         setIsLoading(true)
-        // console.log('props.dayEnd',props.dayEnd.toDateString());
-        let dateOut = [{date: props.dayEnd.toDateString()}]
+        let dateOut = [{date: props.dayEnd.toDateString()}]         //array containing the end day of the week
 
         for (let ind = 1; ind < 7; ind++) {
             const dateNew = props.dayEnd
             dateNew.setDate(props.dayEnd.getDate() - 1)
-            dateOut.push({ date: dateNew.toDateString() })
+            dateOut.push({ date: dateNew.toDateString() })          //push date onto dateOut to create array of 7 days
         }
 
-        setDateArr(dateOut)
+        setDateArr(dateOut)                                         //set dateArr
         setIsLoading(false)
     },[])
 
     return (
         <View style={styles.screen}>
             {!isLoading ?
-                dateArr.map((el) => {
+                dateArr.map((el) => {                               //map the gridsquares to the dateArr
                     return <GridSquare boxData={el} key={'day_',el.date} handleClick={props.handleClick}/>
                 })
             :

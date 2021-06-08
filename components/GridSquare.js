@@ -8,20 +8,24 @@ import TextDefault from './TextDefault';
 
 const GridSquare = (props) => {
     const activityDay = useSelector( state => {
+        //find the activity the matches the date from the props
         const actFilter = state.activity?.activityList?.find(el => el.date === props.boxData.date)
         return actFilter
     })
 
-    let boxColor = Colors.primary
+    let boxColor = Colors.primary       //default color
 
     if(activityDay){
         if(activityDay.exerIds?.length >= 1 && activityDay.habitIds?.length >= 1){
+            //if there is both exerIds and habitIds - color orange
             boxColor = 'orange'
         }
         else if(!activityDay.exerIds?.length >= 1 && activityDay.habitIds?.length >= 1){
+            //if only habitIds - color red
             boxColor = 'red'
         }
         else if(activityDay.exerIds?.length >= 1 && !activityDay.habitIds?.length >= 1){
+            //if only exerIds - color green
             boxColor = 'green'
         }
     }

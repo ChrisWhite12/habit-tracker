@@ -1,22 +1,18 @@
 import React, { useEffect, useState } from "react";
-import {StyleSheet, View, Text, FlatList, Button, ActivityIndicator} from 'react-native'
+import {StyleSheet, View, Button, ActivityIndicator} from 'react-native'
 import CustomHeaderButton from "../components/CustomHeaderButton";
-import GridSquare from "../components/GridSquare";
 import TextDefault from "../components/TextDefault";
 import Colors from "../constants/Colors";
 // import * as RNlocalize from 'react-native-localize'
 
-import { gridData } from '../data/dummy-data'
 // import { currDate } from "../utils";
 
-import {DATABASE_URL, FIREBASE_API_KEY} from '@env'
 import * as firebase from 'firebase'
 import { useDispatch, useSelector } from "react-redux";
 
 import * as activityActions from '../store/actions/activity'
 import * as habitActions from '../store/actions/habit'
 import * as exerciseActions from '../store/actions/exercise'
-import * as weightActions from '../store/actions/weight'
 import * as authActions from '../store/actions/auth'
 
 import GridWeek from "../components/GridWeek";
@@ -27,14 +23,13 @@ const OverviewScreen = (props) => {
     const nowDate = new Date()
     const currDay = nowDate.getDay() === 0 ? 7 : nowDate.getDay()
 
-    const [user, setUser] = useState('')
     const [dateText, setDateText] = useState('')
     const [exerText, setExerText] = useState([])
     const [habitText, setHabitText] = useState([])
-    const [isDummy, setIsDummy] = useState(false)
+    // const [isDummy, setIsDummy] = useState(false)
     const [userId, setUserId] = useState()
 
-    const [week4,setWeek4] = useState(new Date(new Date().setDate(nowDate.getDate() + (7 - currDay))))
+    const [week4,setWeek4] = useState(new Date(new Date().setDate(nowDate.getDate() + (7 - currDay))))      //calculate the dates for end of weeks
     const [week3,setWeek3] = useState(new Date(new Date().setDate(nowDate.getDate() - currDay)))
     const [week2,setWeek2] = useState(new Date(new Date().setDate(nowDate.getDate() - currDay - 7)))
     const [week1,setWeek1] = useState(new Date(new Date().setDate(nowDate.getDate() - currDay - 14)))
@@ -45,15 +40,12 @@ const OverviewScreen = (props) => {
     const [isLoading, setIsLoading] = useState(true)
     const dispatch = useDispatch()
 
-    // const dateOut = {}
     useEffect(() => {
         setIsLoading(true)
-        // console.log('in useEffect')
 
         const unsubscribe = firebase.auth().onAuthStateChanged((userRes) => {                       //when the user is logged in
             if(userRes != null){
                 dispatch(authActions.setUserId(userRes.uid))                    //set the auth userId to userRes.uid
-                setUser(userRes.email)
                 setUserId(userRes.uid)
             }
         })
@@ -65,7 +57,7 @@ const OverviewScreen = (props) => {
             setIsLoading(false)
         }
 
-        return () => unsubscribe()
+        return () => unsubscribe()                                                  //unsubscribe when component is unmounted
     },[dispatch, userId])
 
     const handleClick = (date, exerIds, habitIds) => {
@@ -136,7 +128,8 @@ const OverviewScreen = (props) => {
                 </View>
                 {!isLoading ? 
                     <View style={styles.gridCont2}>
-                        <GridWeek key={'week1'} dayEnd={week1} handleClick={handleClick}/>
+                        {/* render week grid passing the end date for week */}
+                        <GridWeek key={'week1'} dayEnd={week1} handleClick={handleClick}/>          
                         <GridWeek key={'week2'} dayEnd={week2} handleClick={handleClick}/>
                         <GridWeek key={'week3'} dayEnd={week3} handleClick={handleClick}/>
                         <GridWeek key={'week4'} dayEnd={week4} handleClick={handleClick}/>
