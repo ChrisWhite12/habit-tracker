@@ -1,6 +1,7 @@
 export const CREATE_WEIGHT = 'CREATE_WEIGHT'
 export const FETCH_WEIGHT = 'FETCH_WEIGHT'
 export const UPDATE_WEIGHT = 'UPDATE_WEIGHT'
+export const DELETE_OLD_WEIGHT = 'DELETE_OLD_WEIGHT'
 
 import * as firebase from 'firebase'
 
@@ -61,6 +62,25 @@ export const updateWeight = (id, weight, date) => {
                 id: id,
                 weightData: {weight: weight, date: date}
             })
+        })
+    }
+}
+
+export const deleteOldWeight = () => {
+    return async (dispatch, getState) => {
+        const userId = getState().auth.userId
+        const currWeight = getState().weight.weightList
+
+        await Promise.all(currWeight.map(weight => {
+            console.log('weight',weight)
+            if((new Date() - new Date(weight.dateSet))/(1000 * 60 * 60 * 24) > 90){       //if greater than 90 days
+                console.log('greater than 90 days')
+                return firebase.database().ref(`users/${userId}/weight/${weight.id}`).remove()
+            }
+        }))
+        
+        dispatch({
+            type: DELETE_OLD_WEIGHT
         })
     }
 }

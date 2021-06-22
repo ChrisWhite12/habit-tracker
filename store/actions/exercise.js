@@ -66,6 +66,7 @@ export const createExercise = (exerciseName, cal, date) => {
                     }
                 })
                 if(!existActivity){
+                    console.log('!exist ExerId', createExerId)
                     dispatch({
                         type: CREATE_ACTIVITY,
                         id: resData1.key,
@@ -74,6 +75,7 @@ export const createExercise = (exerciseName, cal, date) => {
                     })
                 }
                 else{
+                    console.log('exist ExerId', createExerId)
                     dispatch({
                         type: UPDATE_ACTIVITY_CREATE,
                         exerId: createExerId,

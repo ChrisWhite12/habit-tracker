@@ -5,7 +5,7 @@ const initState = {
 }
 
 export default (state = initState, action) => {
-    console.log('auth state',state);
+    // console.log('auth state',state);
     switch (action.type) {
         case SET_ID:
             return {

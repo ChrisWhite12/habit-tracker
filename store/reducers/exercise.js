@@ -1,5 +1,6 @@
 import { CREATE_EXERCISE, DELETE_EXERCISE, FETCH_EXERCISE } from "../actions/exercise";
 import Exercise from '../../models/exercise'
+import { DELETE_OLD_ACTIVITY } from "../actions/activity";
 
 const initState = {
     exerciseList: []
@@ -33,6 +34,12 @@ export default (state = initState, action) => {
             return {
                 ...state,
                 exerciseList: exerFilter
+            }
+        case DELETE_OLD_ACTIVITY:
+            const exerNew = state.exerciseList.filter(exer => ((new Date() - new Date(exer.date))/(1000 * 60 * 60 * 24) <= 36))
+            return {
+                ...state,
+                exerciseList: exerNew
             }
         default:
         return state;

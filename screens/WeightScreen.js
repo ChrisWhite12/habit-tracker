@@ -48,7 +48,9 @@ const WeightScreen = (props) => {
             await dispatch(
                 //create if undefined
                 weightActions.createWeight(newWeight, nowDate.toISOString())
+                //TODO delete old weight
             )
+            await dispatch(weightActions.deleteOldWeight())
         }
         else{
             await dispatch(

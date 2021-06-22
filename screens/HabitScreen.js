@@ -46,6 +46,7 @@ const HabitScreen = (props) => {
                         name={habit.item.habitName}
                         handleBreakStreak={() => {
                             //update the currStreak and highStreak
+                            //TODO delete old activities
                             dispatch(habitActions.updateHabit(habit.item.id, habit.item.dateStart, habit.item.highStreak, new Date()))
                         }}
                         onRemove={() => {

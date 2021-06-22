@@ -1,4 +1,4 @@
-import { CREATE_ACTIVITY, FETCH_ACTIVITY, UPDATE_ACTIVITY, UPDATE_ACTIVITY_CREATE, UPDATE_ACTIVITY_DELETE } from '../actions/activity';
+import { CREATE_ACTIVITY, DELETE_OLD_ACTIVITY, FETCH_ACTIVITY, UPDATE_ACTIVITY, UPDATE_ACTIVITY_CREATE, UPDATE_ACTIVITY_DELETE } from '../actions/activity';
 import { CREATE_EXERCISE } from '../actions/exercise'
 import { CREATE_HABIT, UPDATE_HABIT } from '../actions/habit'
 import { CREATE_WEIGHT } from '../actions/weight'
@@ -22,6 +22,7 @@ export default (state = initState, action) => {
             }
 
         case CREATE_ACTIVITY:
+            console.log('createActivity exerId', action.exerId)
             //create a new activity
             const newActivity = {
                 date: action.date,
@@ -152,6 +153,12 @@ export default (state = initState, action) => {
                 activityList: updatedActivitesDel
             }
 
+            case DELETE_OLD_ACTIVITY: 
+            const filtActivity = state.activityList.filter(act => ((new Date() - new Date(act.date))/(1000 * 60 * 60 * 24) <= 36))
+            return {
+                ...state,
+                activityList: filtActivity
+            }
         default:
             return state;
     }

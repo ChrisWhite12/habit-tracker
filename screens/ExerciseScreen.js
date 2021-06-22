@@ -7,6 +7,8 @@ import TextDefault from '../components/TextDefault';
 import Colors from "../constants/Colors";
 
 import * as exerciseActions from '../store/actions/exercise'
+import * as activityActions from '../store/actions/activity'
+
 import { dateConvert } from '../utils';
 
 
@@ -34,6 +36,8 @@ const ExerciseScreen = (props) => {
 
     const handleSubmit = useCallback(async() => {
         await dispatch(exerciseActions.createExercise(textAct,textCal, new Date()))             //create a new exercise
+        await dispatch(activityActions.deleteOldActivities())
+        //TODO delete old activities and exercises
     })
 
     const handleDelete = (id) => {

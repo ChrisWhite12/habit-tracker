@@ -1,4 +1,4 @@
-import { CREATE_WEIGHT, FETCH_WEIGHT, UPDATE_WEIGHT } from "../actions/weight";
+import { CREATE_WEIGHT, DELETE_OLD_WEIGHT, FETCH_WEIGHT, UPDATE_WEIGHT } from "../actions/weight";
 import Weight from '../../models/weight'
 
 const initState = {
@@ -39,6 +39,12 @@ export default (state = initState, action) => {
             weightList: updatedWeights
         }
 
+        case DELETE_OLD_WEIGHT:
+        const filtWeight = state.weightList.filter(el => ((new Date() - new Date(el.dateSet))/(1000 * 60 * 60 * 24) <= 90))
+        return {
+            ...state,
+            weightList: filtWeight
+        }
         default:
         return state;
     }
