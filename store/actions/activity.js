@@ -32,13 +32,13 @@ export const deleteOldActivities = () => {
         const currExercise = getState().exercise.exerciseList
 
         await Promise.all(currActivities.map(act => {
-            if((new Date() - new Date(act.date))/(1000 * 60 * 60 * 24) > 36){       //if greater than 5 weeks
+            if((new Date().getTime() - new Date(act.date).getTime())/(1000 * 60 * 60 * 24) > 36){       //if greater than 5 weeks
                 return firebase.database().ref(`users/${userId}/activity/${act.id}`).remove()
             }
         }))
             
         await Promise.all(currExercise.map(exer => {
-            if((new Date() - new Date(exer.date))/(1000 * 60 * 60 * 24) > 36){
+            if((new Date().getTime() - new Date(exer.date).getTime())/(1000 * 60 * 60 * 24) > 36){
                 return firebase.database().ref(`users/${userId}/exercise/${exer.id}`).remove()
             }
         }))

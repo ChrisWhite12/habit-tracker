@@ -154,7 +154,7 @@ export default (state = initState, action) => {
             }
 
             case DELETE_OLD_ACTIVITY: 
-            const filtActivity = state.activityList.filter(act => ((new Date() - new Date(act.date))/(1000 * 60 * 60 * 24) <= 36))
+            const filtActivity = state.activityList.filter(act => ((new Date().getTime() - new Date(act.date).getTime())/(1000 * 60 * 60 * 24) <= 36))
             return {
                 ...state,
                 activityList: filtActivity

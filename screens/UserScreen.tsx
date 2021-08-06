@@ -4,23 +4,24 @@ import CustomHeaderButton from '../components/CustomHeaderButton';
 import TextDefault from '../components/TextDefault'
 import Colors from '../constants/Colors';
 import * as Notifications from 'expo-notifications'
-import * as Permissions from 'expo-permissions'                 //For IOS
+// import * as Permissions from 'expo-permissions'                 //For IOS
 import * as profileActions from '../store/actions/profile'
 import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
+import { ReducerStateType } from '../App';
+import { NavigationStackScreenComponent } from 'react-navigation-stack';
 
 
-
-const UserScreen = (props) => {
+const UserScreen: NavigationStackScreenComponent = () => {
     const [hrInput, setHrInput] = useState('')
     const [minInput, setMinInput] = useState('')
     const [reminderSend, setReminderSend] = useState(false)
     const [cancelReminderSend, setCancelReminderSend] = useState(false)
-    const refInput1 = useRef()
-    const refInput2 = useRef()
+    const refInput1 = useRef<TextInput>()
+    const refInput2 = useRef<TextInput>()
 
     const dispatch = useDispatch()
-    const profileData = useSelector(state => state.profile)
+    const profileData = useSelector((state: ReducerStateType) => state.profile)
 
     // BMI calculate?
     //cal intake?
@@ -85,7 +86,7 @@ const UserScreen = (props) => {
         setTimeout(() => {setCancelReminderSend(false)}, 2000)
     }
 
-    const handleHrChange = (text) => {
+    const handleHrChange = (text: string) => {
         
         setHrInput(text)
         if (text.length >= 2){
@@ -93,7 +94,7 @@ const UserScreen = (props) => {
         }
     }
 
-    const handleMinChange = (text) => {
+    const handleMinChange = (text: string) => {
         setMinInput(text)
         if (text.length >= 2){
             Keyboard.dismiss()
@@ -158,11 +159,11 @@ const UserScreen = (props) => {
     );
 };
 
-UserScreen.navigationOptions = navData => {
+UserScreen.navigationOptions = ({navigation}) => {
     return {
         headerLeft: () => (
             <CustomHeaderButton name="menu" onPress={()=> {
-                navData.navigation.toggleDrawer()
+                navigation.toggleDrawer()
             }}/>
         ),
         headerTitle: 'Profile',

@@ -1,15 +1,20 @@
 import React from 'react'
-import { useEffect } from 'react';
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native'
+import {StyleSheet, TouchableOpacity} from 'react-native'
 import { useSelector } from 'react-redux';
+import { ReducerStateType } from '../App';
 import Colors from '../constants/Colors';
-import TextDefault from './TextDefault';
 
+interface Props {
+    boxData: {
+        date: string
+    },
+    handleClick: (date: string, exerIds: string[], habitIds: string[]) => void
+}
 
-const GridSquare = (props) => {
-    const activityDay = useSelector( state => {
+const GridSquare: React.FC<Props> = ({boxData, handleClick}) => {
+    const activityDay = useSelector( (state: ReducerStateType) => {
         //find the activity the matches the date from the props
-        const actFilter = state.activity?.activityList?.find(el => el.date === props.boxData.date)
+        const actFilter = state.activity?.activityList?.find(el => el.date === boxData.date)
         return actFilter
     })
 
@@ -20,11 +25,11 @@ const GridSquare = (props) => {
             //if there is both exerIds and habitIds - color orange
             boxColor = 'orange'
         }
-        else if(!activityDay.exerIds?.length >= 1 && activityDay.habitIds?.length >= 1){
+        else if(activityDay.exerIds?.length < 1 && activityDay.habitIds?.length >= 1){
             //if only habitIds - color red
             boxColor = 'red'
         }
-        else if(activityDay.exerIds?.length >= 1 && !activityDay.habitIds?.length >= 1){
+        else if(activityDay.exerIds?.length >= 1 && activityDay.habitIds?.length < 1){
             //if only exerIds - color green
             boxColor = 'green'
         }
@@ -32,7 +37,7 @@ const GridSquare = (props) => {
 
     return (
         <TouchableOpacity onPress={() => {
-            return props.handleClick(props.boxData.date, activityDay?.exerIds, activityDay?.habitIds)
+            return handleClick(boxData.date, activityDay?.exerIds, activityDay?.habitIds)
             }} style={{...styles.box,...{backgroundColor: boxColor, borderColor: boxColor}}}>
         </TouchableOpacity>
     );

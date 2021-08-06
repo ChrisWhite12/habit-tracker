@@ -4,15 +4,22 @@ import Colors from '../constants/Colors'
 
 import * as firebase from 'firebase'
 
-const StartupScreen = (props) => {
+interface Props {
+    navigation: {
+        navigate: (text: string) => void
+    }
+}
+
+
+const StartupScreen: React.FC<Props> = ({navigation}) => {
 
     useEffect(() => {
         firebase.auth().onAuthStateChanged((user) => {                      //check if user is already in firebase
             if(user){
-                props.navigation.navigate('App')                            //navigate to app if signed in 
+                navigation.navigate('App')                            //navigate to app if signed in 
             }
             else{
-                props.navigation.navigate('Auth')                           //otherwise go to auth screen
+                navigation.navigate('Auth')                           //otherwise go to auth screen
             }
         })
     },[])

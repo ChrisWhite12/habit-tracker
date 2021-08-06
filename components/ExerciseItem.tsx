@@ -4,13 +4,19 @@ import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
 import Colors from '../constants/Colors';
 import TextDefault from './TextDefault';
 
-const ExerciseItem = (props) => {
+interface Props {
+    name: string,
+    cal: string,
+    onRemove: () => void
+}
+
+const ExerciseItem: React.FC<Props> = ({name, cal, onRemove}) => {
     
     return (
         <View style={styles.itemCon}>
-            <TextDefault>{props.name}</TextDefault>
-            <TextDefault>{props.cal}</TextDefault>
-            <TouchableOpacity onPress={props.onRemove} style={styles.delBtn}>
+            <TextDefault>{name}</TextDefault>
+            <TextDefault>{cal}</TextDefault>
+            <TouchableOpacity onPress={onRemove} style={styles.delBtn}>
                 <Ionicons name='md-trash' size={20} color="#a55"/>
             </TouchableOpacity>
         </View>

@@ -10,10 +10,12 @@ import { useDispatch, useSelector } from "react-redux";
 
 import * as weightActions from '../store/actions/weight'
 import { dateConvert } from '../utils';
+import { ReducerStateType } from '../App';
+import { NavigationStackScreenComponent } from 'react-navigation-stack';
 
-const WeightScreen = (props) => {
+const WeightScreen: NavigationStackScreenComponent = () => {
 
-    const weightData = useSelector((state) => state.weight.weightList);
+    const weightData = useSelector((state: ReducerStateType) => state.weight.weightList);
 
     const dispatch = useDispatch();
     const [newWeight, setNewWeight] = useState('')
@@ -28,7 +30,7 @@ const WeightScreen = (props) => {
     const currMonth = convDate.month
     const nowDate = new Date()
 
-    const handleChange = (text) => {
+    const handleChange = (text: string) => {
         setNewWeight(text)
     }
 
@@ -66,8 +68,8 @@ const WeightScreen = (props) => {
     //processData - sets the weightGraph state
     const processData = () => {
 
-        let filtWeight = []
-
+        let filtWeight
+        // = []
         if (weightData?.length >= 1){
             if (graphMode === 'Current Month'){
                 //filter data matching current month
@@ -81,7 +83,7 @@ const WeightScreen = (props) => {
                 filtWeight = weightData.filter(el => {
                     //find difference between current date and el.dateSet
                     //return items that are less than 90 days
-                    if ((new Date() - new Date(el.dateSet))/(1000 * 60 * 60 * 24) < 90){
+                    if ((new Date().getTime() - new Date(el.dateSet).getTime())/(1000 * 60 * 60 * 24) < 90){
                         return el
                     }
                 })
@@ -89,7 +91,7 @@ const WeightScreen = (props) => {
         }
 
         let firstDay = true
-        const tableData = {
+        const tableData: {weightOut: number[], dateOut: string[]} = {
             weightOut: [],
             dateOut: []
         }
@@ -124,7 +126,7 @@ const WeightScreen = (props) => {
 
                 for (let i = 90; i >= 0; i--) {
                     const dateTrack = filtWeight.find(el => {                       //find weight that matches i
-                        const dateDiff = Math.floor((new Date() - new Date(el.dateSet))/(1000 * 60 * 60 * 24))
+                        const dateDiff = Math.floor((new Date().getTime() - new Date(el.dateSet).getTime())/(1000 * 60 * 60 * 24))
                         return dateDiff === i
                     })
 

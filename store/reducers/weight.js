@@ -40,7 +40,7 @@ export default (state = initState, action) => {
         }
 
         case DELETE_OLD_WEIGHT:
-        const filtWeight = state.weightList.filter(el => ((new Date() - new Date(el.dateSet))/(1000 * 60 * 60 * 24) <= 90))
+        const filtWeight = state.weightList.filter(el => ((new Date().getTime() - new Date(el.dateSet).getTime())/(1000 * 60 * 60 * 24) <= 90))
         return {
             ...state,
             weightList: filtWeight

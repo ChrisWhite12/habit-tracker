@@ -36,7 +36,7 @@ export default (state = initState, action) => {
                 exerciseList: exerFilter
             }
         case DELETE_OLD_ACTIVITY:
-            const exerNew = state.exerciseList.filter(exer => ((new Date() - new Date(exer.date))/(1000 * 60 * 60 * 24) <= 36))
+            const exerNew = state.exerciseList.filter(exer => ((new Date().getTime() - new Date(exer.date).getTime())/(1000 * 60 * 60 * 24) <= 36))
             return {
                 ...state,
                 exerciseList: exerNew

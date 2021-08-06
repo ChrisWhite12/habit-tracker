@@ -2,7 +2,13 @@ import React from 'react'
 import { StyleSheet, Text } from 'react-native';
 import Colors from '../constants/Colors';
 
-const TextDefault = (props) => {
+interface Props {
+    style?: any,
+    children: string | number
+}
+
+
+const TextDefault: React.FC<Props> = (props) => {
     
     return (
         <Text style={{ ...styles.text, ...props.style}}>{props.children}</Text>

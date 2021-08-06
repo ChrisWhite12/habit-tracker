@@ -7,7 +7,7 @@ import Colors from "../constants/Colors";
 
 // import { currDate } from "../utils";
 
-import * as firebase from 'firebase'
+import firebase from 'firebase'
 import { useDispatch, useSelector } from "react-redux";
 
 import * as activityActions from '../store/actions/activity'
@@ -16,10 +16,10 @@ import * as exerciseActions from '../store/actions/exercise'
 import * as authActions from '../store/actions/auth'
 
 import GridWeek from "../components/GridWeek";
+import { ReducerStateType } from "../App";
+import { NavigationStackScreenComponent } from "react-navigation-stack";
 
-// const dateOut = {}
-
-const OverviewScreen = (props) => {
+const OverviewScreen: NavigationStackScreenComponent = () => {
     const nowDate = new Date()
     const currDay = nowDate.getDay() === 0 ? 7 : nowDate.getDay()
 
@@ -34,8 +34,8 @@ const OverviewScreen = (props) => {
     const [week2,setWeek2] = useState(new Date(new Date().setDate(nowDate.getDate() - currDay - 7)))
     const [week1,setWeek1] = useState(new Date(new Date().setDate(nowDate.getDate() - currDay - 14)))
 
-    const exerData = useSelector(state => state.exercise.exerciseList)
-    const habitData = useSelector(state => state.habit.habitList)    
+    const exerData = useSelector((state: ReducerStateType) => state.exercise.exerciseList)
+    const habitData = useSelector((state: ReducerStateType) => state.habit.habitList)    
 
     const [isLoading, setIsLoading] = useState(true)
     const dispatch = useDispatch()
@@ -60,7 +60,7 @@ const OverviewScreen = (props) => {
         return () => unsubscribe()                                                  //unsubscribe when component is unmounted
     },[dispatch, userId])
 
-    const handleClick = (date, exerIds, habitIds) => {
+    const handleClick = (date: string, exerIds: string[], habitIds: string[]) => {
         let exerResult = []
         let habitResult = []
 
@@ -81,38 +81,6 @@ const OverviewScreen = (props) => {
 
         setDateText(date)                       //set date text
     }
-
-    // useEffect(() => {
-    //     if(isDummy){
-    //         console.log('in isDummy')
-            
-    //         const pizzaHabit = habitData.find(el => el.habitName === 'Pizza')   //find the pizza habit
-            
-    //         if(pizzaHabit){
-    //             //update habit to occur on three days
-    //             dispatch(habitActions.updateHabit(pizzaHabit.id, new Date(new Date().setDate(nowDate.getDate() - 5)), '2', new Date(new Date().setDate(nowDate.getDate()))))
-    //             dispatch(habitActions.updateHabit(pizzaHabit.id, new Date(new Date().setDate(nowDate.getDate() - 9)), '2', new Date(new Date().setDate(nowDate.getDate() - 4))))
-    //             dispatch(habitActions.updateHabit(pizzaHabit.id, new Date(new Date().setDate(nowDate.getDate() - 15)), '2', new Date(new Date().setDate(nowDate.getDate() - 9))))
-    //         }
-    //         else{
-    //             console.log('failed to update habit')
-    //         }
-    //         setIsDummy(false)               //done with dummy setup
-    //     }
-    // }, [habitData])
-
-    // const handleAddData = async () => {             //trigged when loading dummy data
-
-        
-    //     for (let ind = 0; ind < 6; ind++) {         
-    //         const dateIn = new Date(new Date().setDate(nowDate.getDate() - ind))    //create new date - ind
-    //         dispatch(exerciseActions.createExercise('walk','123', dateIn))    //create exercise with new date
-    //         dispatch(weightActions.createWeight((Math.floor((80 + (Math.random() * 5) - 2.5) * 100)/100).toString(), dateIn.toISOString()))
-    //     }
-        
-    //     await dispatch(habitActions.createHabit('Pizza'))
-    //     setIsDummy(true)
-    // }
     
     return (
         <View style={styles.screen}>
@@ -145,7 +113,7 @@ const OverviewScreen = (props) => {
                         <TextDefault style={styles.exerTitle}>Exercise</TextDefault>
                         {
                             (exerText.length > 0) ?
-                            exerText.map((el, ind) => <TextDefault key={'exer_',ind}>{el}</TextDefault>)
+                            exerText.map((el, ind) => <TextDefault key={`exer_${ind}`}>{el}</TextDefault>)
                             :
                             <TextDefault>No exercise</TextDefault>
                         }
@@ -155,7 +123,7 @@ const OverviewScreen = (props) => {
                         <TextDefault style={styles.habitTitle}>Bad Habits</TextDefault>
                         {
                             (habitText.length > 0) ?
-                            habitText.map((el, ind) => <TextDefault key={'habit_',ind}>{el}</TextDefault>)
+                            habitText.map((el, ind) => <TextDefault key={`habit_${ind}`}>{el}</TextDefault>)
                             :
                             <TextDefault>No bad habit</TextDefault>
                         }
@@ -173,7 +141,6 @@ const OverviewScreen = (props) => {
                 }}
                 />
             </View>
-            
         </View>
     );
 };

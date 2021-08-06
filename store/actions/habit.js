@@ -63,7 +63,7 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
         const existActivity = getState().activity.activityList.find(el => el.date === new Date(dateBreak).toDateString())
         
         let dataOut = {}
-        const timeDiff = Math.floor((new Date(dateBreak) - new Date(dateStart))/ (1000* 60 * 60 * 24))
+        const timeDiff = Math.floor((new Date(dateBreak).getTime() - new Date(dateStart).getTime())/ (1000* 60 * 60 * 24))
 
         if(timeDiff > parseInt(highStreak)){                                                    //if the time difference is greater then highest streak
             dataOut = {

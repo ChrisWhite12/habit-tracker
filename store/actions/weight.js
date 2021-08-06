@@ -73,7 +73,7 @@ export const deleteOldWeight = () => {
 
         await Promise.all(currWeight.map(weight => {
             console.log('weight',weight)
-            if((new Date() - new Date(weight.dateSet))/(1000 * 60 * 60 * 24) > 90){       //if greater than 90 days
+            if((new Date().getTime() - new Date(weight.dateSet).getTime())/(1000 * 60 * 60 * 24) > 90){       //if greater than 90 days
                 console.log('greater than 90 days')
                 return firebase.database().ref(`users/${userId}/weight/${weight.id}`).remove()
             }

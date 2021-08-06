@@ -1,25 +1,34 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react'
-import { Button, View, StyleSheet, Text, TouchableOpacity } from 'react-native'
+import { Button, View, StyleSheet, TouchableOpacity } from 'react-native'
 import TextDefault from './TextDefault';
 
-const HabitItem = (props) => {
+interface Props {
+    name: string,
+    currStreak: number,
+    highStreak: number,
+    onRemove: () => void,
+    handleBreakStreak: () => void
+}
+
+
+const HabitItem: React.FC<Props> = ({name, currStreak, highStreak, onRemove, handleBreakStreak}) => {
 
     return (
         <View style={styles.item}>
             <View style={styles.infoCont}>
                 <View>
-                    <TextDefault>Days since last {props.name}</TextDefault>
+                    <TextDefault>{`Days since last ${name}`}</TextDefault>
                     <View>
-                        <TextDefault>Current streak: {props.currStreak}</TextDefault>
-                        <TextDefault>Highest streak: {props.highStreak}</TextDefault>
+                        <TextDefault>{`Current streak: ${currStreak}`}</TextDefault>
+                        <TextDefault>{`Highest streak: ${highStreak}`}</TextDefault>
                     </View>
                 </View>
-                <TouchableOpacity onPress={props.onRemove} style={styles.delBtn}>
+                <TouchableOpacity onPress={onRemove} style={styles.delBtn}>
                     <Ionicons name='md-trash' size={20} color="#a55"/>
                 </TouchableOpacity>
             </View>
-            <Button title="Break Streak" onPress={props.handleBreakStreak}/>
+            <Button title="Break Streak" onPress={handleBreakStreak}/>
         </View>
     );
 };

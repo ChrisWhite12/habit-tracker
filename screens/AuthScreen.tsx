@@ -13,9 +13,15 @@ import * as Google from "expo-google-app-auth";
 
 import { ANDROID_ID } from "@env";
 import Colors from "../constants/Colors";
-import TextDefault from "../components/TextDefault";
 
-const AuthScreen = (props) => {
+
+interface Props { 
+  navigation: {
+    navigate: (text: string) => void
+  }
+}
+
+const AuthScreen: React.FC<Props> = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
 
@@ -41,7 +47,7 @@ const AuthScreen = (props) => {
                     .auth()
                     .signInWithCredential(credential);
 
-                    props.navigation.navigate("App");                                               //navigate to App page
+                    navigation.navigate("App");                                               //navigate to App page
 
             } else {
             return { cancelled: true };

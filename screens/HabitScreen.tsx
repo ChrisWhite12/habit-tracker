@@ -1,15 +1,24 @@
 import React, { useEffect } from 'react'
-import {StyleSheet, View, Text, FlatList, Button, Alert} from 'react-native'
+import {StyleSheet, View, FlatList, Button, Alert} from 'react-native'
+import { NavigationStackScreenComponent } from 'react-navigation-stack';
 import { useDispatch, useSelector } from 'react-redux';
+import { ReducerStateType } from '../App';
 import CustomHeaderButton from '../components/CustomHeaderButton';
 import HabitItem from '../components/HabitItem';
 import Colors from "../constants/Colors";
 
 import * as habitActions from '../store/actions/habit'
 
-const HabitScreen = (props) => {
+interface Props {
+    navigation: {
+        navigate: (text: string) => void
+    }
+}
 
-    const habits = useSelector( state => {
+
+const HabitScreen: NavigationStackScreenComponent<Props> = ({navigation}) => {
+
+    const habits = useSelector( (state: ReducerStateType) => {
             return state.habit.habitList
         }
     )
@@ -17,14 +26,14 @@ const HabitScreen = (props) => {
     const dispatch = useDispatch()
 
     const handleAdd = () => {
-        props.navigation.navigate('create')                     //navigate to create page
+        navigation.navigate('create')                     //navigate to create page
     }
     
     useEffect(() => {
         dispatch(habitActions.fetchHabit())                     //fetch all habits
     },[dispatch])
 
-    const handleDelete = (id) => {
+    const handleDelete = (id: string) => {
         Alert.alert('Are you sure?', 'Do you want to delete this item?', [              //trigger popup when trying to delete
             {text: 'No', style: 'default'},
             {text: 'Yes', style: 'destructive', onPress:() => {
@@ -38,7 +47,7 @@ const HabitScreen = (props) => {
             <View>
                 <FlatList style={styles.flat} data={habits} renderItem={(habit) => {
                     //calculate current streak
-                    const currStreak = Math.floor(((new Date()) - (new Date(habit.item.dateStart))) / (1000 * 60 * 60 * 24))
+                    const currStreak = Math.floor(((new Date().getTime()) - (new Date(habit.item.dateStart).getTime())) / (1000 * 60 * 60 * 24))
                     return (
                         <HabitItem 
                         currStreak={currStreak}
@@ -76,7 +85,6 @@ HabitScreen.navigationOptions = navData => {
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
-        // justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: Colors.background,
         padding: 20

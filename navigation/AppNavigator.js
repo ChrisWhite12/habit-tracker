@@ -59,7 +59,6 @@ const DrawerNavigator = createDrawerNavigator({
     Habits: HabitStack,
     Exercise: ExerciseStack,
     Profile: UserStack
-
 },{
     contentComponent: props => {
         return <View style={{flex: 1, paddingTop: 50, backgroundColor: Colors.secondary}}>

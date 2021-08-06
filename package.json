@@ -9,6 +9,11 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^12.0.4",
+    "@types/jest": "^26.0.24",
+    "@types/node": "^16.4.13",
+    "@types/react": "^17.0.15",
+    "@types/react-dom": "^17.0.9",
+    "@types/react-redux": "^7.1.18",
     "expo": "~41.0.0",
     "expo-google-app-auth": "^8.1.7",
     "expo-google-sign-in": "~9.1.0",
@@ -16,6 +21,8 @@
     "expo-permissions": "^12.0.1",
     "expo-status-bar": "~1.0.4",
     "firebase": "8.2.3",
+    "global": "^4.4.0",
+    "js-to-ts-converter": "^0.18.1",
     "moment-timezone": "^0.5.33",
     "node": "^16.1.0",
     "permissions": "^0.1.0",
@@ -34,10 +41,12 @@
     "react-navigation-drawer": "^2.7.0",
     "react-navigation-stack": "^2.10.4",
     "react-redux": "^7.2.3",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "typescript": "^4.3.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.15"
+    "@babel/core": "^7.13.15",
+    "@types/react-native": "^0.64.12"
   },
   "private": true
 }

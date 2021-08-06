@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import {Button, Keyboard, StyleSheet, TextInput, TouchableWithoutFeedback, View} from 'react-native'
+import { NavigationStackScreenComponent } from 'react-navigation-stack';
 import { useDispatch } from 'react-redux';
 import CustomHeaderButton from "../components/CustomHeaderButton";
 import TextDefault from '../components/TextDefault';
@@ -7,24 +8,30 @@ import Colors from '../constants/Colors';
 
 import * as habitActions from '../store/actions/habit'
 
-const CreateHabitScreen = (props) => {
+interface Props {
+    navigation: {
+        goBack: () => void
+    }
+}
+
+const CreateHabitScreen: NavigationStackScreenComponent<Props> = ({navigation}) => {
     const [habitName, setHabitName] = useState('')
     const dispatch = useDispatch()
 
-    const handleChange = (text) => {                                                    //on text change set name
+    const handleChange = (text: string) => {                                                    //on text change set name
         setHabitName(text)
     }
 
     const handleSubmit = useCallback(async() => {
         await dispatch(habitActions.createHabit(habitName))                             //create habit
-        props.navigation.goBack()                                                       //navigate back to the previous page
+        navigation.goBack()                                                       //navigate back to the previous page
     },[dispatch, habitName])
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.screen}>
                 <View style={styles.formCont}>
-                    <View style={styles.actCont}>
+                    <View>
                         <TextDefault>Habit (days since last): </TextDefault>                
                         <TextInput style={styles.input} onChangeText={handleChange}/>
                     </View>

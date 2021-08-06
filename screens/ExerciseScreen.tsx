@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import {StyleSheet, View, Text, TextInput, Button, FlatList, Keyboard, TouchableWithoutFeedback, Alert} from 'react-native'
+import {StyleSheet, View, TextInput, Button, FlatList, Keyboard, TouchableWithoutFeedback, Alert} from 'react-native'
 import { useDispatch, useSelector } from 'react-redux';
 import CustomHeaderButton from '../components/CustomHeaderButton';
 import ExerciseItem from '../components/ExerciseItem';
@@ -10,15 +10,16 @@ import * as exerciseActions from '../store/actions/exercise'
 import * as activityActions from '../store/actions/activity'
 
 import { dateConvert } from '../utils';
+import { ReducerStateType } from '../App';
+import { NavigationStackScreenComponent } from 'react-navigation-stack';
 
-
-const ExerciseScreen = (props) => {
+const ExerciseScreen: NavigationStackScreenComponent = () => {
     const [textAct, setTextAct] = useState('')
     const [textCal, setTextCal] = useState('')
     
     const convDate = dateConvert(new Date())
     
-    const exercisesSel = useSelector(state => {
+    const exercisesSel = useSelector((state: ReducerStateType) => {
         //get the exercise for current day
         const exerFiltered = state.exercise?.exerciseList?.filter(exer => new Date(exer.date).toDateString() === new Date().toDateString())
         return exerFiltered
@@ -26,21 +27,21 @@ const ExerciseScreen = (props) => {
 
     const dispatch = useDispatch()
 
-    const handleChangeAct = (text) => {
+    const handleChangeAct = (text: string) => {
         setTextAct(text)
     }
 
-    const handleChangeCal = (text) => {
+    const handleChangeCal = (text: string) => {
         setTextCal(text)
     }
 
-    const handleSubmit = useCallback(async() => {
+    const handleSubmit = async () => {
         await dispatch(exerciseActions.createExercise(textAct,textCal, new Date()))             //create a new exercise
         await dispatch(activityActions.deleteOldActivities())
-        //TODO delete old activities and exercises
-    })
+        //TODO delete old activities and exercises, figure useCallback
+    }
 
-    const handleDelete = (id) => {
+    const handleDelete = (id: string) => {
         Alert.alert('Are you sure?', 'Do you want to delete this item?', [                  //trigger popup when trying to delete
             {text: 'No', style: 'default'},
             {text: 'Yes', style: 'destructive', onPress:() => {
@@ -57,7 +58,7 @@ const ExerciseScreen = (props) => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.screen}>
                 <View style={styles.formCont}>
-                    <TextDefault style={styles.date}>Date: {convDate.day}/{convDate.month}/{convDate.year}</TextDefault>
+                    <TextDefault style={styles.date}>{`Date: ${convDate.day}/${convDate.month}/${convDate.year}`}</TextDefault>
                     <View style={styles.actCont}>
                         <TextDefault>Activity: </TextDefault>                
                         <TextInput style={styles.input} onChangeText={handleChangeAct} />
