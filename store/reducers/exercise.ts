@@ -1,13 +1,15 @@
 import { CREATE_EXERCISE, DELETE_EXERCISE, FETCH_EXERCISE } from "../actions/exercise";
 import Exercise from '../../models/exercise'
 import { DELETE_OLD_ACTIVITY } from "../actions/activity";
+import { DispatchType } from "../actions/types";
+import { ExerciseItem } from './types'
 
-const initState = {
+const initState: ExerciseItem = {
     exerciseList: []
 }
 
 
-export default (state = initState, action) => {
+export default (state: ExerciseItem = initState, action: DispatchType) => {
 
     switch (action.type) {
 

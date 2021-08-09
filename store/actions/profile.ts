@@ -2,18 +2,17 @@ export const CREATE_PROFILE = 'CREATE_PROFILE'
 export const FETCH_PROFILE = 'FETCH_PROFILE'
 export const UPDATE_PROFILE = 'UPDATE_PROFILE'
 
-import * as firebase from 'firebase'
-import { ReducerStateType } from '../../App'
+import firebase from 'firebase'
+import { ReducerStateType } from '../reducers/types'
+import { DispatchType } from './types'
 
 export const fetchProfile = () => {
-    return (dispatch, getState: () => ReducerStateType) => {
+    return (dispatch: (x: DispatchType) => void, getState: () => ReducerStateType) => {
         const userId = getState().auth.userId
 
         //get data from profile
         firebase.database().ref(`/users/${userId}/profile`).once('value', (snapshot) => {
-            return snapshot.val()
-        })
-        .then(resData => {
+            const resData = snapshot.val()
             dispatch({type: FETCH_PROFILE, reminder: resData.reminder})
         })
         .catch(err => console.log(err))
@@ -23,7 +22,7 @@ export const fetchProfile = () => {
 }
 
 export const updateProfile = (reminder: string) => {
-    return (dispatch, getState: () => ReducerStateType) => {
+    return (dispatch: (x: DispatchType) => void, getState: () => ReducerStateType) => {
         const userId = getState().auth.userId
         const reminderState = getState().profile.reminder
 

@@ -1,31 +1,12 @@
 export const CREATE_EXERCISE = 'CREATE_EXERCISE'
 export const FETCH_EXERCISE = 'FETCH_EXERCISE'
-export const DELETE_EXERCISE = 'DELETE_EXECISE'
+export const DELETE_EXERCISE = 'DELETE_EXERCISE'
 
 import { CREATE_ACTIVITY, UPDATE_ACTIVITY_CREATE, UPDATE_ACTIVITY_DELETE } from './activity'
 
-import * as firebase from 'firebase'
-import { ReducerStateType } from '../../App'
-
-interface DispatchType {
-    type: string,
-    id?: string,
-    date?: string,
-    exerId?: string,
-    exerciseData?: {
-        id: string,
-        exerciseName: string,
-        cal: number,
-        date: string,
-        actId: string
-    },
-    exerciseFetchData?: {
-        id: string,
-        cal: number,
-        date: string,
-        exerciseName: string
-    }[]
-}
+import firebase from 'firebase'
+import { DispatchType } from './types'
+import { ReducerStateType } from '../reducers/types'
 
 // exerciseData: {
 //     id: createExerId,
@@ -55,7 +36,7 @@ export const createExercise = (exerciseName: string, cal: number, date: Date) =>
         }, (error) => {
             if(error)
             {
-                throw new Error(`Response not OK, can't post exercise`, error.message)
+                throw new Error(`Response not OK, can\'t post exercise ${error.message}`)
             }
         })
         .then((res) => {
@@ -79,7 +60,7 @@ export const createExercise = (exerciseName: string, cal: number, date: Date) =>
                 }
         }, (error) => {
             if(error){
-                throw new Error(`Response not OK, can't update activity`, error)
+                throw new Error(`Response not OK, can\'t update activity ${error.message}`)
             }
         })
         .then(resData1 =>

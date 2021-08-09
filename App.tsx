@@ -19,53 +19,6 @@ import { firebaseConfig } from './config/firebaseConfig'
 
 import { LogBox } from 'react-native';
 
-
-export type ReducerStateType = {
-    activity: {
-        activityList: {
-            id: string, 
-            date: string, 
-            exerIds: string[], 
-            habitIds: string[]
-        }[]
-    },
-    exercise: {
-        exerciseList: {
-            id: string,
-            exerciseName: string,
-            cal: string,
-            date: Date,
-            actId: string
-        }[]
-    },
-    weight: {
-        weightList: {
-            id: string,
-            dateSet: string,
-            weight: string
-        }[]
-    }
-    habit: {
-        habitList: {
-            id: string,
-            habitName: string,
-            dateStart: string,
-            highStreak: number,
-            actId: string
-        }[]
-    },
-    auth: {
-        userId: string
-    },
-    profile: {
-        reminder: string,
-        bmi: number,
-        height: number
-    }
-
-}
-
-
 firebase.initializeApp(firebaseConfig)
 
 const rootReducer = combineReducers({

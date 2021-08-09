@@ -1,12 +1,15 @@
 import { CREATE_WEIGHT, DELETE_OLD_WEIGHT, FETCH_WEIGHT, UPDATE_WEIGHT } from "../actions/weight";
 import Weight from '../../models/weight'
+import { DispatchType } from "../actions/types";
+import { WeightItem } from './types'
 
-const initState = {
+
+const initState: WeightItem = {
     weightList: []
 }
 
 
-export default (state = initState, action) => {
+export default (state: WeightItem = initState, action: DispatchType) => {
     switch (action.type) {
 
         case CREATE_WEIGHT:

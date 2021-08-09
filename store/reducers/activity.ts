@@ -1,16 +1,13 @@
-import { CREATE_ACTIVITY, DELETE_OLD_ACTIVITY, FETCH_ACTIVITY, UPDATE_ACTIVITY, UPDATE_ACTIVITY_CREATE, UPDATE_ACTIVITY_DELETE } from '../actions/activity';
-import { CREATE_EXERCISE } from '../actions/exercise'
-import { CREATE_HABIT, UPDATE_HABIT } from '../actions/habit'
-import { CREATE_WEIGHT } from '../actions/weight'
+import { CREATE_ACTIVITY, DELETE_OLD_ACTIVITY, FETCH_ACTIVITY, UPDATE_ACTIVITY_CREATE, UPDATE_ACTIVITY_DELETE } from '../actions/activity';
+import { DispatchType } from '../actions/types';
+import {ActivityItem} from './types'
 
-const initState = {
+type State = ActivityItem
+const initState: ActivityItem = {
     activityList: []
-    //ex_ids, hab_ids, wei_ids
 }
 
-
-
-export default (state = initState, action) => {
+export default (state: State = initState, action: DispatchType) => {
 
     // console.log('before activity reducer', state.activityList)
 

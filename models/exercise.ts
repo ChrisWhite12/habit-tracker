@@ -5,7 +5,7 @@ class Exercise {
 	public date: any;
 	public actId: any;
 
-    constructor(id: string, exerciseName: string, cal: string, date: string, actId: string){
+    constructor(id: string, exerciseName: string, cal: number, date: string, actId: string){
         this.id = id
         this.exerciseName = exerciseName
         this.cal = cal

@@ -3,8 +3,8 @@ export const FETCH_HABIT = 'FETCH_HABIT'
 export const UPDATE_HABIT = 'UPDATE_HABIT'
 export const DELETE_HABIT = 'DELETE_HABIT'
 
-import * as firebase from 'firebase'
-import { ReducerStateType } from '../../App'
+import firebase from 'firebase'
+import { ReducerStateType } from '../reducers/types'
 
 import { CREATE_ACTIVITY, UPDATE_ACTIVITY_CREATE, UPDATE_ACTIVITY_DELETE } from './activity'
 import { DispatchType } from './types'
@@ -20,7 +20,7 @@ export const createHabit = (habitName: string) => {
         }, (error) => {
             if(error)
             {
-                throw new Error(`Response not OK, can't post exercise`, error)
+                throw new Error(`Response not OK, can't post exercise ${error.message}`)
             }
         })
         .then(resData => {     

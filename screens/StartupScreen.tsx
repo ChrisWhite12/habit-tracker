@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { ActivityIndicator, View, StyleSheet } from 'react-native'
 import Colors from '../constants/Colors'
 
-import * as firebase from 'firebase'
+import firebase from 'firebase'
 
 interface Props {
     navigation: {

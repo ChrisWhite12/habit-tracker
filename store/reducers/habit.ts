@@ -1,11 +1,14 @@
 import Habit from "../../models/habit";
 import { CREATE_HABIT,FETCH_HABIT, UPDATE_HABIT, DELETE_HABIT } from "../actions/habit";
+import { DispatchType } from "../actions/types";
+import { HabitItem } from './types'
 
-const initState = {
+
+const initState: HabitItem = {
     habitList : []
 }
 
-export default (state = initState, action) => {
+export default (state: HabitItem = initState, action: DispatchType) => {
 
     switch (action.type) {
 

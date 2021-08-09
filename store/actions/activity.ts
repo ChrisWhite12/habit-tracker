@@ -2,20 +2,11 @@ export const FETCH_ACTIVITY = 'FETCH_ACTIVITY'
 export const CREATE_ACTIVITY = 'CREATE_ACTIVITY'
 export const UPDATE_ACTIVITY_CREATE = 'UPDATE_ACTIVITY_CREATE'
 export const UPDATE_ACTIVITY_DELETE = 'UPDATE_ACTIVITY_DELETE'
-export const DELETE_OLD_ACTIVITY = 'DELETE_OLD_ACTIIVTY'
+export const DELETE_OLD_ACTIVITY = 'DELETE_OLD_ACTIVITY'
 
-import * as firebase from 'firebase'
-import { ReducerStateType } from '../../App'
-
-interface DispatchType { 
-    type: string,
-    activities?: {
-        id: string,
-        date: string,
-        exerIds: string[],
-        habitIds: string[]
-    }[]
-}
+import firebase from 'firebase'
+import { DispatchType } from './types'
+import { ReducerStateType } from '../reducers/types'
 
 export const fetchActivity = () => {
     return async (dispatch: (x: DispatchType) => void, getState: () => ReducerStateType) => {
