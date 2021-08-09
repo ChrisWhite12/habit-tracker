@@ -4,11 +4,13 @@ export const UPDATE_HABIT = 'UPDATE_HABIT'
 export const DELETE_HABIT = 'DELETE_HABIT'
 
 import * as firebase from 'firebase'
+import { ReducerStateType } from '../../App'
 
 import { CREATE_ACTIVITY, UPDATE_ACTIVITY_CREATE, UPDATE_ACTIVITY_DELETE } from './activity'
+import { DispatchType } from './types'
 
-export const createHabit = (habitName) => {
-    return (dispatch,getState) => {
+export const createHabit = (habitName: string) => {
+    return (dispatch: (x: DispatchType) => void ,getState: () => ReducerStateType) => {
         const userId = getState().auth.userId
 
         firebase.database().ref(`/users/${userId}/habit`).push({                            //create habit in firebase
@@ -39,7 +41,7 @@ export const createHabit = (habitName) => {
 }
 
 export const fetchHabit = () => {
-    return async (dispatch, getState) => {
+    return async (dispatch: (x: DispatchType) => void, getState: () => ReducerStateType) => {
 
         const userId = getState().auth.userId
         //fetch habits from firebase
@@ -55,14 +57,17 @@ export const fetchHabit = () => {
     }
 }
 
-export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
-    return async (dispatch, getState) => {
+export const updateHabit = (id: string, dateStart: string, highStreak: string, dateBreak: string) => {
+    return async (dispatch: (x: DispatchType) => void, getState: () => ReducerStateType) => {
         const userId = getState().auth.userId
 
         //see if the activity already exists
         const existActivity = getState().activity.activityList.find(el => el.date === new Date(dateBreak).toDateString())
         
-        let dataOut = {}
+        let dataOut = {
+            highStreak: '',
+            dateStart: ''
+        }
         const timeDiff = Math.floor((new Date(dateBreak).getTime() - new Date(dateStart).getTime())/ (1000* 60 * 60 * 24))
 
         if(timeDiff > parseInt(highStreak)){                                                    //if the time difference is greater then highest streak
@@ -138,8 +143,8 @@ export const updateHabit = (id, dateStart, highStreak, dateBreak) => {
     }
 }
 
-export const deleteHabit = habitId => {
-    return async (dispatch, getState) => {
+export const deleteHabit = (habitId: string) => {
+    return async (dispatch: (x: DispatchType) => void, getState: () => ReducerStateType) => {
         const userId = getState().auth.userId
         const actList = getState().activity.activityList
 

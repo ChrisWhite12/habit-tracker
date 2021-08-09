@@ -26,7 +26,7 @@ export default (state = initState, action) => {
 
         case FETCH_EXERCISE:
             return {
-                exerciseList: action.exerciseData
+                exerciseList: action.exerciseFetchData
             }
 
         case DELETE_EXERCISE:

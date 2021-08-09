@@ -4,10 +4,11 @@ export const UPDATE_WEIGHT = 'UPDATE_WEIGHT'
 export const DELETE_OLD_WEIGHT = 'DELETE_OLD_WEIGHT'
 
 import * as firebase from 'firebase'
+import { ReducerStateType } from '../../App'
 
 
-export const createWeight = (weight, date) => {
-    return async (dispatch, getState) => {
+export const createWeight = (weight: string, date: string) => {
+    return async (dispatch, getState: () => ReducerStateType) => {
         const userId = getState().auth.userId
 
         //create new weight in firebase
@@ -31,7 +32,7 @@ export const createWeight = (weight, date) => {
 }
 
 export const fetchWeight = () => {
-    return async (dispatch, getState) => {
+    return async (dispatch, getState: () => ReducerStateType) => {
         const userId = getState().auth.userId
 
         //fetch all weights
@@ -47,8 +48,8 @@ export const fetchWeight = () => {
     }
 }
 
-export const updateWeight = (id, weight, date) => {
-    return async (dispatch, getState) => {
+export const updateWeight = (id: string, weight: string, date: string) => {
+    return async (dispatch, getState: () => ReducerStateType) => {
         const userId = getState().auth.userId
 
         //update weight matching id
@@ -67,7 +68,7 @@ export const updateWeight = (id, weight, date) => {
 }
 
 export const deleteOldWeight = () => {
-    return async (dispatch, getState) => {
+    return async (dispatch, getState: () => ReducerStateType) => {
         const userId = getState().auth.userId
         const currWeight = getState().weight.weightList
 

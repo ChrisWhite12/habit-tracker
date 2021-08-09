@@ -5,15 +5,46 @@ export const DELETE_EXERCISE = 'DELETE_EXECISE'
 import { CREATE_ACTIVITY, UPDATE_ACTIVITY_CREATE, UPDATE_ACTIVITY_DELETE } from './activity'
 
 import * as firebase from 'firebase'
+import { ReducerStateType } from '../../App'
 
-export const createExercise = (exerciseName, cal, date) => {
-    return async (dispatch, getState) => {
+interface DispatchType {
+    type: string,
+    id?: string,
+    date?: string,
+    exerId?: string,
+    exerciseData?: {
+        id: string,
+        exerciseName: string,
+        cal: number,
+        date: string,
+        actId: string
+    },
+    exerciseFetchData?: {
+        id: string,
+        cal: number,
+        date: string,
+        exerciseName: string
+    }[]
+}
+
+// exerciseData: {
+//     id: createExerId,
+//     exerciseName,
+//     cal,
+//     date: new Date(date).toISOString(),
+//     actId: (existActivity ? existActivity.id : resData1.key)
+// }
+
+
+
+export const createExercise = (exerciseName: string, cal: number, date: Date) => {
+    return async (dispatch: (x: DispatchType) => void, getState: () => ReducerStateType) => {
 
         const userId = getState().auth.userId
         const db = firebase.database()
         const newDate = date.toISOString()
 
-        let createExerId
+        let createExerId: string
         //find activity that matches the date
         const existActivity = getState().activity.activityList.find(el => el.date === new Date(date).toDateString())
 
@@ -24,7 +55,7 @@ export const createExercise = (exerciseName, cal, date) => {
         }, (error) => {
             if(error)
             {
-                throw new Error(`Response not OK, can't post exercise`, error)
+                throw new Error(`Response not OK, can't post exercise`, error.message)
             }
         })
         .then((res) => {
@@ -92,7 +123,7 @@ export const createExercise = (exerciseName, cal, date) => {
 }
 
 export const fetchExercise = () => {
-    return async (dispatch, getState) => {
+    return async (dispatch: (x: DispatchType) => void, getState: () => ReducerStateType) => {
         const db = firebase.database()
         const userId = getState().auth.userId
 
@@ -105,13 +136,13 @@ export const fetchExercise = () => {
             for (const key in resData) {
                 resOut.push({id: key, cal: resData[key].cal, date: resData[key].date, exerciseName: resData[key].exerciseName})
             }
-            dispatch({type: FETCH_EXERCISE, exerciseData: resOut})          //save to redux
+            dispatch({type: FETCH_EXERCISE, exerciseFetchData: resOut})          //save to redux
         })
     }
 }
 
-export const deleteExercise = (exerId) => {
-    return async (dispatch, getState) => {
+export const deleteExercise = (exerId: string) => {
+    return async (dispatch: (x: DispatchType) => void, getState: () => ReducerStateType) => {
         const userId = getState().auth.userId
         const delItem = getState().exercise.exerciseList.find(el => el.id === exerId)       //item in the exercise list that is being deleted
         const activityUpdate = getState().activity.activityList.find(el => el.date === new Date(delItem.date).toDateString())   //find activity that matches today

@@ -5,9 +5,20 @@ export const UPDATE_ACTIVITY_DELETE = 'UPDATE_ACTIVITY_DELETE'
 export const DELETE_OLD_ACTIVITY = 'DELETE_OLD_ACTIIVTY'
 
 import * as firebase from 'firebase'
+import { ReducerStateType } from '../../App'
+
+interface DispatchType { 
+    type: string,
+    activities?: {
+        id: string,
+        date: string,
+        exerIds: string[],
+        habitIds: string[]
+    }[]
+}
 
 export const fetchActivity = () => {
-    return async (dispatch, getState) => {
+    return async (dispatch: (x: DispatchType) => void, getState: () => ReducerStateType) => {
         const userId = getState().auth.userId
 
         //fetch the user activities from firebase
@@ -26,7 +37,7 @@ export const fetchActivity = () => {
 
 export const deleteOldActivities = () => {
     //triggered in updating habit and creating weight
-    return async (dispatch, getState) => {
+    return async (dispatch: (x: DispatchType) => void, getState: () => ReducerStateType) => {
         const userId = getState().auth.userId
         const currActivities = getState().activity.activityList
         const currExercise = getState().exercise.exerciseList

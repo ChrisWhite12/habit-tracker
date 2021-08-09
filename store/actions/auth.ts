@@ -6,8 +6,13 @@ import * as Google from "expo-google-app-auth";
 export const SIGN_IN = "SIGN_IN";
 export const SET_ID = "SET_ID"
 
-export const setUserId = (userId) => {
-  return dispatch => {
+interface DispatchType {
+  type: string,
+  userId: string
+}
+
+export const setUserId = (userId: string) => {
+  return (dispatch: (x: DispatchType) => void) => {
     dispatch({type: SET_ID, userId: userId})            //dispatch to redux
   }
 }

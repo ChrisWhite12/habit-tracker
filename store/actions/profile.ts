@@ -3,9 +3,10 @@ export const FETCH_PROFILE = 'FETCH_PROFILE'
 export const UPDATE_PROFILE = 'UPDATE_PROFILE'
 
 import * as firebase from 'firebase'
+import { ReducerStateType } from '../../App'
 
 export const fetchProfile = () => {
-    return (dispatch, getState) => {
+    return (dispatch, getState: () => ReducerStateType) => {
         const userId = getState().auth.userId
 
         //get data from profile
@@ -21,8 +22,8 @@ export const fetchProfile = () => {
     }
 }
 
-export const updateProfile = (reminder) => {
-    return (dispatch, getState) => {
+export const updateProfile = (reminder: string) => {
+    return (dispatch, getState: () => ReducerStateType) => {
         const userId = getState().auth.userId
         const reminderState = getState().profile.reminder
 
