@@ -1,5 +1,5 @@
-import { ANDROID_ID } from "@env";
-import * as Google from "expo-google-app-auth";
+// import { ANDROID_ID } from "@env";
+// import * as Google from "expo-google-app-auth";
 import { DispatchType } from "./types";
 
 // import * as Google from 'expo-google-sign-in'        //use this when making standalone app

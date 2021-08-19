@@ -1,4 +1,4 @@
-import {DATABASE_URL, FIREBASE_API_KEY} from '@env'
+import { DATABASE_URL, FIREBASE_API_KEY } from "react-native-dotenv"
 
 export const firebaseConfig = {
     apiKey: FIREBASE_API_KEY,

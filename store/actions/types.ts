@@ -71,7 +71,7 @@ export type DispatchType = | {
     exerciseData: {
         id: string
         exerciseName: string
-        cal: number
+        cal: string
         date: string
         actId: string
     }

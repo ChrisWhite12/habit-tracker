@@ -8,8 +8,9 @@ import * as Notifications from 'expo-notifications'
 import * as profileActions from '../store/actions/profile'
 import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
-import { ReducerStateType } from '../App';
+import { ReducerStateType } from '../store/reducers/types';
 import { NavigationStackScreenComponent } from 'react-navigation-stack';
+import { DrawerActions } from 'react-navigation-drawer';
 
 
 const UserScreen: NavigationStackScreenComponent = () => {
@@ -163,7 +164,8 @@ UserScreen.navigationOptions = ({navigation}) => {
     return {
         headerLeft: () => (
             <CustomHeaderButton name="menu" onPress={()=> {
-                navigation.toggleDrawer()
+                // navigation.toggleDrawer()
+                navigation.dispatch(DrawerActions.toggleDrawer())
             }}/>
         ),
         headerTitle: 'Profile',

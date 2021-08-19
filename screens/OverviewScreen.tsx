@@ -16,8 +16,10 @@ import * as exerciseActions from '../store/actions/exercise'
 import * as authActions from '../store/actions/auth'
 
 import GridWeek from "../components/GridWeek";
-import { ReducerStateType } from "../App";
+import { ReducerStateType } from "../store/reducers/types"
 import { NavigationStackScreenComponent } from "react-navigation-stack";
+
+import { DrawerActions } from 'react-navigation-drawer';
 
 const OverviewScreen: NavigationStackScreenComponent = () => {
     const nowDate = new Date()
@@ -27,7 +29,7 @@ const OverviewScreen: NavigationStackScreenComponent = () => {
     const [exerText, setExerText] = useState([])
     const [habitText, setHabitText] = useState([])
     // const [isDummy, setIsDummy] = useState(false)
-    const [userId, setUserId] = useState()
+    const [userId, setUserId] = useState('')
 
     const [week4,setWeek4] = useState(new Date(new Date().setDate(nowDate.getDate() + (7 - currDay))))      //calculate the dates for end of weeks
     const [week3,setWeek3] = useState(new Date(new Date().setDate(nowDate.getDate() - currDay)))
@@ -83,7 +85,7 @@ const OverviewScreen: NavigationStackScreenComponent = () => {
     }
     
     return (
-        <View style={styles.screen}>
+        <View style={styles.screen1}>
             <View style={styles.gridCont}>
                 <View style={styles.dayText}>
                     <TextDefault>Mon</TextDefault>
@@ -149,7 +151,8 @@ OverviewScreen.navigationOptions = navData => {
     return {
         headerLeft: () => (
             <CustomHeaderButton name="menu" onPress={()=> {
-                navData.navigation.toggleDrawer()
+                // navData.navigation.toggleDrawer()
+                navData.navigation.dispatch(DrawerActions.toggleDrawer())
             }}/>
         ),
         headerTitle: 'Overview',
@@ -158,7 +161,7 @@ OverviewScreen.navigationOptions = navData => {
 }
 
 const styles = StyleSheet.create({
-    screen: {
+    screen1: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",

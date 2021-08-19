@@ -5,8 +5,8 @@ import TextDefault from './TextDefault';
 
 interface Props {
     name: string,
-    currStreak: number,
-    highStreak: number,
+    currStreak: string,
+    highStreak: string,
     onRemove: () => void,
     handleBreakStreak: () => void
 }

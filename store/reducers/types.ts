@@ -21,7 +21,7 @@ export type ExerciseItem = {
     exerciseList: {
         id: string,
         exerciseName: string,
-        cal: number,
+        cal: string,
         date: string,
         actId: string
     }[]
@@ -32,7 +32,7 @@ export type HabitItem = {
         id: string,
         habitName: string,
         dateStart: string,
-        highStreak: number,
+        highStreak: string,
         actId: string
     }[]
 }

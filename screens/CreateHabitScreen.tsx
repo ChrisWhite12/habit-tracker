@@ -8,6 +8,8 @@ import Colors from '../constants/Colors';
 
 import * as habitActions from '../store/actions/habit'
 
+import { DrawerActions } from 'react-navigation-drawer';
+
 interface Props {
     navigation: {
         goBack: () => void
@@ -46,7 +48,8 @@ CreateHabitScreen.navigationOptions = navData => {
     return {
         headerLeft: () => (
             <CustomHeaderButton name="menu" onPress={()=> {
-                navData.navigation.toggleDrawer()
+                // navData.navigation.toggleDrawer()
+                navData.navigation.dispatch(DrawerActions.toggleDrawer())
             }}/>
         ),
         headerTitle: 'Create Habit tracker',

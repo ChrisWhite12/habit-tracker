@@ -1,7 +1,7 @@
 import React from 'react'
 import {StyleSheet, TouchableOpacity} from 'react-native'
 import { useSelector } from 'react-redux';
-import { ReducerStateType } from '../App';
+import { ReducerStateType } from '../store/reducers/types';
 import Colors from '../constants/Colors';
 
 interface Props {

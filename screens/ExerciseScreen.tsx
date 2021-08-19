@@ -10,8 +10,10 @@ import * as exerciseActions from '../store/actions/exercise'
 import * as activityActions from '../store/actions/activity'
 
 import { dateConvert } from '../utils';
-import { ReducerStateType } from '../App';
+import { ReducerStateType } from '../store/reducers/types'
 import { NavigationStackScreenComponent } from 'react-navigation-stack';
+
+import { DrawerActions } from 'react-navigation-drawer';
 
 const ExerciseScreen: NavigationStackScreenComponent = () => {
     const [textAct, setTextAct] = useState('')
@@ -93,7 +95,8 @@ ExerciseScreen.navigationOptions = navData => {
     return {
         headerLeft: () => (
             <CustomHeaderButton name="menu" onPress={()=> {
-                navData.navigation.toggleDrawer()
+                navData.navigation.dispatch(DrawerActions.toggleDrawer())
+                // navData.navigation.toggleDrawer()
             }}/>
         ),
         headerTitle: 'Exercise',

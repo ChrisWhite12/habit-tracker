@@ -11,7 +11,7 @@ import firebase from "firebase";
 import * as Google from "expo-google-app-auth";
 // import * as Google from "expo-google-sign-in"
 
-import { ANDROID_ID } from "@env";
+import { ANDROID_ID } from "react-native-dotenv";
 import Colors from "../constants/Colors";
 
 

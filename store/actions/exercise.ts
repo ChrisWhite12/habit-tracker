@@ -18,7 +18,7 @@ import { ReducerStateType } from '../reducers/types'
 
 
 
-export const createExercise = (exerciseName: string, cal: number, date: Date) => {
+export const createExercise = (exerciseName: string, cal: string, date: Date) => {
     return async (dispatch: (x: DispatchType) => void, getState: () => ReducerStateType) => {
 
         const userId = getState().auth.userId

@@ -57,7 +57,7 @@ export const fetchHabit = () => {
     }
 }
 
-export const updateHabit = (id: string, dateStart: string, highStreak: string, dateBreak: string) => {
+export const updateHabit = (id: string, dateStart: string, highStreak: string, dateBreak: Date) => {
     return async (dispatch: (x: DispatchType) => void, getState: () => ReducerStateType) => {
         const userId = getState().auth.userId
 

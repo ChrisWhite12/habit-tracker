@@ -10,8 +10,9 @@ import { useDispatch, useSelector } from "react-redux";
 
 import * as weightActions from '../store/actions/weight'
 import { dateConvert } from '../utils';
-import { ReducerStateType } from '../App';
+import { ReducerStateType } from '../store/reducers/types';
 import { NavigationStackScreenComponent } from 'react-navigation-stack';
+import { DrawerActions } from 'react-navigation-drawer';
 
 const WeightScreen: NavigationStackScreenComponent = () => {
 
@@ -57,7 +58,7 @@ const WeightScreen: NavigationStackScreenComponent = () => {
         else{
             await dispatch(
                 //update if existing
-                weightActions.updateWeight(existWeight.id, newWeight, nowDate)
+                weightActions.updateWeight(existWeight.id, newWeight, nowDate.toISOString())
             )
         }
 
@@ -254,7 +255,8 @@ WeightScreen.navigationOptions = navData => {
     return {
         headerLeft: () => (
             <CustomHeaderButton name="menu" onPress={()=> {
-                navData.navigation.toggleDrawer()
+                // navData.navigation.toggleDrawer()
+                navData.navigation.dispatch(DrawerActions.toggleDrawer())
             }}/>
         ),
         headerTitle: 'Weight',

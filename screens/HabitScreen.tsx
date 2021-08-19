@@ -2,12 +2,13 @@ import React, { useEffect } from 'react'
 import {StyleSheet, View, FlatList, Button, Alert} from 'react-native'
 import { NavigationStackScreenComponent } from 'react-navigation-stack';
 import { useDispatch, useSelector } from 'react-redux';
-import { ReducerStateType } from '../App';
+import { ReducerStateType } from '../store/reducers/types';
 import CustomHeaderButton from '../components/CustomHeaderButton';
 import HabitItem from '../components/HabitItem';
 import Colors from "../constants/Colors";
 
 import * as habitActions from '../store/actions/habit'
+import { DrawerActions } from 'react-navigation-drawer';
 
 interface Props {
     navigation: {
@@ -50,7 +51,7 @@ const HabitScreen: NavigationStackScreenComponent<Props> = ({navigation}) => {
                     const currStreak = Math.floor(((new Date().getTime()) - (new Date(habit.item.dateStart).getTime())) / (1000 * 60 * 60 * 24))
                     return (
                         <HabitItem 
-                        currStreak={currStreak}
+                        currStreak={currStreak.toString()}
                         highStreak={habit.item.highStreak}
                         name={habit.item.habitName}
                         handleBreakStreak={() => {
@@ -74,7 +75,8 @@ HabitScreen.navigationOptions = navData => {
     return {
         headerLeft: () => (
             <CustomHeaderButton name="menu" onPress={()=> {
-                navData.navigation.toggleDrawer()
+                // navData.navigation.toggleDrawer()
+                navData.navigation.dispatch(DrawerActions.toggleDrawer())
             }}/>
         ),
         headerTitle: 'Habits',
